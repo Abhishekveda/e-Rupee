@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>e₹ Bridge — Cross-Border CBDC Payments | RBIH Showcase 2026</title>
+<meta name="description" content="A CBDC-native cross-border payment bridge powered by India's e-Rupee. Settle international remittances in under 3 seconds at 0.2% fee. RBIH Bank-Fintech Showcase 2026."/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0C1A2E;--navy2:#152236;--navy3:#1E3050;
+  --saffron:#FF9933;--saffron2:#FFB84D;--saffron3:#FFF3E0;--saffron4:#FFF8F0;
+  --green:#138808;--green2:#EAF7EC;--green3:#0A5C20;
+  --bg:#EFF3F8;--surface:#fff;
+  --muted:#5A6A80;--border:#D5DFEb;--border2:#EEF2F8;
+  --red:#C0392B;--red2:#FEF0EE;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --radius:8px;--radius-lg:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--navy);line-height:1.55;font-size:15px}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── topbar ── */
+.topbar{background:var(--navy);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:3px solid var(--saffron);position:sticky;top:0;z-index:500}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{width:38px;height:38px;background:var(--saffron);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:15px;color:var(--navy);flex-shrink:0}
+.tb-text{display:flex;flex-direction:column;gap:0}
+.tb-name{font-size:15px;font-weight:600;color:#fff;line-height:1.2}
+.tb-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.chip{font-size:11px;padding:4px 12px;border-radius:20px;font-family:var(--mono);font-weight:500;border:1px solid}
+.chip-poc{color:var(--saffron2);border-color:rgba(255,153,51,.35);background:rgba(255,153,51,.1)}
+.chip-live{color:#6EE67A;border-color:rgba(110,230,122,.35);background:rgba(110,230,122,.1);display:flex;align-items:center;gap:5px}
+.chip-live::before{content:'';width:6px;height:6px;border-radius:50%;background:#6EE67A;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── tricolour ── */
+.tricolour{height:3px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33% 66.66%,var(--green) 66.66%)}
+
+/* ── hero ── */
+.hero{background:linear-gradient(160deg,var(--navy2) 0%,var(--navy3) 100%);padding:44px 32px 40px;color:#fff}
+.hero-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.hero-tag{font-size:11px;font-family:var(--mono);color:var(--saffron2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.hero-tag::before{content:'';width:20px;height:1px;background:var(--saffron)}
+.hero h1{font-size:32px;font-weight:600;line-height:1.2;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--saffron2)}
+.hero-desc{font-size:14px;line-height:1.75;opacity:.65;max-width:520px;margin-bottom:24px}
+.hero-flags{display:flex;align-items:center;gap:8px;font-size:22px}
+.hero-flags span{font-size:13px;color:rgba(255,255,255,.4);font-family:var(--mono)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(255,255,255,.08);border-radius:var(--radius-lg);overflow:hidden;min-width:300px}
+.stat{background:var(--navy3);padding:18px 22px}
+.stat-val{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--saffron2);margin-bottom:3px}
+.stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;opacity:.45}
+
+/* ── wrap ── */
+.wrap{max-width:1160px;margin:0 auto;padding:28px 32px}
+
+/* ── problem ── */
+.problem{background:var(--navy);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:26px;border-left:4px solid var(--saffron);position:relative;overflow:hidden}
+.problem::after{content:'₹';position:absolute;right:32px;top:50%;transform:translateY(-50%);font-size:120px;font-weight:700;color:rgba(255,153,51,.05);font-family:var(--mono);pointer-events:none}
+.pb-head{font-size:20px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:10px}
+.pb-head em{font-style:normal;color:var(--saffron2)}
+.pb-text{font-size:13px;color:rgba(255,255,255,.6);line-height:1.75;max-width:700px;margin-bottom:22px}
+.pb-nums{display:flex;gap:36px;flex-wrap:wrap}
+.pn{display:flex;flex-direction:column;gap:3px}
+.pn-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--saffron2)}
+.pn-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── metrics row ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.metric-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--navy);margin-bottom:2px}
+.metric-val.g{color:var(--green)}.metric-val.r{color:var(--red)}
+.metric-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.badge{font-size:10px;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-weight:500;display:inline-block}
+.badge-g{background:var(--green2);color:var(--green3)}
+.badge-r{background:var(--red2);color:var(--red)}
+
+/* ── layout ── */
+.layout{display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start}
+.col{display:flex;flex-direction:column;gap:22px}
+
+/* ── card ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.card-head{padding:15px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:#FAFBFD}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:7px}
+.card-title::before{content:'';width:3px;height:13px;background:var(--saffron);border-radius:2px;flex-shrink:0}
+.card-body{padding:20px}
+
+/* ── corridor ── */
+.corridor{display:flex;align-items:center;background:var(--navy2);border-radius:var(--radius);overflow:hidden;margin-bottom:18px}
+.cor-node{flex:1;padding:14px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.cor-flag{font-size:24px}
+.cor-name{font-size:12px;font-weight:600;color:#fff}
+.cor-curr{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono)}
+.cor-arrow{color:var(--saffron2);font-size:18px;font-weight:700;padding:0 4px;flex-shrink:0}
+
+/* ── form ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.field select,.field input[type=text]{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:10px 12px;font-size:13px;font-family:var(--sans);color:var(--navy);background:#fff;transition:border-color .15s,background .15s}
+.field select:focus,.field input[type=text]:focus{outline:none;border-color:var(--saffron);background:var(--saffron4)}
+.amount-wrap{display:flex;border:1.5px solid var(--border);border-radius:7px;overflow:hidden;transition:border-color .15s}
+.amount-wrap:focus-within{border-color:var(--saffron)}
+.amount-pre{background:#F5F7FA;padding:10px 12px;font-family:var(--mono);font-size:13px;color:var(--muted);border-right:1px solid var(--border);flex-shrink:0}
+.amount-wrap input{border:none;flex:1;padding:10px 12px;font-size:14px;font-family:var(--mono);color:var(--navy);background:#fff;min-width:0}
+.amount-wrap input:focus{outline:none;background:var(--saffron4)}
+
+/* ── quote ── */
+.quote{background:var(--navy);border-radius:var(--radius);padding:14px 16px;margin:14px 0;display:none}
+.quote.show{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.qrow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}
+.qrow:last-child{border:none;padding-top:8px}
+.qlbl{color:rgba(255,255,255,.4);font-size:12px}
+.qval{font-family:var(--mono);color:#fff;font-weight:500;font-size:12px}
+.qval.amber{color:var(--saffron2)}
+.qval.red{color:#F87171}
+.qval.green{color:#6EE67A}
+
+/* ── button ── */
+.btn-send{width:100%;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:13px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.01em}
+.btn-send:hover{background:var(--navy3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(12,26,46,.18)}
+.btn-send:active{transform:none;box-shadow:none}
+.btn-send:disabled{background:#B0BEC5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-arrow{transition:transform .15s}
+.btn-send:hover .btn-arrow{transform:translateX(3px)}
+
+/* ── compliance tags ── */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{font-size:10px;padding:3px 9px;border-radius:4px;font-family:var(--mono);font-weight:500;border:1px solid}
+.tag-g{background:var(--green2);color:var(--green3);border-color:#9FCE9F}
+.tag-b{background:#E7F3FD;color:#0C447C;border-color:#A8CFEE}
+.tag-a{background:var(--saffron3);color:#7A4400;border-color:#F5C880}
+
+/* ── comparison table ── */
+.comp{width:100%;border-collapse:collapse;font-size:13px}
+.comp th{text-align:left;padding:9px 14px;border-bottom:2px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;background:#FAFBFD}
+.comp td{padding:12px 14px;border-bottom:1px solid var(--border2);vertical-align:middle}
+.comp tr:last-child td{border:none}
+.comp .win td{background:var(--green2)}
+.label{font-size:11px;padding:3px 9px;border-radius:4px;font-family:var(--mono);font-weight:600;white-space:nowrap}
+.l-bad{background:var(--red2);color:var(--red)}
+.l-ok{background:var(--saffron3);color:#7A4400}
+.l-good{background:var(--green2);color:var(--green3)}
+.bar-wrap{display:flex;align-items:center;gap:8px}
+.bar-track{width:90px;height:6px;background:var(--border2);border-radius:3px;overflow:hidden;flex-shrink:0}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.2s .3s ease}
+.bf-r{background:var(--red)}.bf-a{background:var(--saffron)}.bf-g{background:var(--green)}
+.bar-amt{font-family:var(--mono);font-size:12px}
+
+/* ── architecture ── */
+.arch{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:14px 0}
+.anode{flex:1;padding:14px 16px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
+.anode:last-child{border:none}
+.anode.hl{background:#EDF5FF}
+.anode-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-family:var(--mono)}
+.anode-name{font-size:12px;font-weight:600;color:var(--navy)}
+.anode-detail{font-size:11px;color:var(--muted);font-family:var(--mono);line-height:1.5}
+.anode-arrow{display:flex;align-items:center;justify-content:center;padding:0 8px;background:#F4F7FA;border-right:1px solid var(--border);color:var(--saffron);font-size:16px;font-weight:700;flex-shrink:0}
+
+/* ── flow ── */
+.flow{display:flex;flex-direction:column}
+.fi{display:flex;gap:12px;align-items:flex-start}
+.fi-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.fi-dot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);background:#fff;transition:all .2s;flex-shrink:0}
+.fi-dot.active{border-color:var(--saffron);color:var(--saffron);background:var(--saffron3)}
+.fi-dot.done{border-color:var(--green);background:var(--green);color:#fff;font-size:12px}
+.fi-line{width:1.5px;height:28px;background:var(--border2);margin:0 auto;transition:background .2s}
+.fi-line.done{background:var(--green)}
+.fi-text{padding-bottom:22px;padding-top:2px;flex:1;min-width:0}
+.fi-label{font-size:13px;font-weight:500;color:var(--navy)}
+.fi-detail{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px;word-break:break-all;line-height:1.55}
+
+/* ── receipt ── */
+.receipt{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:none}
+.receipt.show{display:block;animation:fadeUp .3s ease}
+.receipt-head{background:var(--navy);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.receipt-title{font-size:14px;font-weight:600;color:#fff}
+.receipt-status{font-size:10px;padding:4px 10px;border-radius:3px;font-family:var(--mono);font-weight:600}
+.rs-pend{background:rgba(255,153,51,.2);color:var(--saffron2)}
+.rs-done{background:rgba(19,136,8,.25);color:#6EE67A}
+.receipt-body{padding:16px 18px}
+.rr{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border2);font-size:12px;gap:12px}
+.rr:last-child{border:none}
+.rr-l{color:var(--muted);flex-shrink:0;padding-top:1px}
+.rr-v{font-family:var(--mono);color:var(--navy);text-align:right;word-break:break-all;max-width:240px}
+.rr-v.amber{color:#C07010;font-size:14px;font-weight:500;font-family:var(--sans)}
+.rr-v.green{color:var(--green);font-size:14px;font-weight:500;font-family:var(--sans)}
+.receipt-foot{background:#F5F7FA;padding:10px 18px;display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono)}
+
+/* ── RBI alignment ── */
+.align-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ai{border:1px solid var(--border);border-radius:7px;padding:13px;border-left:3px solid var(--green)}
+.ai h3{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.ai p{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* ── roadmap ── */
+.rm{display:flex;flex-direction:column;gap:9px}
+.rm-row{display:flex;align-items:flex-start;gap:10px;font-size:13px}
+.rm-icon{flex-shrink:0;font-weight:700;font-size:13px;margin-top:1px;width:16px}
+.rm-icon.done{color:var(--green)}.rm-icon.next{color:var(--saffron)}.rm-icon.future{color:var(--muted)}
+.rm-text{color:var(--muted)}
+.rm-text b{color:var(--navy);font-weight:500}
+
+/* ── error toast ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;animation:fadeUp .2s ease;max-width:400px;text-align:center}
+.toast.show{display:block}
+
+/* ── footer ── */
+.footer{background:var(--navy);color:rgba(255,255,255,.3);text-align:center;padding:18px 32px;font-size:11px;font-family:var(--mono);margin-top:40px}
+.footer a{color:rgba(255,153,51,.55);text-decoration:none}
+.footer a:hover{color:var(--saffron2)}
+
+/* ── responsive ── */
+@media(max-width:960px){
+  .layout{grid-template-columns:1fr}
+  .hero-inner{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(4,1fr);min-width:unset;width:100%}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .align-grid{grid-template-columns:1fr}
+  .wrap,.hero{padding-left:16px;padding-right:16px}
+  .topbar{padding:0 16px}
+  .problem{padding:20px}
+}
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .arch{flex-direction:column}
+  .anode{border-right:none;border-bottom:1px solid var(--border)}
+  .anode:last-child{border:none}
+  .anode-arrow{display:none}
+  .pb-nums{gap:20px}
+  .hero h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- topbar -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">e₹</div>
+    <div class="tb-text">
+      <div class="tb-name">e-Rupee Cross-Border Bridge</div>
+      <div class="tb-sub">RBIH Bank-Fintech Showcase 2026</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <span class="chip chip-poc">PROOF OF CONCEPT</span>
+    <span class="chip chip-live">DEMO LIVE</span>
+  </div>
+</div>
+<div class="tricolour"></div>
+
+<!-- hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Canada · India · UAE · Singapore</div>
+      <h1>Cross-border remittances<br/>powered by <em>India's e-Rupee CBDC</em></h1>
+      <p class="hero-desc">A CBDC-native bridge that eliminates correspondent banks from international payments — settling in under 3 seconds at 0.2% fee. Fully aligned with RBI's Payments Vision 2025 and the e₹ wholesale pilot.</p>
+      <div class="hero-flags">🇨🇦 <span>→</span> 🇮🇳 <span>→</span> 🇦🇪 <span>/</span> 🇸🇬</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val">&lt; 3s</div><div class="stat-lbl">Settlement time</div></div>
+      <div class="stat"><div class="stat-val">0.2%</div><div class="stat-lbl">Bridge fee</div></div>
+      <div class="stat"><div class="stat-val">$100B+</div><div class="stat-lbl">India remit / yr</div></div>
+      <div class="stat"><div class="stat-val" id="s-txns">0</div><div class="stat-lbl">Live demo txns</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- problem -->
+  <div class="problem">
+    <div class="pb-head">India loses <em>$6.3 billion</em> every year to remittance fees — the e-Rupee can fix this.</div>
+    <p class="pb-text">The average remittance to India costs 6.3% in fees and takes 2–3 business days through SWIFT correspondent banking. India's e-Rupee CBDC — already live with 60 lakh users across 17 banks — has the infrastructure to power a cross-border settlement layer that makes international payments instant and near-free. This PoC demonstrates exactly how, and it's built directly on RBI's Payments Vision 2025 framework.</p>
+    <div class="pb-nums">
+      <div class="pn"><div class="pn-val">6.3%</div><div class="pn-lbl">Avg SWIFT fee (World Bank)</div></div>
+      <div class="pn"><div class="pn-val">0.2%</div><div class="pn-lbl">This bridge's fee</div></div>
+      <div class="pn"><div class="pn-val">97%</div><div class="pn-lbl">Fee reduction</div></div>
+      <div class="pn"><div class="pn-val">3 sec vs 3 days</div><div class="pn-lbl">Settlement speed gain</div></div>
+    </div>
+  </div>
+
+  <!-- metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-lbl">e-Rupee in circulation</div>
+      <div class="metric-val g">₹1,016 Cr</div>
+      <span class="badge badge-g">Mar 2025 · +334% YoY</span>
+    </div>
+    <div class="metric">
+      <div class="metric-lbl">CBDC pilot users</div>
+      <div class="metric-val">60 Lakh+</div>
+      <span class="badge badge-g">17 banks live</span>
+    </div>
+    <div class="metric">
+      <div class="metric-lbl">SWIFT avg remittance fee</div>
+      <div class="metric-val r">6.3%</div>
+      <span class="badge badge-r">vs 0.2% this bridge</span>
+    </div>
+    <div class="metric">
+      <div class="metric-lbl">Demo volume (session)</div>
+      <div class="metric-val g" id="s-vol">₹0</div>
+      <span class="badge badge-g" id="s-sub">Send a transfer below</span>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT COLUMN -->
+    <div class="col">
+
+      <!-- transfer form -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Live transfer demonstration</div>
+          <span class="tag tag-g" style="font-size:10px">FEMA COMPLIANT</span>
+        </div>
+        <div class="card-body">
+
+          <div class="corridor">
+            <div class="cor-node">
+              <div class="cor-flag">🇨🇦</div>
+              <div class="cor-name">Canada</div>
+              <div class="cor-curr">Sender</div>
+            </div>
+            <div class="cor-arrow">→</div>
+            <div class="cor-node">
+              <div class="cor-flag">🇮🇳</div>
+              <div class="cor-name">India</div>
+              <div class="cor-curr">e₹ Bridge</div>
+            </div>
+            <div class="cor-arrow">→</div>
+            <div class="cor-node" id="cor-dest">
+              <div class="cor-flag">🇦🇪</div>
+              <div class="cor-name">UAE</div>
+              <div class="cor-curr">AED</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Sender wallet (e-Rupee)</label>
+              <select id="sender">
+                <option value="INDIA_USER_001">INDIA_USER_001 — ₹50,000 balance</option>
+                <option value="INDIA_USER_002">INDIA_USER_002 — ₹1,20,000 balance</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Destination corridor</label>
+              <select id="country" onchange="onCountryChange()">
+                <option value="UAE">India → UAE (receives AED)</option>
+                <option value="SG">India → Singapore (receives SGD)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label>Amount to send (INR ₹)</label>
+              <div class="amount-wrap">
+                <span class="amount-pre">₹</span>
+                <input type="number" id="amount" value="10000" min="100" max="500000" step="100" oninput="updateQuote()"/>
+              </div>
+            </div>
+            <div class="field">
+              <label>FEMA remittance purpose</label>
+              <select id="purpose">
+                <option value="P0102">P0102 — Family maintenance</option>
+                <option value="P0103">P0103 — Education fees</option>
+                <option value="P1301">P1301 — Business payment</option>
+                <option value="P0801">P0801 — Medical treatment</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field full">
+              <label>Recipient wallet address (Ethereum)</label>
+              <div class="amount-wrap">
+                <span class="amount-pre">0x</span>
+                <input type="text" id="recipient" value="AbCdEf1234567890AbCdEf12" style="font-family:var(--mono);font-size:12px"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="quote" id="quote">
+            <div class="qrow"><span class="qlbl">FX rate (RBI reference)</span><span class="qval" id="q-rate">—</span></div>
+            <div class="qrow"><span class="qlbl">Recipient receives</span><span class="qval amber" id="q-recv">—</span></div>
+            <div class="qrow"><span class="qlbl">Bridge fee (0.2%)</span><span class="qval" id="q-fee">—</span></div>
+            <div class="qrow"><span class="qlbl">SWIFT equivalent cost</span><span class="qval red" id="q-swift">—</span></div>
+            <div class="qrow"><span class="qlbl">You save vs SWIFT</span><span class="qval green" id="q-save">—</span></div>
+            <div class="qrow"><span class="qlbl">Estimated settlement</span><span class="qval green">under 3 seconds ✓</span></div>
+          </div>
+
+          <button class="btn-send" id="send-btn" onclick="runTransfer()">
+            Execute Transfer via e₹ Bridge <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- comparison -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Settlement comparison</div></div>
+        <table class="comp">
+          <thead>
+            <tr>
+              <th>Payment method</th>
+              <th>Fee</th>
+              <th>Speed</th>
+              <th>Cost on ₹10,000</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="font-weight:500;font-size:13px">SWIFT / Bank wire</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px">Traditional correspondent banking</div>
+              </td>
+              <td><span class="label l-bad">6.3%</span></td>
+              <td><span class="label l-bad">2–3 days</span></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="bar-fill bf-r" style="width:100%"></div></div>
+                  <span class="bar-amt" style="color:var(--red)">₹630</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight:500;font-size:13px">Wise / Remitly</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px">Fintech on legacy banking rails</div>
+              </td>
+              <td><span class="label l-ok">2.1%</span></td>
+              <td><span class="label l-ok">~1 day</span></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="bar-fill bf-a" style="width:33%"></div></div>
+                  <span class="bar-amt" style="color:#8A5500">₹210</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="win">
+              <td>
+                <div style="font-weight:600;font-size:13px">e₹ Bridge <span style="color:var(--green);font-size:11px">(this PoC)</span></div>
+                <div style="font-size:11px;color:var(--green);margin-top:2px">CBDC-native settlement layer</div>
+              </td>
+              <td><span class="label l-good">0.2%</span></td>
+              <td><span class="label l-good">&lt; 3 sec</span></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="bar-fill bf-g" style="width:3%"></div></div>
+                  <span class="bar-amt" style="color:var(--green)">₹20</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- architecture -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">System architecture</div></div>
+        <div class="card-body">
+          <div class="arch">
+            <div class="anode">
+              <div class="anode-tag">Layer 1 · Sender</div>
+              <div class="anode-name">🇮🇳 e-Rupee Wallet</div>
+              <div class="anode-detail">Retail CBDC<br/>RBI-issued e₹<br/>KYC verified</div>
+            </div>
+            <div class="anode-arrow">→</div>
+            <div class="anode hl">
+              <div class="anode-tag">Layer 2 · This PoC</div>
+              <div class="anode-name">⛓ CBDC Bridge API</div>
+              <div class="anode-detail">FastAPI + Solidity<br/>FEMA codes<br/>FX oracle relay</div>
+            </div>
+            <div class="anode-arrow">→</div>
+            <div class="anode">
+              <div class="anode-tag">Layer 3 · Settlement</div>
+              <div class="anode-name">Ethereum Contract</div>
+              <div class="anode-detail">CBDCBridge.sol<br/>Sepolia testnet<br/>On-chain audit</div>
+            </div>
+            <div class="anode-arrow">→</div>
+            <div class="anode">
+              <div class="anode-tag">Layer 4 · Recipient</div>
+              <div class="anode-name">🇦🇪 Destination</div>
+              <div class="anode-detail">mAED / mSGD<br/>Regulated token<br/>Instant credit</div>
+            </div>
+          </div>
+          <div class="tags">
+            <span class="tag tag-g">FEMA Purpose Codes</span>
+            <span class="tag tag-g">RBI e₹ Pilot Aligned</span>
+            <span class="tag tag-g">LRS Cap Enforceable</span>
+            <span class="tag tag-b">Open Source · GitHub</span>
+            <span class="tag tag-b">On-chain Audit Trail</span>
+            <span class="tag tag-b">Sepolia Testnet Live</span>
+            <span class="tag tag-a">KYC Layer — Planned</span>
+            <span class="tag tag-a">Mainnet — Post Sandbox</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RBI alignment -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Alignment with RBI policy objectives</div></div>
+        <div class="card-body">
+          <div class="align-grid">
+            <div class="ai">
+              <h3>Payments Vision 2025</h3>
+              <p>Directly implements RBI's stated goal of using CBDC for cross-border payment processing and settlement, as defined in the June 2022 vision document and Payments Vision 2025.</p>
+            </div>
+            <div class="ai">
+              <h3>e-Rupee wholesale pilot</h3>
+              <p>Architecture mirrors the e₹-W pilot structure used for interbank settlements. The bridge relay is architecturally equivalent to the NDS-OM settlement mechanism.</p>
+            </div>
+            <div class="ai">
+              <h3>Project Dunbar / mBridge</h3>
+              <p>Implements the same CBDC-to-CBDC bridge concept as BIS Project Dunbar — but as open-source, developer-accessible code that any RBI-authorised bank can clone and evaluate.</p>
+            </div>
+            <div class="ai">
+              <h3>FEMA & LRS compliance</h3>
+              <p>Every transfer carries a mandatory FEMA purpose code per RBI Master Direction. The API architecture supports hard enforcement of the $250,000 LRS annual cap per sender wallet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col">
+
+      <!-- payment flow tracker -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Live payment flow</div>
+          <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">updates in real time</span>
+        </div>
+        <div class="card-body">
+          <div class="flow">
+            <div class="fi">
+              <div class="fi-left"><div class="fi-dot" id="fl0">1</div><div class="fi-line" id="ln0"></div></div>
+              <div class="fi-text"><div class="fi-label">e-Rupee wallet debit</div><div class="fi-detail" id="fd0">Waiting for transfer initiation...</div></div>
+            </div>
+            <div class="fi">
+              <div class="fi-left"><div class="fi-dot" id="fl1">2</div><div class="fi-line" id="ln1"></div></div>
+              <div class="fi-text"><div class="fi-label">CBDC transaction hash generated</div><div class="fi-detail" id="fd1">Pending wallet confirmation...</div></div>
+            </div>
+            <div class="fi">
+              <div class="fi-left"><div class="fi-dot" id="fl2">3</div><div class="fi-line" id="ln2"></div></div>
+              <div class="fi-text"><div class="fi-label">Bridge relay to Ethereum</div><div class="fi-detail" id="fd2">Pending CBDC hash...</div></div>
+            </div>
+            <div class="fi">
+              <div class="fi-left"><div class="fi-dot" id="fl3">4</div><div class="fi-line" id="ln3"></div></div>
+              <div class="fi-text"><div class="fi-label">FX oracle conversion</div><div class="fi-detail" id="fd3">Pending bridge relay...</div></div>
+            </div>
+            <div class="fi">
+              <div class="fi-left"><div class="fi-dot" id="fl4">5</div></div>
+              <div class="fi-text"><div class="fi-label">Recipient settlement confirmed</div><div class="fi-detail" id="fd4">Awaiting FX conversion...</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- receipt -->
+      <div class="receipt" id="receipt">
+        <div class="receipt-head">
+          <div class="receipt-title">Transaction receipt</div>
+          <span class="receipt-status" id="rs">PENDING</span>
+        </div>
+        <div class="receipt-body">
+          <div class="rr"><span class="rr-l">Transaction ID</span><span class="rr-v" id="r-id" style="font-size:10px">—</span></div>
+          <div class="rr"><span class="rr-l">Sender wallet</span><span class="rr-v" id="r-sender">—</span></div>
+          <div class="rr"><span class="rr-l">Amount sent</span><span class="rr-v amber" id="r-amt">—</span></div>
+          <div class="rr"><span class="rr-l">Recipient receives</span><span class="rr-v green" id="r-recv">—</span></div>
+          <div class="rr"><span class="rr-l">Bridge fee (0.2%)</span><span class="rr-v" id="r-fee">—</span></div>
+          <div class="rr"><span class="rr-l">FEMA purpose code</span><span class="rr-v" id="r-fema">—</span></div>
+          <div class="rr"><span class="rr-l">Recipient address</span><span class="rr-v" id="r-addr" style="font-size:10px">—</span></div>
+          <div class="rr"><span class="rr-l">CBDC tx hash</span><span class="rr-v" id="r-cbdc" style="font-size:10px">—</span></div>
+          <div class="rr"><span class="rr-l">Bridge tx hash</span><span class="rr-v" id="r-bridge" style="font-size:10px">—</span></div>
+          <div class="rr"><span class="rr-l">Settlement block</span><span class="rr-v" id="r-block">—</span></div>
+          <div class="rr"><span class="rr-l">Settlement time</span><span class="rr-v green" id="r-time">—</span></div>
+        </div>
+        <div class="receipt-foot">
+          <span id="r-created">—</span>
+          <span id="r-settled" style="color:var(--green)">—</span>
+        </div>
+      </div>
+
+      <!-- roadmap -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">Production roadmap</div></div>
+        <div class="card-body">
+          <div class="rm">
+            <div class="rm-row"><span class="rm-icon done">✓</span><span class="rm-text"><b>FastAPI mock e-Rupee CBDC API</b> — wallet, FX, settlement endpoints</span></div>
+            <div class="rm-row"><span class="rm-icon done">✓</span><span class="rm-text"><b>CBDCBridge.sol</b> — deployed on Ethereum Sepolia testnet</span></div>
+            <div class="rm-row"><span class="rm-icon done">✓</span><span class="rm-text"><b>FEMA compliance</b> — purpose codes on every transfer</span></div>
+            <div class="rm-row"><span class="rm-icon done">✓</span><span class="rm-text"><b>Open source</b> — full code on GitHub, CI/CD, security policy</span></div>
+            <div class="rm-row"><span class="rm-icon next">→</span><span class="rm-text">Connect to <b>RBI e₹ developer sandbox</b> when available</span></div>
+            <div class="rm-row"><span class="rm-icon next">→</span><span class="rm-text"><b>Chainlink FX oracle</b> + HSM-backed relayer key management</span></div>
+            <div class="rm-row"><span class="rm-icon next">→</span><span class="rm-text"><b>CBUAE digital dirham</b> integration for UAE corridor</span></div>
+            <div class="rm-row"><span class="rm-icon future">○</span><span class="rm-text">Apply to <b>RBI Regulatory Sandbox</b> — Cohort 6</span></div>
+            <div class="rm-row"><span class="rm-icon future">○</span><span class="rm-text">Production on <b>permissioned DLT</b> (Corda / RBI-specified network)</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  e-Rupee Cross-Border Bridge · RBIH Bank-Fintech Showcase 2026 ·
+  <a href="https://github.com/Abhishekveda/E-Rupee" target="_blank">github.com/Abhishekveda/E-Rupee</a> ·
+  Built by Abhishek Veda · Canada 🇨🇦 · Proof of Concept — not affiliated with RBI · All transfers simulated
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─── Embedded mock CBDC logic — no backend needed ─── */
+const FX = {AED:0.044, SGD:0.016};
+const WALLETS = {
+  INDIA_USER_001:{balance:50000},
+  INDIA_USER_002:{balance:120000}
+};
+let sessionTxns=0, sessionVol=0;
+
+function uid(){
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
+    const r=Math.random()*16|0;
+    return(c=='x'?r:(r&0x3|0x8)).toString(16);
+  });
+}
+function fakeHash(prefix, seed){
+  let h='';
+  const chars='0123456789abcdef';
+  for(let i=0;i<60;i++) h+=chars[Math.floor(Math.random()*16)];
+  return '0x'+prefix+h.slice(0,60-prefix.length);
+}
+
+function onCountryChange(){
+  const v = document.getElementById('country').value;
+  const dest = document.getElementById('cor-dest');
+  if(v==='UAE'){
+    dest.innerHTML='<div class="cor-flag">🇦🇪</div><div class="cor-name">UAE</div><div class="cor-curr">AED</div>';
+  } else {
+    dest.innerHTML='<div class="cor-flag">🇸🇬</div><div class="cor-name">Singapore</div><div class="cor-curr">SGD</div>';
+  }
+  updateQuote();
+}
+
+function updateQuote(){
+  const amount = +document.getElementById('amount').value;
+  const curr = document.getElementById('country').value==='UAE'?'AED':'SGD';
+  if(!amount||amount<100){
+    document.getElementById('quote').classList.remove('show');
+    return;
+  }
+  const rate = FX[curr];
+  const converted = (amount*rate).toFixed(2);
+  const fee = (amount*0.002).toFixed(2);
+  const swift = (amount*0.063).toFixed(2);
+  const save = (swift-fee).toFixed(2);
+  const savePct = ((save/amount)*100).toFixed(1);
+
+  document.getElementById('q-rate').textContent = `1 INR = ${rate} ${curr}`;
+  document.getElementById('q-recv').textContent = `${converted} ${curr}`;
+  document.getElementById('q-fee').textContent = `₹${fee}`;
+  document.getElementById('q-swift').textContent = `₹${swift} — ${(swift/fee).toFixed(0)}× more expensive`;
+  document.getElementById('q-save').textContent = `₹${save} (${savePct}% of your transfer amount)`;
+  document.getElementById('quote').classList.add('show');
+}
+
+async function runTransfer(){
+  const sender = document.getElementById('sender').value;
+  const country = document.getElementById('country').value;
+  const amount = +document.getElementById('amount').value;
+  const purpose = document.getElementById('purpose').value;
+  const recipient = '0x'+document.getElementById('recipient').value;
+  const curr = country==='UAE'?'AED':'SGD';
+
+  /* validations */
+  if(!amount||amount<100){ showToast('Please enter an amount of at least ₹100'); return; }
+  if(amount>500000){ showToast('Amount exceeds ₹5,00,000 demo limit'); return; }
+  const wallet = WALLETS[sender];
+  const totalDebit = +(amount*1.002).toFixed(2);
+  if(wallet.balance < totalDebit){
+    showToast(`Insufficient balance. Wallet has ₹${wallet.balance.toLocaleString('en-IN')}, need ₹${totalDebit.toLocaleString('en-IN')}`);
+    return;
+  }
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled=true;
+  btn.innerHTML='Processing transfer... <span style="animation:blink 1s infinite;display:inline">●</span>';
+  resetFlow();
+
+  const txId = uid();
+  const cbdcHash = fakeHash('cbdc', txId);
+  const bridgeHash = fakeHash('bridge', cbdcHash);
+  const rate = FX[curr];
+  const converted = +(amount*rate).toFixed(2);
+  const fee = +(amount*0.002).toFixed(2);
+  const createdAt = new Date();
+
+  try {
+    /* Step 1 — wallet debit */
+    setStep(0,'active');
+    await sleep(450);
+    wallet.balance = +(wallet.balance-totalDebit).toFixed(2);
+    setStep(0,'done','Debited ₹'+amount.toLocaleString('en-IN')+' from '+sender, true);
+
+    /* Step 2 — CBDC hash */
+    setStep(1,'active');
+    await sleep(500);
+    setStep(1,'done', cbdcHash.slice(0,26)+'...', true);
+
+    /* Step 3 — bridge relay */
+    setStep(2,'active');
+    await sleep(420);
+    setStep(2,'done', bridgeHash.slice(0,24)+'...', true);
+
+    /* Step 4 — FX conversion */
+    setStep(3,'active');
+    await sleep(380);
+    setStep(3,'done', `${converted} ${curr} @ rate ${rate}`, true);
+
+    /* Step 5 — settlement */
+    setStep(4,'active');
+    await sleep(580);
+    const settledAt = new Date();
+    const elapsed = ((settledAt-createdAt)/1000).toFixed(2);
+    const block = 19450000+Math.floor(Math.random()*3000);
+    setStep(4,'done', `Settled in ${elapsed}s — Block #${block}`, true);
+
+    /* show receipt */
+    const tx = {txId,sender,recipient,amount,converted,curr,fee,purpose,cbdcHash,bridgeHash,block,createdAt,settledAt,elapsed};
+    showReceipt(tx);
+
+    /* update stats */
+    sessionTxns++;
+    sessionVol+=amount;
+    document.getElementById('s-txns').textContent=sessionTxns;
+    document.getElementById('s-vol').textContent='₹'+sessionVol.toLocaleString('en-IN');
+    document.getElementById('s-sub').textContent=sessionTxns+' transfer'+(sessionTxns>1?'s':'')+' completed';
+
+  } catch(e) {
+    showToast('Something went wrong. Please try again.');
+    resetFlow();
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='Execute Transfer via e₹ Bridge <span class="btn-arrow">→</span>';
+  }
+}
+
+function showReceipt(tx){
+  const el=document.getElementById('receipt');
+  el.classList.add('show');
+  document.getElementById('rs').textContent='SETTLED ✓';
+  document.getElementById('rs').className='receipt-status rs-done';
+  document.getElementById('r-id').textContent=tx.txId;
+  document.getElementById('r-sender').textContent=tx.sender;
+  document.getElementById('r-amt').textContent='₹'+tx.amount.toLocaleString('en-IN');
+  document.getElementById('r-recv').textContent=tx.converted+' '+tx.curr;
+  document.getElementById('r-fee').textContent='₹'+tx.fee+' (saves ₹'+(tx.amount*0.061).toFixed(0)+' vs SWIFT)';
+  document.getElementById('r-fema').textContent=tx.purpose;
+  document.getElementById('r-addr').textContent=tx.recipient;
+  document.getElementById('r-cbdc').textContent=tx.cbdcHash;
+  document.getElementById('r-bridge').textContent=tx.bridgeHash;
+  document.getElementById('r-block').textContent='#'+tx.block;
+  document.getElementById('r-time').textContent=tx.elapsed+'s — SWIFT takes 2–3 business days';
+  document.getElementById('r-created').textContent='Initiated: '+tx.createdAt.toLocaleTimeString();
+  document.getElementById('r-settled').textContent='Settled: '+tx.settledAt.toLocaleTimeString()+' ✓';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function setStep(i,state,detail){
+  const dot=document.getElementById('fl'+i);
+  const line=document.getElementById('ln'+i);
+  const det=document.getElementById('fd'+i);
+  if(state==='active'){
+    dot.className='fi-dot active';
+    dot.textContent=i+1;
+  } else if(state==='done'){
+    dot.className='fi-dot done';
+    dot.textContent='✓';
+    if(line) line.classList.add('done');
+  }
+  if(det&&detail) det.textContent=detail;
+}
+
+function resetFlow(){
+  for(let i=0;i<5;i++){
+    const d=document.getElementById('fl'+i);
+    const l=document.getElementById('ln'+i);
+    if(d){d.className='fi-dot';d.textContent=i+1;}
+    if(l) l.classList.remove('done');
+  }
+  document.getElementById('fd0').textContent='Waiting for transfer initiation...';
+  document.getElementById('fd1').textContent='Pending wallet confirmation...';
+  document.getElementById('fd2').textContent='Pending CBDC hash...';
+  document.getElementById('fd3').textContent='Pending bridge relay...';
+  document.getElementById('fd4').textContent='Awaiting FX conversion...';
+  document.getElementById('receipt').classList.remove('show');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+updateQuote();
+</script>
+</body>
+</html>

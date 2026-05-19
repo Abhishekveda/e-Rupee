@@ -1,0 +1,7 @@
+# All changes require review from the repo owner
+*                   @YOUR_GITHUB_USERNAME
+
+# Contracts need extra scrutiny — require 2 reviewers before merge
+contracts/          @YOUR_GITHUB_USERNAME
+scripts/deploy.js   @YOUR_GITHUB_USERNAME
+.github/            @YOUR_GITHUB_USERNAME

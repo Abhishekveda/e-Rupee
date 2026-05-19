@@ -1,0 +1,64 @@
+# ── Secrets — NEVER commit these ─────────────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.staging
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+deployed-addresses.json     # contains live contract addresses + relayer keys
+keystore/
+wallet.json
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+htmlcov/
+.coverage
+coverage.xml
+
+# ── Node / Hardhat ────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log
+.npm
+artifacts/           # compiled contract ABIs — regenerate with `hardhat compile`
+cache/               # hardhat compile cache
+typechain-types/
+coverage/
+coverage.json
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
