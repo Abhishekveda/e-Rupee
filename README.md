@@ -1,113 +1,87 @@
-# e₹ Bridge — Cross-Border CBDC Payment Bridge
+# e₹ Bridge — AI-Powered CBDC Cross-Border Payment Bridge
 
-**RBIH Bank-Fintech Showcase 2026** · Submission by Abhishek Veda · Toronto, Canada
+**RBIH Bank-Fintech Showcase 2026** · Abhishek Veda · Toronto, Canada 🇨🇦
 
-🌐 **Live Demo:** https://abhishekveda.github.io/E-Rupee
+🌐 **Live Demo:** https://abhishekveda.github.io/E-Rupee  
+📖 **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+---
+
+## What's new in v2.0 — AI Layer
+
+Version 2.0 adds Claude AI directly into the payment compliance workflow:
+
+| AI Feature | What it does | Why it matters |
+|------------|-------------|----------------|
+| **FEMA Code Intelligence** | User types plain English → Claude selects correct FEMA code | Eliminates compliance errors at source |
+| **Pre-Transfer Risk Engine** | Claude scores fraud risk before every transfer | AI-native AML — not bolt-on rule engine |
+| **Regulatory Q&A** | Conversational assistant for LRS, FEMA, remittance rules | Reduces compliance burden for diaspora users |
 
 ---
 
 ## The Problem
 
-India receives **$100B+ in remittances annually** — the largest in the world. Yet:
-- Average SWIFT fee: **6.3%** (World Bank 2024)
-- Average settlement time: **2–3 business days**
-- Total lost to fees: **~$6.3 billion every year**
+India receives **$100B+ in remittances annually**. The average SWIFT fee is **6.3%** — $6.3 billion lost every year. Settlement takes 2–3 business days.
 
-India's e-Rupee CBDC infrastructure is already live with **60 lakh users across 17 banks**. This PoC demonstrates how it can power a cross-border settlement layer that eliminates correspondent banks entirely.
+India's e-Rupee CBDC is already live with **60 lakh users across 17 banks**. This PoC shows how to build cross-border settlement on top of it.
 
-## The Solution
+## The Numbers
 
-A CBDC-native bridge that:
-- Debits the sender's **e-Rupee retail wallet** (RBI e₹-R)
-- Relays a settlement hash to a **Solidity bridge contract** on Ethereum
-- Converts via **FX oracle** and credits the recipient in AED or SGD
-- Settles in **under 3 seconds** at **0.2% fee**
+| | SWIFT | Wise | **e₹ Bridge** |
+|-|-------|------|--------------|
+| Fee | 6.3% | 2.1% | **0.2%** |
+| Speed | 2–3 days | ~1 day | **< 3 seconds** |
+| AI compliance | None | Basic | **Claude AI** |
+| Cost on ₹10,000 | ₹630 | ₹210 | **₹20** |
 
-## Why it matters
-
-| Method | Fee | Time |
-|--------|-----|------|
-| SWIFT / Bank wire | 6.3% | 2–3 days |
-| Wise / Remitly | 2.1% | ~1 day |
-| **e₹ Bridge (this PoC)** | **0.2%** | **< 3 seconds** |
+---
 
 ## Architecture
 
 ```
-🇮🇳 e-Rupee Wallet  →  ⛓ CBDC Bridge API  →  Ethereum Contract  →  🇦🇪 Recipient
-   (RBI e₹-R)          (FastAPI + Solidity)    (CBDCBridge.sol)      (AED / SGD)
+🇮🇳 e-Rupee Wallet → ✦ Claude AI → ⛓ CBDC Bridge → Ethereum Contract → 🇦🇪 Recipient
+   (RBI e₹-R)         (Compliance)    (FastAPI)        (CBDCBridge.sol)    (AED/SGD)
 ```
 
-## RBI Policy Alignment
+**Full docs:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-- **Payments Vision 2025** — implements RBI's stated cross-border CBDC settlement goal
-- **e₹ Wholesale Pilot** — mirrors the e₹-W interbank settlement architecture  
-- **Project Dunbar / mBridge** — open-source equivalent of BIS CBDC bridge concept
-- **FEMA Compliance** — mandatory purpose codes on every transfer (P0102, P0103, P1301, P0801)
-- **LRS Enforcement** — API architecture supports $250,000 annual cap per sender
+---
 
-## Project Structure
+## Quick Start
 
-```
-E-Rupee/
-├── docs/               ← GitHub Pages live demo (index.html)
-├── backend/app/        ← FastAPI mock e-Rupee CBDC API
-├── contracts/          ← Solidity bridge contracts
-│   ├── CBDCBridge.sol
-│   └── MockStablecoin.sol
-├── scripts/            ← Hardhat deployment
-├── test/               ← Contract test suite
-├── tests/              ← Python API integration tests
-├── .github/workflows/  ← CI/CD (secret scan, tests, Slither)
-└── SECURITY.md         ← Responsible disclosure policy
-```
-
-## Run Locally
-
-### Backend API
 ```bash
+# Backend (mock e-Rupee API + AI)
 cd backend
 pip install -r requirements.txt
+echo "ANTHROPIC_API_KEY=your_key" > .env
 uvicorn app.main:app --reload --port 8000
-# Open: http://localhost:8000/docs
+# → http://localhost:8000/docs
+
+# Smart contracts
+npm install && npx hardhat test
+
+# Demo (no backend needed)
+open docs/index.html
 ```
 
-### Smart Contracts
-```bash
-npm install
-npx hardhat compile
-npx hardhat test
+---
 
-# Deploy to Sepolia
-cp .env.example .env  # add your keys
-npx hardhat run scripts/deploy.js --network sepolia
-```
+## Regulatory Alignment
 
-### Tests
-```bash
-# Start API first, then:
-pytest tests/test_e2e.py -v
-```
+- **Payments Vision 2025** — implements RBI's stated CBDC cross-border goal
+- **e₹ Wholesale Pilot** — mirrors NDS-OM settlement architecture
+- **Project Dunbar / mBridge** — open-source equivalent of BIS CBDC bridge
+- **FEMA Compliance** — mandatory purpose codes + LRS cap enforcement
+- **AI AML** — Claude risk engine with FIU-IND integration pathway
 
-## What's Production-Ready vs PoC
+---
 
-| Component | PoC (current) | Production |
-|-----------|---------------|------------|
-| CBDC API | Mock FastAPI | RBI e₹ Developer Sandbox |
-| Settlement | Sepolia testnet | Permissioned DLT (Corda) |
-| FX rate | Hardcoded | Chainlink oracle |
-| Stablecoin | Mock ERC-20 | CBUAE digital dirham |
-| Relayer key | EOA wallet | HSM multi-sig |
-| KYC | Not implemented | CERSAI / VKYC integration |
+## Submission
 
-## Submission Details
-
-- **Showcase:** RBIH Bank-Fintech Showcase 2026
-- **Deadline:** June 5, 2026
-- **Apply:** https://rbih.org.in
-- **FinTech Repository:** https://rbi.org.in/Scripts/FinTechRepository.aspx
+- **RBIH Showcase:** https://rbih.org.in · **Deadline: June 5, 2026**
+- **RBI FinTech Repository:** https://fintech.rbi.org.in
 - **Contact:** github.com/Abhishekveda
 
 ---
 
-*Not affiliated with RBI or RBIH. e-Rupee APIs simulated for demonstration purposes. All demo transfers are fictitious.*
+*Not affiliated with RBI, RBIH, or Anthropic. PoC only — not for production use.*
