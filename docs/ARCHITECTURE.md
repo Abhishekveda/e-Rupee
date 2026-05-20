@@ -1,61 +1,143 @@
-# e₹ Bridge — Complete Architecture & Documentation
+# e₹ Bridge — Architecture & AI Agent Documentation
 
-**Version 2.0 — AI-Enhanced CBDC Cross-Border Payment Bridge**  
-RBIH Bank-Fintech Showcase 2026
+**Version 2.0 — Custom AI Agent · RBIH Bank-Fintech Showcase 2026**
 
----
-
-## What This Is
-
-e₹ Bridge is a proof-of-concept cross-border payment system built on India's e-Rupee CBDC infrastructure. It demonstrates how the existing RBI e₹-R (retail) pilot can be extended to settle international remittances — eliminating correspondent banks, reducing fees from 6.3% (SWIFT) to 0.2%, and settling in under 3 seconds instead of 2–3 business days.
-
-**Version 2.0 adds an AI intelligence layer** powered by Claude (Anthropic), making this the first CBDC bridge with embedded compliance AI.
+🌐 Live Demo: https://abhishekveda.github.io/E-Rupee
 
 ---
 
-## The Problem
+## What's New in v2.0: Custom AI Agent
 
-India receives **$100 billion+ in remittances annually** — the world's largest recipient. Yet:
+Version 2.0 replaces any third-party AI API with a **fully custom AI agent** built entirely in Python. It runs locally with zero external dependencies.
 
-- Average SWIFT fee: **6.3%** (World Bank 2024)
-- Average settlement time: **2–3 business days**
-- Total lost to fees: **~$6.3 billion per year**
-- Wrong FEMA codes trigger RBI compliance reviews, causing delays
-- Users don't understand LRS limits until they breach them
+### Why a custom agent instead of an API?
+
+| | Third-party AI API | e₹ Custom AI Agent |
+|-|--------------------|--------------------|
+| Dependency | External service | Zero — runs locally |
+| Explainability | Black box | Every decision has named rules |
+| RBI auditability | Cannot audit | Full source code in repo |
+| Cost | Per-call pricing | Free — stdlib only |
+| Offline use | No | Yes |
+| Customisable | Limited | Fully — edit knowledge_base.py |
 
 ---
 
-## The Solution — Four Layers
+## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  LAYER 1: SENDER                                                     │
-│  Indian diaspora user (Canada/UAE/SG) with e-Rupee retail wallet    │
-│  RBI e₹-R pilot — 60 lakh users, 17 banks, live since Dec 2022     │
-└──────────────────────┬──────────────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────────────┐
-│  LAYER 2: AI INTELLIGENCE (NEW in v2.0)                             │
-│  Claude (Anthropic claude-sonnet-4-20250514)                        │
-│  ├─ FEMA Code Intelligence: plain English → correct purpose code    │
-│  ├─ Transaction Risk Engine: fraud score before transfer executes   │
-│  └─ Market Q&A Assistant: regulatory guidance in plain language     │
-└──────────────────────┬──────────────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────────────┐
-│  LAYER 3: CBDC BRIDGE (this PoC)                                    │
-│  FastAPI backend simulating RBI e-Rupee API                         │
-│  ├─ Wallet debit (CBDC lock)                                        │
-│  ├─ FX oracle (Chainlink in production, hardcoded for PoC)          │
-│  ├─ CBDC tx hash generation                                         │
-│  └─ Ethereum bridge relay (CBDCBridge.sol on Sepolia)               │
-└──────────────────────┬──────────────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────────────┐
-│  LAYER 4: DESTINATION                                               │
-│  Recipient wallet receives mAED or mSGD (mock stablecoins)         │
-│  In production: CBUAE digital dirham / MAS Digital SGD             │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  LAYER 1: SENDER                                                             │
+│  Indian diaspora user with e-Rupee retail wallet (e₹-R)                    │
+└──────────────────────────┬──────────────────────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────────────────────┐
+│  LAYER 2: e₹ AI AGENT (custom — no external API)                           │
+│                                                                             │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │  ORCHESTRATOR  (orchestrator.py)                                     │  │
+│  │  Routes requests to sub-agents, manages session state               │  │
+│  └──────┬─────────────────────┬────────────────────┬────────────────────┘  │
+│         │                     │                    │                        │
+│  ┌──────▼──────┐   ┌──────────▼──────┐   ┌────────▼────────────────────┐  │
+│  │ FEMA AGENT  │   │  RISK AGENT     │   │  Q&A AGENT                  │  │
+│  │             │   │                 │   │                              │  │
+│  │ TF-IDF +    │   │ Rule-based +    │   │ RAG over RBI knowledge base  │  │
+│  │ keyword     │   │ statistical     │   │ 12 regulatory chunks         │  │
+│  │ matching    │   │ scoring (0-100) │   │ Optional: Groq Llama 3.1    │  │
+│  │             │   │ 8 named rules   │   │ (free tier)                  │  │
+│  └─────────────┘   └─────────────────┘   └──────────────────────────────┘  │
+│                                                                             │
+│  Knowledge base: FEMA codes + RBI circulars + LRS rules (knowledge_base.py)│
+└──────────────────────────┬──────────────────────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────────────────────┐
+│  LAYER 3: CBDC BRIDGE                                                       │
+│  FastAPI backend simulating RBI e-Rupee API                                 │
+│  Wallet debit → FX oracle → CBDC hash → Ethereum bridge relay              │
+└──────────────────────────┬──────────────────────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────────────────────┐
+│  LAYER 4: SETTLEMENT                                                        │
+│  CBDCBridge.sol on Ethereum Sepolia testnet                                 │
+│  mAED / mSGD stablecoins credited to recipient                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## AI Agent — Three Sub-Agents
+
+### Sub-Agent 1: FEMA Classification Agent (`fema_agent.py`)
+
+**What it does:** Classifies remittance purpose from plain English into the correct FEMA purpose code.
+
+**How it works (no external AI):**
+1. **Keyword matching** — each FEMA code has associated keywords; fast O(1) match
+2. **TF-IDF cosine similarity** — semantic matching against all 13 FEMA code descriptions
+3. **Confidence scoring** — HIGH (>0.55), MEDIUM (>0.25), LOW (<0.25)
+4. **Amount plausibility** — checks if amount is reasonable for the stated purpose
+
+**Example:**
+```
+Input:  "paying my daughter's MBA fees at a university in Dubai"
+Output: { code: "P0103", label: "Remittances for studies abroad",
+          confidence: "HIGH", score: 0.82,
+          explanation: "Keywords 'university', 'fees' triggered match" }
+```
+
+**Why this matters to RBI:** Wrong FEMA codes trigger compliance reviews. This agent reduces errors at source before funds move.
+
+---
+
+### Sub-Agent 2: Transaction Risk Scoring Agent (`risk_agent.py`)
+
+**What it does:** Scores every transfer 0–100 for fraud/compliance risk before execution.
+
+**8 named rules (fully transparent):**
+
+| Rule | Trigger | Points |
+|------|---------|--------|
+| `INVALID_ADDRESS` | Missing/malformed recipient | +15 |
+| `ADDRESS_FORMAT` | Not valid Ethereum address | +10 |
+| `LRS_LIMIT_EXCEEDED` | Amount > $250,000 equivalent | +30 |
+| `LRS_LIMIT_APPROACHING` | Amount > $200,000 equivalent | +15 |
+| `AMOUNT_EXCEEDS_PURPOSE_NORM` | 2x above typical for purpose | +15 |
+| `HIGH_SCRUTINY_PURPOSE` | Business/professional codes | +8 |
+| `HIGH_VELOCITY` | 3+ recent transfers | +12 |
+| `CUMULATIVE_LRS_EXCEEDED` | History + this > LRS limit | +20 |
+
+**Risk levels:**
+- **LOW (0–20):** Approve automatically
+- **MEDIUM (21–50):** Flag for review, allow with note
+- **HIGH (51–100):** Block pending manual review
+
+**Why this matters to RBI:** This is AI-native AML — every flag is auditable. The logic maps directly to RBI's risk-based supervision framework and FIU-IND reporting requirements.
+
+---
+
+### Sub-Agent 3: Regulatory Q&A Agent (`qa_agent.py`)
+
+**What it does:** Answers questions about FEMA, LRS, e-Rupee, and RBI regulations.
+
+**How it works:**
+1. **TF-IDF retrieval** — finds the most relevant passages from 12 RBI knowledge chunks
+2. **Answer generation:**
+   - Without Groq key: returns retrieved passage with source citation
+   - With Groq key (free tier): uses Llama 3.1 8B for natural language answer
+
+**Knowledge base covers:**
+- LRS annual limit and rules
+- All FEMA purpose codes and requirements
+- e-Rupee CBDC pilot details
+- RBI Payments Vision 2025
+- Regulatory Sandbox information
+- AML/KYC requirements
+
+**Optional Groq integration (free):**
+```bash
+# Get free key at: https://console.groq.com/keys
+echo "GROQ_API_KEY=gsk_..." >> .env
 ```
 
 ---
@@ -64,96 +146,30 @@ India receives **$100 billion+ in remittances annually** — the world's largest
 
 ```
 E-Rupee/
+├── docs/
+│   ├── index.html              # GitHub Pages showcase demo
+│   └── ARCHITECTURE.md         # This document
 │
-├── docs/                          GitHub Pages live demo
-│   ├── index.html                 Self-contained showcase UI (no backend needed)
-│   └── ARCHITECTURE.md            This document
-│
-├── backend/                       FastAPI CBDC + AI backend
+├── backend/
 │   ├── app/
-│   │   ├── main.py               API endpoints (CBDC + AI)
-│   │   └── ai_service.py         Claude AI integration layer
-│   └── requirements.txt          Python dependencies (includes anthropic SDK)
+│   │   ├── main.py             # FastAPI — CBDC + agent endpoints
+│   │   └── agent/
+│   │       ├── __init__.py
+│   │       ├── orchestrator.py # Routes to sub-agents
+│   │       ├── fema_agent.py   # FEMA classification (TF-IDF + keywords)
+│   │       ├── risk_agent.py   # Risk scoring (8 named rules)
+│   │       ├── qa_agent.py     # Q&A (RAG + optional Groq)
+│   │       └── knowledge_base.py # FEMA codes + RBI regulatory content
+│   └── requirements.txt        # Zero extra deps for agent (stdlib only)
 │
-├── contracts/                     Solidity smart contracts
-│   ├── CBDCBridge.sol            Main bridge contract
-│   └── MockStablecoin.sol        Test ERC-20 (mAED / mSGD)
+├── contracts/
+│   ├── CBDCBridge.sol          # Bridge contract
+│   └── MockStablecoin.sol      # Test ERC-20
 │
-├── scripts/
-│   └── deploy.js                 Hardhat deployment to Sepolia
-│
-├── test/
-│   └── CBDCBridge.test.js        Contract test suite (Hardhat)
-│
-├── tests/
-│   └── test_e2e.py               Python API integration tests
-│
-├── .github/workflows/
-│   ├── ci.yml                    CI: secret scan + tests + Slither
-│   └── deploy.yml                CD: manual-approval Sepolia deploy
-│
-├── SECURITY.md                   Responsible disclosure policy
-├── README.md                     Showcase submission brief
-└── ARCHITECTURE.md               This document
+├── scripts/deploy.js           # Hardhat → Sepolia
+├── test/CBDCBridge.test.js     # Contract tests
+└── tests/test_e2e.py           # API integration tests
 ```
-
----
-
-## AI Features — Deep Dive
-
-### Feature 1: FEMA Code Intelligence
-
-**The problem it solves:**  
-Most users sending money abroad don't know FEMA purpose codes. Selecting the wrong code (e.g., P0102 Family Maintenance when the actual purpose is P0103 Education Fees) triggers RBI compliance reviews, delays transfers, and can result in tax implications.
-
-**How it works:**  
-1. User types their purpose in plain English: *"paying my daughter's MBA fees at a university in Dubai"*
-2. `POST /v1/ai/suggest-purpose` sends this to Claude with a system prompt containing all valid FEMA codes and RBI guidance
-3. Claude returns: `{"code": "P0103", "label": "Education fees paid abroad", "confidence": "HIGH", "explanation": "...", "lrs_note": "..."}`
-4. The frontend auto-selects the correct dropdown option
-
-**Why this matters for RBI:**  
-Reduces FEMA compliance errors at source, improving data quality for the RBI's cross-border payment monitoring systems. In production, this integrates with the RBI's SWIFT gpi-equivalent data pipeline.
-
----
-
-### Feature 2: Pre-Transfer Risk Analysis
-
-**The problem it solves:**  
-Cross-border payment fraud is the fastest-growing financial crime segment. Banks currently rely on rule-based systems that either miss sophisticated fraud or create too many false positives. AI can identify nuanced patterns that rules cannot.
-
-**How it works:**  
-1. Before a transfer executes, `POST /v1/ai/risk-analysis` is called
-2. Claude receives: sender wallet ID, recipient address, amount, purpose code, destination country, sender's transfer history
-3. Claude analyses: amount vs purpose consistency, velocity patterns, LRS proximity, recipient address validity, time-of-day signals
-4. Returns: `{"risk_level": "LOW|MEDIUM|HIGH", "risk_score": 0-100, "recommendation": "APPROVE|REVIEW|BLOCK", "factors": [...], "compliance_checks": {...}}`
-
-**In production, this would also connect to:**  
-- CERSAI database (sanctioned entities list)
-- FIU-IND (Financial Intelligence Unit — suspicious transaction reports)
-- RBI's negative list for remittances
-- Chainlink-verified identity oracle
-
-**Why this matters for RBI:**  
-This is the architecture for an AI-native compliance layer — the kind regulators globally are looking for as they move beyond rule-based AML to risk-based supervision.
-
----
-
-### Feature 3: Conversational Market Intelligence
-
-**The problem it solves:**  
-Users making cross-border transfers have regulatory questions they can't easily answer: "How much have I sent this year?" "What does P0802 mean?" "Can I send money for this purpose?" Currently they have to read 40-page RBI circulars or call their bank.
-
-**How it works:**  
-1. `POST /v1/ai/chat` accepts a user message + session ID + optional current transfer context
-2. Claude has a system prompt with: current FX rates, all FEMA codes, LRS rules, RBI cross-border payment framework
-3. Conversation history is maintained per session (last 10 exchanges)
-4. Responses are contextually aware of the user's current transfer
-
-**Example exchanges:**  
-- *"Is ₹15 lakh too much to send for family maintenance?"* → Claude explains LRS limit, suggests splitting across financial years if needed
-- *"My transfer was flagged — what should I do?"* → Claude explains the review process and what documentation to prepare
-- *"What's the difference between e₹-W and e₹-R?"* → Claude explains wholesale vs retail CBDC with practical implications
 
 ---
 
@@ -163,117 +179,73 @@ Users making cross-border transfers have regulatory questions they can't easily 
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/` | Health check + feature list |
-| GET | `/v1/wallets/{id}` | Get wallet balance |
-| POST | `/v1/wallets/topup` | Add test funds |
-| POST | `/v1/fx/quote` | Get FX rate + fee breakdown |
-| POST | `/v1/erupee/transfer` | **Execute cross-border transfer** |
-| GET | `/v1/transactions/{id}` | Get transaction status |
-| GET | `/v1/transactions` | List transactions |
+| GET | `/` | Health check |
+| GET | `/v1/wallets/{id}` | Wallet balance |
+| POST | `/v1/fx/quote` | FX rate + fee breakdown |
+| POST | `/v1/erupee/transfer` | Execute transfer |
+| GET | `/v1/transactions/{id}` | Transaction status |
 
-### AI Endpoints
+### AI Agent Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/ai/suggest-purpose` | FEMA code from plain English |
-| POST | `/v1/ai/risk-analysis` | Risk score before transfer |
-| POST | `/v1/ai/chat` | Conversational Q&A |
-| POST | `/v1/ai/transfer-summary` | Plain-English audit summary |
+| Method | Endpoint | Agent Used |
+|--------|----------|-----------|
+| GET | `/v1/agent/status` | All agents — health check |
+| POST | `/v1/agent/classify-purpose` | FEMA Classification Agent |
+| POST | `/v1/agent/score-risk` | Risk Scoring Agent |
+| POST | `/v1/agent/ask` | Q&A Agent |
+| POST | `/v1/agent/pre-check` | FEMA + Risk (combined) |
 
 ---
 
 ## Running Locally
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Anthropic API key (for AI features)
-
-### Backend
 ```bash
 cd backend
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Set API key (for AI features)
-cp .env.example .env
-# Add: ANTHROPIC_API_KEY=your_key_here
-
-# Start server
 uvicorn app.main:app --reload --port 8000
-
-# Open interactive docs
-# http://localhost:8000/docs
+# → http://localhost:8000/docs
+# → http://localhost:8000/v1/agent/status
 ```
 
-### Smart Contracts
+**Test the agent directly:**
 ```bash
-npm install
-npx hardhat compile
-npx hardhat test
-npx hardhat run scripts/deploy.js --network sepolia  # needs .env
-```
+# FEMA classification
+curl -X POST http://localhost:8000/v1/agent/classify-purpose \
+  -H "Content-Type: application/json" \
+  -d '{"description": "paying university fees in Dubai", "amount_inr": 500000}'
 
-### Demo (no backend needed)
-```
-Open docs/index.html in any browser
-Everything works without a running server
-AI features run in demo mode (simulated responses)
+# Risk scoring
+curl -X POST http://localhost:8000/v1/agent/score-risk \
+  -H "Content-Type: application/json" \
+  -d '{"sender_wallet": "INDIA_USER_001", "recipient_address": "0xAbCdEf1234567890abcdef1234567890AbCdEf12", "amount_inr": 10000, "purpose_code": "P0103", "recipient_country": "UAE"}'
+
+# Ask a question
+curl -X POST http://localhost:8000/v1/agent/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is the LRS annual limit?", "session_id": "user-001"}'
 ```
 
 ---
 
-## What's PoC vs Production
+## Production Enhancements
 
-| Component | Current PoC | Production |
-|-----------|-------------|------------|
+| Component | PoC (now) | Production |
+|-----------|-----------|------------|
+| FEMA agent | TF-IDF + keywords | Fine-tuned BERT on 10K RBI examples |
+| Risk agent | 8 rule-based rules | + ML anomaly detection (Isolation Forest) |
+| Q&A agent | RAG retrieval | + live RBI circular feed via scraper |
+| Knowledge base | 12 static chunks | + auto-updated from rbi.org.in |
 | e-Rupee API | Mock FastAPI | RBI e₹ Developer Sandbox |
-| AI model | claude-sonnet-4-20250514 | Same, or fine-tuned for RBI regulations |
-| FX rate | Hardcoded constants | Chainlink INR/AED price feed |
-| Stablecoin | MockStablecoin ERC-20 | CBUAE digital dirham / MAS Digital SGD |
-| Settlement | Sepolia testnet | RBI-specified permissioned DLT (Corda/Fabric) |
-| Relayer key | Development EOA | HSM-backed multi-sig (Gnosis Safe) |
-| KYC | Not implemented | CERSAI / VKYC integration |
-| AI data | System prompt only | Live RBI regulation feed + CERSAI integration |
-| Risk model | Claude zero-shot | Claude fine-tuned on RBI suspicious transaction patterns |
-
----
-
-## Regulatory Alignment
-
-| RBI Policy | How e₹ Bridge Implements It |
-|------------|---------------------------|
-| Payments Vision 2025 | Cross-border CBDC settlement — directly stated goal |
-| e₹ Wholesale Pilot | Bridge relay mirrors NDS-OM settlement mechanism |
-| Project Dunbar / mBridge | Open-source CBDC-to-CBDC bridge concept |
-| FEMA compliance | Mandatory purpose code on every transfer |
-| LRS enforcement | API architecture supports $250,000 annual cap |
-| AML/CFT | AI risk engine + FIU-IND integration pathway |
-
----
-
-## Security
-
-See `SECURITY.md` for responsible disclosure policy.
-
-**Key security notes for PoC:**
-- Never commit `.env` (blocked by `.gitignore`)
-- `deployed-addresses.json` is gitignored (contains live contract addresses)
-- CI pipeline runs TruffleHog secret scanning on every push
-- Slither static analysis on every Solidity change
-- Deploy workflow has manual approval gate
+| Settlement | Sepolia testnet | Permissioned DLT (Corda/Fabric) |
+| Groq (optional) | Llama 3.1 8B | Self-hosted Llama on RBI-compliant infra |
 
 ---
 
 ## Contact & Submission
 
-- **GitHub:** github.com/Abhishekveda/E-Rupee
-- **Live Demo:** abhishekveda.github.io/E-Rupee
-- **RBIH Showcase:** rbihub.in
-- **RBI FinTech Repository:** fintech.rbi.org.in
-- **Deadline:** June 5, 2026
+- GitHub: github.com/Abhishekveda/E-Rupee
+- Live Demo: abhishekveda.github.io/E-Rupee
+- RBIH Showcase: rbih.org.in · **Deadline: June 5, 2026**
+- RBI FinTech Repository: fintech.rbi.org.in
 
----
-
-*Not affiliated with RBI, RBIH, or Anthropic. e-Rupee APIs simulated. All demo transfers fictitious.*
+*Not affiliated with RBI or RBIH. PoC only.*

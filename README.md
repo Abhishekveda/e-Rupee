@@ -1,4 +1,4 @@
-# e₹ Bridge — AI-Powered CBDC Cross-Border Payment Bridge
+# e₹ Bridge — Custom AI Agent + CBDC Cross-Border Payments
 
 **RBIH Bank-Fintech Showcase 2026** · Abhishek Veda · Toronto, Canada 🇨🇦
 
@@ -7,23 +7,27 @@
 
 ---
 
-## What's new in v2.0 — AI Layer
+## Custom AI Agent (v2.0) — No External API
 
-Version 2.0 adds Claude AI directly into the payment compliance workflow:
+Version 2.0 replaces any third-party AI dependency with a **fully custom AI agent** built in pure Python. Zero paid API calls. Runs 100% locally.
 
-| AI Feature | What it does | Why it matters |
-|------------|-------------|----------------|
-| **FEMA Code Intelligence** | User types plain English → Claude selects correct FEMA code | Eliminates compliance errors at source |
-| **Pre-Transfer Risk Engine** | Claude scores fraud risk before every transfer | AI-native AML — not bolt-on rule engine |
-| **Regulatory Q&A** | Conversational assistant for LRS, FEMA, remittance rules | Reduces compliance burden for diaspora users |
+| Agent | Method | Purpose |
+|-------|--------|---------|
+| **FEMA Classification Agent** | TF-IDF + keyword matching | Plain English → correct FEMA code |
+| **Risk Scoring Agent** | 8 named rule-based rules | Fraud/compliance score 0–100 |
+| **Regulatory Q&A Agent** | RAG over RBI knowledge base | FEMA, LRS, e-Rupee questions |
+
+**Why custom?**
+- Fully explainable — every decision has a named rule
+- RBI can audit the exact logic
+- Zero external dependency — runs offline
+- Trainable — add more RBI circulars to `knowledge_base.py`
 
 ---
 
 ## The Problem
 
-India receives **$100B+ in remittances annually**. The average SWIFT fee is **6.3%** — $6.3 billion lost every year. Settlement takes 2–3 business days.
-
-India's e-Rupee CBDC is already live with **60 lakh users across 17 banks**. This PoC shows how to build cross-border settlement on top of it.
+India receives **$100B+ annually** in remittances — the world's largest. Average SWIFT fee: **6.3%**. Settlement: **2–3 days**. $6.3 billion lost to fees every year.
 
 ## The Numbers
 
@@ -31,7 +35,7 @@ India's e-Rupee CBDC is already live with **60 lakh users across 17 banks**. Thi
 |-|-------|------|--------------|
 | Fee | 6.3% | 2.1% | **0.2%** |
 | Speed | 2–3 days | ~1 day | **< 3 seconds** |
-| AI compliance | None | Basic | **Claude AI** |
+| AI compliance | None | Basic | **Custom Agent** |
 | Cost on ₹10,000 | ₹630 | ₹210 | **₹20** |
 
 ---
@@ -39,49 +43,43 @@ India's e-Rupee CBDC is already live with **60 lakh users across 17 banks**. Thi
 ## Architecture
 
 ```
-🇮🇳 e-Rupee Wallet → ✦ Claude AI → ⛓ CBDC Bridge → Ethereum Contract → 🇦🇪 Recipient
-   (RBI e₹-R)         (Compliance)    (FastAPI)        (CBDCBridge.sol)    (AED/SGD)
+Sender → e₹ AI Agent (FEMA + Risk + Q&A) → CBDC Bridge → Ethereum → Recipient
+          (pure Python, no external API)     (FastAPI)     (Solidity)
 ```
 
-**Full docs:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Full docs: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ---
 
 ## Quick Start
 
 ```bash
-# Backend (mock e-Rupee API + AI)
 cd backend
-pip install -r requirements.txt
-echo "ANTHROPIC_API_KEY=your_key" > .env
+pip install -r requirements.txt          # zero extra deps for agent
 uvicorn app.main:app --reload --port 8000
-# → http://localhost:8000/docs
 
-# Smart contracts
-npm install && npx hardhat test
+# Test the AI agent
+curl -X POST localhost:8000/v1/agent/classify-purpose \
+  -d '{"description": "university fees in Dubai", "amount_inr": 500000}'
 
-# Demo (no backend needed)
-open docs/index.html
+curl -X GET localhost:8000/v1/agent/status
+
+# Optional: Groq free-tier LLM for enhanced Q&A
+# Get key at console.groq.com/keys
+echo "GROQ_API_KEY=gsk_..." >> .env
 ```
 
 ---
 
 ## Regulatory Alignment
 
-- **Payments Vision 2025** — implements RBI's stated CBDC cross-border goal
+- **Payments Vision 2025** — implements RBI's CBDC cross-border settlement goal
 - **e₹ Wholesale Pilot** — mirrors NDS-OM settlement architecture
-- **Project Dunbar / mBridge** — open-source equivalent of BIS CBDC bridge
-- **FEMA Compliance** — mandatory purpose codes + LRS cap enforcement
-- **AI AML** — Claude risk engine with FIU-IND integration pathway
+- **FEMA Compliance** — mandatory purpose codes + LRS enforcement
+- **AI AML** — transparent risk engine with FIU-IND integration pathway
 
 ---
 
-## Submission
+**RBIH Showcase:** rbih.org.in · **Deadline: June 5, 2026**
 
-- **RBIH Showcase:** https://rbih.org.in · **Deadline: June 5, 2026**
-- **RBI FinTech Repository:** https://fintech.rbi.org.in
-- **Contact:** github.com/Abhishekveda
-
----
-
-*Not affiliated with RBI, RBIH, or Anthropic. PoC only — not for production use.*
+*PoC only — not affiliated with RBI or RBIH.*
