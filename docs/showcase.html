@@ -3,659 +3,590 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>e₹ Bridge — Global CBDC Showcase</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>e₹ Bridge — RBIH Showcase 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#060D1A; --ink2:#0B1829; --ink3:#132240;
-  --gold:#F5A623; --gold2:#FFD166; --gold3:#FFF3D0;
-  --green:#06B86B; --green2:#D4F8EA;
-  --red:#E5383B; --blue:#3B82F6; --purple:#8B5CF6;
-  --muted:#8090A8; --border:rgba(255,255,255,.07);
-  --white:#fff;
-  --syne:'Syne',sans-serif;
-  --mono:'JetBrains Mono',monospace;
-  --body:'Inter',sans-serif;
+  --ink:#060D1A;--ink2:#0B1829;--ink3:#132240;
+  --gold:#F5A623;--g2:#FFD166;--g3:#FFF3D0;
+  --green:#06B86B;--gr2:#D4F8EA;
+  --red:#E5383B;--blue:#3B82F6;--purple:#8B5CF6;
+  --muted:#8090A8;--border:rgba(255,255,255,.07);
+  --syne:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;--body:'Inter',sans-serif;
 }
-html,body{height:100%;overflow:hidden;background:var(--ink);font-family:var(--body);color:var(--white)}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{font-family:var(--body);color:#fff;overflow-x:hidden}
 
-/* ── SLIDES CONTAINER ── */
-#slides{
-  height:100vh;
-  overflow-y:scroll;
-  overflow-x:hidden;
-  scroll-snap-type:y mandatory;
-  scroll-behavior:smooth;
+/* ─── SCENE SYSTEM ─── */
+.scene{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:70px 40px;
+  position:relative;overflow:hidden;
 }
-#slides::-webkit-scrollbar{display:none}
+.scene+.scene{border-top:1px solid rgba(255,255,255,.05)}
 
-.slide{
-  height:100vh;
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:48px 40px;
-  position:relative;
-  overflow:hidden;
-}
-/* Grid bg */
-.slide::before{
-  content:'';
-  position:absolute;inset:0;
+/* grid texture */
+.scene::before{
+  content:'';position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(245,166,35,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245,166,35,.03) 1px, transparent 1px);
-  background-size:64px 64px;
-  pointer-events:none;
+    linear-gradient(rgba(245,166,35,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(245,166,35,.025) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none;
 }
 
-/* ── PROGRESS BAR ── */
-#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:999;transition:width .3s ease;pointer-events:none}
+/* ─── PROGRESS ─── */
+#bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--g2));z-index:999;transition:width .2s;pointer-events:none;width:0}
 
-/* ── NAV DOTS ── */
-#nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:999}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .25s;border:none}
-.dot.on{background:var(--gold);transform:scale(1.4)}
+/* ─── SCROLL ANIMATIONS ─── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+.delay1{transition-delay:.1s}.delay2{transition-delay:.2s}.delay3{transition-delay:.3s}
+.delay4{transition-delay:.4s}.delay5{transition-delay:.5s}.delay6{transition-delay:.6s}
 
-/* ── COUNTER ── */
-#counter{position:fixed;bottom:20px;right:20px;font-family:var(--mono);font-size:11px;color:var(--muted);z-index:999;letter-spacing:.08em}
-
-/* ── TYPOGRAPHY ── */
-.tag{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.tag::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.5;flex-shrink:0}
-h1{font-family:var(--syne);font-size:clamp(40px,6.5vw,84px);font-weight:800;line-height:.95;letter-spacing:-.03em;margin-bottom:18px}
-h2{font-family:var(--syne);font-size:clamp(26px,3.8vw,50px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
-.sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.75;font-weight:300}
+/* ─── TYPOGRAPHY ─── */
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.tag::before{content:'';width:22px;height:1px;background:var(--gold);opacity:.5;flex-shrink:0}
+h1{font-family:var(--syne);font-size:clamp(52px,8vw,100px);font-weight:800;line-height:.92;letter-spacing:-.03em;margin-bottom:20px}
+h2{font-family:var(--syne);font-size:clamp(30px,4.5vw,58px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:14px}
+.lead{font-size:17px;color:rgba(255,255,255,.5);line-height:1.75;font-weight:300;max-width:540px}
 .gold{color:var(--gold)}
-.green{color:var(--green)}
-.dim{color:rgba(255,255,255,.18);text-decoration:line-through;font-weight:400}
+.gr{color:var(--green)}
+.dim{color:rgba(255,255,255,.15);text-decoration:line-through;font-weight:400}
+.mono{font-family:var(--mono)}
 
-/* ── PILLS ── */
+/* ─── PILLS ─── */
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
-.pill{font-family:var(--mono);font-size:10px;padding:5px 13px;border-radius:20px;border:1px solid;font-weight:600;letter-spacing:.04em}
-.pg{color:var(--gold);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07)}
-.pr{color:var(--green);border-color:rgba(6,184,107,.3);background:rgba(6,184,107,.07)}
-.pb{color:#93C5FD;border-color:rgba(147,197,253,.25);background:rgba(147,197,253,.06)}
-.pp{color:#C4B5FD;border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.06)}
+.pill{font-family:var(--mono);font-size:10px;padding:5px 14px;border-radius:20px;border:1px solid;font-weight:600;letter-spacing:.04em}
+.p1{color:var(--gold);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07)}
+.p2{color:var(--green);border-color:rgba(6,184,107,.3);background:rgba(6,184,107,.07)}
+.p3{color:#93C5FD;border-color:rgba(147,197,253,.25);background:rgba(147,197,253,.05)}
 
-/* ── SLIDE 1 ── */
-.s1-logo{width:72px;height:72px;background:var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:26px;color:var(--ink);margin:0 auto 24px;box-shadow:0 0 40px rgba(245,166,35,.3)}
-.scroll-hint{font-family:var(--mono);font-size:10px;color:var(--muted);display:flex;align-items:center;gap:6px;justify-content:center;margin-top:28px;animation:bounce 2s infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+/* ═══════════════════════════════════════════
+   SCENE 1 — TITLE
+═══════════════════════════════════════════ */
+.s1-logo{width:80px;height:80px;background:var(--gold);border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:30px;color:var(--ink);margin:0 auto 28px;box-shadow:0 0 48px rgba(245,166,35,.3);animation:popIn .5s .1s both}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.s1-flags{display:flex;align-items:center;justify-content:center;gap:8px;font-size:28px;margin:24px 0 8px}
+.s1-flags .arr{font-size:16px;color:rgba(255,255,255,.25);font-weight:700}
+.s1-hint{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:36px;cursor:pointer;opacity:.5;transition:opacity .2s}
+.s1-hint:hover{opacity:.9}
+.hint-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:drop 2s infinite}
+@keyframes drop{0%{transform:translateY(0);opacity:1}70%{transform:translateY(10px);opacity:.3}100%{transform:translateY(0);opacity:1}}
+.hint-text{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
 
-/* ── SLIDE 2: PROBLEM ── */
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:960px;width:100%}
-.stat-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px 18px;text-align:center}
-.stat-card::before{content:'';display:block;height:2px;border-radius:1px;margin-bottom:16px;background:var(--red)}
-.sc-val{font-family:var(--mono);font-size:34px;font-weight:700;color:var(--red);margin-bottom:5px}
-.sc-lbl{font-size:11px;color:var(--muted);line-height:1.5}
-.quote-box{max-width:860px;width:100%;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.18);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:18px 24px;margin-top:16px}
-.qb-text{font-size:14px;font-style:italic;color:rgba(255,255,255,.75);margin-bottom:6px;line-height:1.6}
-.qb-attr{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.08em}
+/* ═══════════════════════════════════════════
+   SCENE 2 — PROBLEM
+═══════════════════════════════════════════ */
+.big4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;max-width:960px;margin:24px 0}
+.b4{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:24px 18px;text-align:center;position:relative;overflow:hidden}
+.b4::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top left,rgba(229,56,59,.1),transparent 60%)}
+.b4-v{font-family:var(--mono);font-size:36px;font-weight:700;color:var(--red);margin-bottom:6px;line-height:1}
+.b4-l{font-size:12px;color:var(--muted);line-height:1.5}
+.quote{width:100%;max-width:860px;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.18);border-left:3px solid var(--gold);padding:18px 24px;border-radius:0 10px 10px 0;margin-top:16px}
+.q-text{font-size:15px;font-style:italic;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:7px}
+.q-attr{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.08em}
 
-/* ── SLIDE 3: RUSSIA + CHINA ── */
-.rc-hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:960px;width:100%;margin:20px 0}
-.rc-card{border-radius:14px;padding:24px;position:relative;overflow:hidden}
-.rc-card.russia{background:linear-gradient(135deg,rgba(229,56,59,.12) 0%,rgba(11,24,41,.95) 100%);border:1px solid rgba(229,56,59,.3)}
-.rc-card.china{background:linear-gradient(135deg,rgba(229,56,59,.15) 0%,rgba(11,24,41,.95) 100%);border:1px solid rgba(229,56,59,.25)}
-.rc-flag{font-size:40px;margin-bottom:10px;display:block}
-.rc-title{font-family:var(--syne);font-size:20px;font-weight:800;margin-bottom:8px}
-.rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
-.rcs{background:rgba(0,0,0,.2);border-radius:8px;padding:10px}
-.rcs-v{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--gold)}
-.rcs-l{font-size:10px;color:var(--muted);margin-top:2px}
-.rc-status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600}
-.live-badge{background:rgba(6,184,107,.15);color:var(--green);border:1px solid rgba(6,184,107,.3)}
-.live-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.rc-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin-top:10px}
-.other-brics{display:flex;flex-wrap:wrap;gap:8px;max-width:960px;width:100%;margin-top:12px}
-.bc{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);color:rgba(255,255,255,.55);font-family:var(--mono)}
+/* ═══════════════════════════════════════════
+   SCENE 3 — RUSSIA + CHINA
+═══════════════════════════════════════════ */
+.rc2{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:960px;margin:22px 0}
+.rc{border-radius:16px;padding:26px;position:relative;overflow:hidden;border:1px solid rgba(229,56,59,.25);background:linear-gradient(135deg,rgba(229,56,59,.1) 0%,rgba(11,24,41,.97) 100%)}
+.rc-flag{font-size:42px;margin-bottom:10px;display:block}
+.rc-name{font-family:var(--syne);font-size:22px;font-weight:800;margin-bottom:8px}
+.live-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600;background:rgba(6,184,107,.12);color:var(--green);border:1px solid rgba(6,184,107,.3)}
+.live-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.soon-tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600;background:rgba(245,166,35,.1);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
+.rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.rcs{background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px}
+.rcs-v{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--gold);margin-bottom:2px}
+.rcs-l{font-size:10px;color:var(--muted);line-height:1.4}
+.rc-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.65;margin-top:8px}
+.brics-bar{width:100%;max-width:960px;display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.bc{font-size:10px;padding:4px 11px;border-radius:20px;font-family:var(--mono);font-weight:600;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5)}
 .bc.live{border-color:rgba(6,184,107,.3);background:rgba(6,184,107,.07);color:var(--green)}
 
-/* ── SLIDE 4: AI AGENTS ── */
-.agents5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;max-width:1100px;width:100%}
-.ag{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px 14px;position:relative;overflow:hidden;cursor:default;transition:transform .2s,background .2s}
-.ag:hover{background:rgba(255,255,255,.06);transform:translateY(-4px)}
-.ag::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.ag:nth-child(1)::after{background:var(--gold)}
-.ag:nth-child(2)::after{background:var(--red)}
-.ag:nth-child(3)::after{background:var(--purple)}
-.ag:nth-child(4)::after{background:var(--green)}
-.ag:nth-child(5)::after{background:var(--blue)}
+/* ═══════════════════════════════════════════
+   SCENE 4 — 5 AI AGENTS
+═══════════════════════════════════════════ */
+.agents{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;width:100%;max-width:1100px;margin:26px 0}
+.ag{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:20px 15px;position:relative;overflow:hidden;transition:transform .2s,background .2s;cursor:default}
+.ag:hover{background:rgba(255,255,255,.055);transform:translateY(-4px)}
+.ag::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.ag:nth-child(1)::before{background:var(--gold)}
+.ag:nth-child(2)::before{background:var(--red)}
+.ag:nth-child(3)::before{background:var(--purple)}
+.ag:nth-child(4)::before{background:var(--green)}
+.ag:nth-child(5)::before{background:var(--blue)}
 .ag-n{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;margin-bottom:10px}
-.ag-ico{font-size:24px;margin-bottom:10px;display:block}
-.ag-t{font-family:var(--syne);font-size:13px;font-weight:700;margin-bottom:6px}
-.ag-d{font-size:11px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:10px}
-.ag-tech{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600;display:inline-block;margin-bottom:4px}
+.ag-ic{font-size:26px;margin-bottom:10px;display:block}
+.ag-title{font-family:var(--syne);font-size:14px;font-weight:700;margin-bottom:6px}
+.ag-desc{font-size:11px;color:rgba(255,255,255,.38);line-height:1.6;margin-bottom:10px}
+.ag-tag{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:10px;font-weight:600;display:inline-block}
 .at1{background:rgba(245,166,35,.12);color:var(--gold)}
 .at2{background:rgba(229,56,59,.12);color:#F87171}
 .at3{background:rgba(139,92,246,.12);color:#C4B5FD}
 .at4{background:rgba(6,184,107,.12);color:var(--green)}
 .at5{background:rgba(59,130,246,.12);color:#93C5FD}
-.ag-noapi{font-family:var(--mono);font-size:9px;color:var(--green);display:flex;align-items:center;gap:3px;margin-top:4px}
-.ag-noapi::before{content:'✓';font-weight:700}
+.ag-check{font-family:var(--mono);font-size:9px;color:var(--green);margin-top:6px}
+.ag-check::before{content:'✓  '}
 
-/* ── SLIDE 5: SECURITY ── */
-.sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:960px;width:100%}
-.sec-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px;border-left:3px solid var(--green)}
-.sec-card.warn{border-left-color:var(--gold)}
-.sc2-icon{font-size:22px;margin-bottom:10px;display:block}
-.sc2-title{font-size:14px;font-weight:600;margin-bottom:6px}
-.sc2-body{font-size:12px;color:rgba(255,255,255,.45);line-height:1.65}
-.sec-list{display:flex;flex-direction:column;gap:7px;margin-top:12px}
-.sl-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,.55)}
-.sl-item::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;font-family:var(--mono)}
+/* AI benefit strip */
+.ai-benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:1100px;margin-top:16px}
+.aib{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:5px}
+.aib-icon{font-size:20px}
+.aib-title{font-size:12px;font-weight:600;color:rgba(255,255,255,.8)}
+.aib-desc{font-size:11px;color:var(--muted);line-height:1.5}
 
-/* ── SLIDE 6: DEMO ── */
-.demo-layout{display:grid;grid-template-columns:1fr 360px;gap:36px;max-width:920px;width:100%;align-items:start}
-.flow-track{display:flex;flex-direction:column;gap:0}
-.ft{display:flex;gap:12px;align-items:flex-start}
-.ft-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.ft-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted);background:transparent;transition:all .25s;flex-shrink:0}
-.ft-dot.active{border-color:var(--gold);color:var(--gold);background:rgba(245,166,35,.1)}
-.ft-dot.done{border-color:var(--green);background:var(--green);color:var(--white)}
-.ft-line{width:1.5px;height:26px;background:rgba(255,255,255,.08);margin:0 auto;transition:background .25s}
-.ft-line.done{background:var(--green)}
-.ft-body{padding-top:4px;padding-bottom:20px;flex:1;min-width:0}
-.ft-label{font-size:13px;font-weight:500}
-.ft-label .ai{font-family:var(--mono);font-size:9px;background:rgba(245,166,35,.15);color:var(--gold);padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;font-weight:700}
-.ft-detail{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;word-break:break-all;line-height:1.55}
-.demo-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:12px 22px;font-family:var(--syne);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;width:100%;margin-top:8px}
-.demo-btn:hover{background:var(--gold2);transform:translateY(-1px)}
-.demo-btn:disabled{background:rgba(245,166,35,.2);color:var(--gold);cursor:not-allowed;transform:none}
-.receipt{background:rgba(6,184,107,.04);border:1px solid rgba(6,184,107,.18);border-radius:12px;padding:16px;display:none}
-.receipt.show{display:block}
-.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.rh-t{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.rh-b{font-family:var(--mono);font-size:9px;background:rgba(6,184,107,.15);color:var(--green);padding:3px 8px;border-radius:3px;font-weight:700}
-.rr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+/* ═══════════════════════════════════════════
+   SCENE 5 — LIVE DEMO
+═══════════════════════════════════════════ */
+.demo-grid{display:grid;grid-template-columns:1fr 380px;gap:44px;width:100%;max-width:940px;align-items:start}
+.flow{display:flex;flex-direction:column;gap:0}
+.fi{display:flex;gap:12px;align-items:flex-start}
+.fi-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.fi-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted);background:transparent;transition:all .25s;flex-shrink:0}
+.fi-dot.active{border-color:var(--gold);color:var(--gold);background:rgba(245,166,35,.1)}
+.fi-dot.done{border-color:var(--green);background:var(--green);color:#fff}
+.fi-line{width:1.5px;height:26px;background:rgba(255,255,255,.07);margin:0 auto;transition:background .25s}
+.fi-line.done{background:var(--green)}
+.fi-body{padding:3px 0 20px;flex:1;min-width:0}
+.fi-label{font-size:13px;font-weight:500}
+.fi-ai{font-family:var(--mono);font-size:9px;background:rgba(245,166,35,.14);color:var(--gold);padding:1px 5px;border-radius:3px;margin-left:5px;font-weight:700;vertical-align:middle}
+.fi-detail{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;word-break:break-all;line-height:1.5}
+.run-btn{width:100%;background:var(--gold);color:var(--ink);border:none;border-radius:9px;padding:13px;font-family:var(--syne);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.run-btn:hover{background:var(--g2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,166,35,.25)}
+.run-btn:disabled{background:rgba(245,166,35,.2);color:var(--gold);cursor:not-allowed;transform:none;box-shadow:none}
+.receipt{background:rgba(6,184,107,.04);border:1px solid rgba(6,184,107,.18);border-radius:13px;overflow:hidden;display:none}
+.receipt.show{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.rhead{background:rgba(6,184,107,.08);padding:13px 17px;display:flex;align-items:center;justify-content:space-between}
+.rh-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.rh-badge{font-family:var(--mono);font-size:9px;background:rgba(6,184,107,.2);color:var(--green);padding:3px 8px;border-radius:3px;font-weight:700}
+.rbody{padding:14px 17px}
+.rr{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;gap:12px}
 .rr:last-child{border:none}
-.rl{color:var(--muted)}
-.rv{font-family:var(--mono);color:var(--white)}
-.rv.g{color:var(--gold);font-size:13px;font-weight:600;font-family:var(--body)}
-.rv.gr{color:var(--green);font-size:13px;font-weight:600;font-family:var(--body)}
+.rl{color:var(--muted);flex-shrink:0}
+.rv{font-family:var(--mono);color:#fff;text-align:right;word-break:break-all;max-width:200px}
+.rv.gold{color:var(--gold);font-size:14px;font-weight:600;font-family:var(--body)}
+.rv.green{color:var(--green);font-size:14px;font-weight:600;font-family:var(--body)}
 
-/* ── SLIDE 7: IMPACT ── */
-.impact3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;width:100%}
-.ic{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:26px;text-align:center}
-.ic.win{border-color:rgba(6,184,107,.3);background:rgba(6,184,107,.04)}
-.ic-v{font-family:var(--syne);font-size:42px;font-weight:800;margin-bottom:5px}
-.ic-v.r{color:var(--red)}.ic-v.go{color:var(--gold)}.ic-v.g{color:var(--green)}
-.ic-l{font-size:12px;color:var(--muted);margin-bottom:6px}
-.ic-sub{font-size:11px;color:rgba(255,255,255,.3)}
-.bar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-top:14px}
-.bar-f{height:100%;border-radius:3px;width:0;transition:width 1.4s .3s ease}
-.bf-r{background:var(--red)}.bf-go{background:var(--gold)}.bf-g{background:var(--green)}
-.mini4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:900px;width:100%;margin-top:14px}
-.mini{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
-.mini-v{font-family:var(--mono);font-size:20px;font-weight:600;margin-bottom:3px}
-.mini-l{font-size:10px;color:var(--muted)}
+/* ═══════════════════════════════════════════
+   SCENE 6 — COMPARISON
+═══════════════════════════════════════════ */
+.comp3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:900px;margin:26px 0}
+.cp{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:28px 22px;text-align:center}
+.cp.win{border-color:rgba(6,184,107,.3);background:rgba(6,184,107,.04)}
+.cp-method{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:14px;letter-spacing:.06em}
+.cp-fee{font-family:var(--syne);font-size:48px;font-weight:800;margin-bottom:5px;line-height:1}
+.cp-fee.r{color:var(--red)}.cp-fee.a{color:var(--gold)}.cp-fee.g{color:var(--green)}
+.cp-speed{font-size:14px;color:rgba(255,255,255,.4);margin-bottom:10px}
+.cp-cost{font-family:var(--mono);font-size:16px;font-weight:600;margin-bottom:4px}
+.bar-bg{width:100%;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-top:14px}
+.bar-f{height:100%;border-radius:3px;width:0;transition:width 1.4s .4s ease}
+.bf-r{background:var(--red)}.bf-a{background:var(--gold)}.bf-g{background:var(--green)}
+.stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:900px;margin-top:14px}
+.s4{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.s4-v{font-family:var(--mono);font-size:20px;font-weight:600;margin-bottom:3px}
+.s4-l{font-size:10px;color:var(--muted)}
 
-/* ── SLIDE 8: CTA ── */
-.cta-logo{width:76px;height:76px;background:var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:28px;color:var(--ink);margin:0 auto 22px;box-shadow:0 0 40px rgba(245,166,35,.25)}
-.cta3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;width:100%;margin:28px 0}
-.cta-c{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
-.cta-l{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
-.cta-v{font-family:var(--mono);font-size:11px;color:var(--white)}
-.deadline{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.deadline span{color:var(--gold)}
+/* ═══════════════════════════════════════════
+   SCENE 7 — CTA
+═══════════════════════════════════════════ */
+.cta-logo{width:80px;height:80px;background:var(--gold);border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:30px;color:var(--ink);margin:0 auto 24px;box-shadow:0 0 48px rgba(245,166,35,.25);animation:popIn .5s .1s both}
+.cta3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:700px;margin:28px 0}
+.cl{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px}
+.cl-l{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.cl-v{font-family:var(--mono);font-size:11px;color:#fff}
+.dl{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px}
+.dl span{color:var(--gold)}
 
-@media(max-width:800px){
-  .grid4,.rc-hero,.sec-grid,.demo-layout,.impact3,.mini4,.cta3{grid-template-columns:1fr}
-  .agents5{grid-template-columns:1fr 1fr}
-  .slide{padding:32px 20px}
-  h1{font-size:36px}
-  h2{font-size:26px}
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .big4,.rc2,.agents,.ai-benefits,.demo-grid,.comp3,.stat4,.cta3{grid-template-columns:1fr}
+  .scene{padding:60px 20px}
+  h1{font-size:42px}
+  h2{font-size:28px}
 }
 </style>
 </head>
 <body>
 
-<div id="progress"></div>
-<nav id="nav"></nav>
-<div id="counter">1 / 8</div>
+<div id="bar"></div>
 
-<div id="slides">
-
-<!-- ══════════════ SLIDE 1 — TITLE ══════════════ -->
-<section class="slide" id="s1" style="background:var(--ink)">
+<!-- ════════════════════════════════════
+     SCENE 1 — TITLE
+════════════════════════════════════ -->
+<section class="scene" id="s1" style="background:var(--ink)">
   <div style="text-align:center;max-width:860px;z-index:1">
     <div class="s1-logo">e₹</div>
-    <div class="tag" style="justify-content:center">RBIH Bank-Fintech Showcase 2026 · India Chairs BRICS</div>
-    <h1><span class="dim">SWIFT.</span><br/><span class="gold">e₹ Bridge.</span></h1>
-    <p class="sub" style="max-width:540px;margin:0 auto">India's e-Rupee as a global bridge currency. A 5-agent AI system you own completely. The infrastructure BRICS needs — built and open-source.</p>
-    <div class="pills" style="justify-content:center">
-      <span class="pill pg">e-Rupee CBDC</span>
-      <span class="pill pr">5 Custom AI Agents</span>
-      <span class="pill pb">Russia · China · UAE + 8 more</span>
-      <span class="pill pg">0.2% vs 6.3% SWIFT</span>
-      <span class="pill pp">Dollar-Free Settlement</span>
+    <div class="tag reveal" style="justify-content:center">RBIH Bank-Fintech Showcase 2026 · India Chairs BRICS</div>
+    <h1 class="reveal delay1">
+      Kill the<br/>
+      <span class="dim">6.3% SWIFT fee.</span><br/>
+      Pay <span class="gold">0.2%</span> instead.
+    </h1>
+    <p class="lead reveal delay2" style="margin:0 auto 18px">
+      India's e-Rupee as a global bridge currency. Russia, China, and 20+ countries settling in INR — without the dollar. A 5-agent AI system you own completely.
+    </p>
+    <div class="pills reveal delay3" style="justify-content:center">
+      <span class="pill p1">e-Rupee CBDC</span>
+      <span class="pill p2">Russia · China · UAE + 9 more</span>
+      <span class="pill p3">5 Custom AI Agents</span>
+      <span class="pill p1">RBI SRVA Framework</span>
+      <span class="pill p2">Open Source · Your Code</span>
     </div>
-    <div class="scroll-hint">↓ &nbsp; scroll to explore &nbsp; ↓</div>
+    <div class="s1-flags reveal delay4">
+      🇨🇦 <span class="arr">→</span> 🇮🇳 <span class="arr">→</span> 🇦🇪 &nbsp;·&nbsp; 🇷🇺 <span class="arr">→</span> 🇮🇳 <span class="arr">→</span> 🇧🇷 &nbsp;·&nbsp; 🇨🇳 <span class="arr">⇄</span> 🇮🇳
+    </div>
+    <div class="s1-hint reveal delay5" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">
+      <div class="hint-dot"></div>
+      <div class="hint-text">scroll to explore</div>
+    </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 2 — PROBLEM ══════════════ -->
-<section class="slide" id="s2" style="background:var(--ink2)">
+<!-- ════════════════════════════════════
+     SCENE 2 — THE PROBLEM
+════════════════════════════════════ -->
+<section class="scene" id="s2" style="background:var(--ink2)">
   <div style="max-width:1000px;width:100%;z-index:1">
-    <div class="tag">The Problem</div>
-    <h2>$6.3 billion drained from India.<br/>Every single year.</h2>
-    <div class="grid4">
-      <div class="stat-card">
-        <div class="sc-val">$6.3B</div>
-        <div class="sc-lbl">Lost to SWIFT fees annually from India</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-val">6.3%</div>
-        <div class="sc-lbl">Average remittance fee (World Bank 2024)</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-val">3 days</div>
-        <div class="sc-lbl">SWIFT settlement time in 2026</div>
-      </div>
-      <div class="stat-card">
-        <div class="sc-val">$1T+</div>
-        <div class="sc-lbl">BRICS trade in 2025 — mostly in USD</div>
-      </div>
+    <div class="tag reveal">The Problem</div>
+    <h2 class="reveal delay1">$6.3 billion drained from India.<br/>Every single year.</h2>
+    <div class="big4">
+      <div class="b4 reveal delay1"><div class="b4-v">$6.3B</div><div class="b4-l">Lost to SWIFT fees annually from India</div></div>
+      <div class="b4 reveal delay2"><div class="b4-v">6.3%</div><div class="b4-l">Average remittance fee (World Bank 2024)</div></div>
+      <div class="b4 reveal delay3"><div class="b4-v">3 days</div><div class="b4-l">SWIFT settlement — still, in 2026</div></div>
+      <div class="b4 reveal delay4"><div class="b4-v">$1T+</div><div class="b4-l">BRICS trade in 2025, mostly in USD</div></div>
     </div>
-    <div class="quote-box">
-      <div class="qb-text">"The basic use case for CBDC eventually comes in the cross-border space. We have to get into a few cross-border arrangements."</div>
-      <div class="qb-attr">T. Rabi Sankar · Deputy Governor, RBI · Global Fintech Fest 2025</div>
+    <div class="quote reveal delay5">
+      <div class="q-text">"The basic use case for CBDC eventually comes in the cross-border space. We have to get into a few cross-border arrangements."</div>
+      <div class="q-attr">T. Rabi Sankar · Deputy Governor, Reserve Bank of India · GFF 2025</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 3 — RUSSIA + CHINA ══════════════ -->
-<section class="slide" id="s3" style="background:var(--ink)">
+<!-- ════════════════════════════════════
+     SCENE 3 — RUSSIA + CHINA
+════════════════════════════════════ -->
+<section class="scene" id="s3" style="background:var(--ink)">
   <div style="max-width:960px;width:100%;z-index:1">
-    <div class="tag">India's Biggest BRICS Partners</div>
-    <h2>Russia & China <span class="gold">are the key.</span><br/>The INR bridge connects them.</h2>
-    <div class="rc-hero">
-      <div class="rc-card russia">
+    <div class="tag reveal">India's Biggest BRICS Partners</div>
+    <h2 class="reveal delay1">Russia & China first.<br/><span class="gold">Then the whole BRICS.</span></h2>
+    <div class="rc2">
+      <div class="rc reveal delay2">
         <span class="rc-flag">🇷🇺</span>
-        <div class="rc-title">Russia — SRVA Live</div>
-        <div style="margin-bottom:8px"><span class="rc-status live-badge">● INR Settlement Active</span></div>
+        <div class="rc-name">Russia</div>
+        <span class="live-tag">INR Settlement Live</span>
         <div class="rc-stats">
           <div class="rcs"><div class="rcs-v">95%</div><div class="rcs-l">India-Russia trade now in national currencies</div></div>
-          <div class="rcs"><div class="rcs-v">$13B</div><div class="rcs-l">Annual bilateral trade value</div></div>
-          <div class="rcs"><div class="rcs-v">0 USD</div><div class="rcs-l">Required via e₹ Bridge</div></div>
-          <div class="rcs"><div class="rcs-v">SRVA</div><div class="rcs-l">Vostro accounts already open</div></div>
+          <div class="rcs"><div class="rcs-v">$13B</div><div class="rcs-l">Annual bilateral trade</div></div>
+          <div class="rcs"><div class="rcs-v">SRVA</div><div class="rcs-l">Vostro accounts active today</div></div>
+          <div class="rcs"><div class="rcs-v">0 USD</div><div class="rcs-l">Needed via e₹ Bridge</div></div>
         </div>
-        <div class="rc-desc">Russia is India's #1 crude oil supplier post-sanctions. Indian refiners (IOC, BPCL) already pay in rupees. e₹ Bridge automates and scales this — from oil payments to every trade invoice.</div>
+        <div class="rc-desc">Russia is India's #1 crude oil supplier. Indian refiners already pay in rupees post-sanctions. e₹ Bridge automates this — from oil to every trade invoice, instant settlement, no dollar.</div>
       </div>
-      <div class="rc-card china">
+      <div class="rc reveal delay3">
         <span class="rc-flag">🇨🇳</span>
-        <div class="rc-title">China — The Strategic Corridor</div>
-        <div style="margin-bottom:8px"><span class="rc-status" style="background:rgba(245,166,35,.15);color:var(--gold);border:1px solid rgba(245,166,35,.3)">→ BRICS CBDC Proposal 2026</span></div>
+        <div class="rc-name">China</div>
+        <span class="soon-tag">BRICS CBDC Link — 2026 Summit</span>
         <div class="rc-stats">
-          <div class="rcs"><div class="rcs-v">$140B</div><div class="rcs-l">India-China bilateral trade (2024)</div></div>
-          <div class="rcs"><div class="rcs-v">#1</div><div class="rcs-l">China is India's largest trading partner</div></div>
-          <div class="rcs"><div class="rcs-v">e-CNY</div><div class="rcs-l">Digital yuan — BRICS CBDC link target</div></div>
-          <div class="rcs"><div class="rcs-v">2026</div><div class="rcs-l">RBI proposes CBDC link at BRICS summit</div></div>
+          <div class="rcs"><div class="rcs-v">$140B</div><div class="rcs-l">India-China bilateral trade 2024</div></div>
+          <div class="rcs"><div class="rcs-v">#1</div><div class="rcs-l">China = India's largest trading partner</div></div>
+          <div class="rcs"><div class="rcs-v">e-CNY</div><div class="rcs-l">Digital yuan — CBDC link proposed</div></div>
+          <div class="rcs"><div class="rcs-v">2026</div><div class="rcs-l">India hosts BRICS — presents this</div></div>
         </div>
-        <div class="rc-desc">China is India's largest trading partner at $140B/year. RBI has proposed linking the e-Rupee and digital yuan at the 2026 BRICS summit. e₹ Bridge provides the open-source architecture for that link — India sets the terms.</div>
+        <div class="rc-desc">$140B in annual trade with China — all in USD today. RBI has proposed linking the e-Rupee and digital yuan at the 2026 BRICS summit. e₹ Bridge is the open-source prototype. India sets the terms.</div>
       </div>
     </div>
-    <div class="other-brics">
-      <span style="font-family:var(--mono);font-size:10px;color:var(--muted);align-self:center">All BRICS + partners:</span>
-      <span class="bc live">🇦🇪 UAE · SRVA</span>
-      <span class="bc live">🇸🇬 Singapore · CBDC</span>
+    <div class="brics-bar reveal delay4">
+      <span style="font-family:var(--mono);font-size:10px;color:var(--muted);align-self:center">All 11 BRICS + partners:</span>
+      <span class="bc live">🇦🇪 UAE</span>
+      <span class="bc live">🇸🇬 Singapore</span>
       <span class="bc live">🇲🇾 Malaysia</span>
       <span class="bc live">🇲🇻 Maldives</span>
       <span class="bc">🇧🇷 Brazil</span>
-      <span class="bc">🇿🇦 South Africa</span>
+      <span class="bc">🇿🇦 S.Africa</span>
       <span class="bc">🇸🇦 Saudi Arabia</span>
       <span class="bc">🇮🇩 Indonesia</span>
       <span class="bc">🇪🇬 Egypt</span>
       <span class="bc">🇮🇷 Iran</span>
       <span class="bc">🇪🇹 Ethiopia</span>
       <span class="bc">🇹🇿 Tanzania</span>
-      <span class="bc" style="color:var(--muted)">+8 more</span>
+      <span class="bc" style="color:var(--muted)">+ 8 negotiating</span>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 4 — 5 AI AGENTS ══════════════ -->
-<section class="slide" id="s4" style="background:var(--ink2)">
+<!-- ════════════════════════════════════
+     SCENE 4 — AI AGENTS
+════════════════════════════════════ -->
+<section class="scene" id="s4" style="background:var(--ink2)">
   <div style="max-width:1100px;width:100%;z-index:1">
-    <div class="tag">Your AI System — You Own It Completely</div>
-    <h2>5 agents. No external API.<br/>Every decision <span class="gold">explainable.</span></h2>
-    <div class="agents5">
-      <div class="ag">
-        <div class="ag-n">01 / 05</div>
-        <span class="ag-ico">⚖</span>
-        <div class="ag-t">FEMA Compliance</div>
-        <div class="ag-d">Plain English → correct FEMA code. Eliminates compliance errors before funds move. Reduces RBI review triggers.</div>
-        <span class="ag-tech at1">TF-IDF + Keywords</span>
-        <div class="ag-noapi">Zero external API</div>
+    <div class="tag reveal">Your AI System — You Own Every Line</div>
+    <h2 class="reveal delay1">5 agents. No external API.<br/><span class="gold">Fully yours. Fully explainable.</span></h2>
+    <div class="agents">
+      <div class="ag reveal delay1">
+        <div class="ag-n">01 / 05</div><span class="ag-ic">⚖</span>
+        <div class="ag-title">FEMA Compliance</div>
+        <div class="ag-desc">Plain English → correct FEMA code. Eliminates compliance errors before funds move.</div>
+        <span class="ag-tag at1">TF-IDF + Keywords</span>
+        <div class="ag-check">Zero external API</div>
       </div>
-      <div class="ag">
-        <div class="ag-n">02 / 05</div>
-        <span class="ag-ico">🛡</span>
-        <div class="ag-t">Security & Risk</div>
-        <div class="ag-d">Scores every transfer 0–100 before execution. 8 named rules. Every fraud flag explained to the user and RBI.</div>
-        <span class="ag-tech at2">8 Named Rules</span>
-        <div class="ag-noapi">FIU-IND aligned</div>
+      <div class="ag reveal delay2">
+        <div class="ag-n">02 / 05</div><span class="ag-ic">🛡</span>
+        <div class="ag-title">Security & Risk</div>
+        <div class="ag-desc">Scores every transfer 0–100 before execution. 8 named rules. Every flag explained to RBI.</div>
+        <span class="ag-tag at2">8 Named Rules</span>
+        <div class="ag-check">FIU-IND aligned</div>
       </div>
-      <div class="ag">
-        <div class="ag-n">03 / 05</div>
-        <span class="ag-ico">📚</span>
-        <div class="ag-t">Regulatory Q&A</div>
-        <div class="ag-d">Answers LRS limits, FEMA codes, e-Rupee questions. RAG over 12 RBI regulatory chunks. Source-cited.</div>
-        <span class="ag-tech at3">RAG Retrieval</span>
-        <div class="ag-noapi">Source-cited answers</div>
+      <div class="ag reveal delay3">
+        <div class="ag-n">03 / 05</div><span class="ag-ic">📚</span>
+        <div class="ag-title">Regulatory Q&A</div>
+        <div class="ag-desc">LRS limits, FEMA codes, e-Rupee questions. RAG over 12 RBI regulatory chunks. Source-cited.</div>
+        <span class="ag-tag at3">RAG Retrieval</span>
+        <div class="ag-check">Source-cited answers</div>
       </div>
-      <div class="ag">
-        <div class="ag-n">04 / 05</div>
-        <span class="ag-ico">💬</span>
-        <div class="ag-t">Customer Service</div>
-        <div class="ag-d">"Where's my transfer?" — answered with account context. Flagged transfer explained. LRS balance shown personalised.</div>
-        <span class="ag-tech at4">8 Intent Types</span>
-        <div class="ag-noapi">Account-aware</div>
+      <div class="ag reveal delay4">
+        <div class="ag-n">04 / 05</div><span class="ag-ic">💬</span>
+        <div class="ag-title">Customer Service</div>
+        <div class="ag-desc">"Where's my transfer?" — answered with account context. Flagged? Explained. Balance? Personalised.</div>
+        <span class="ag-tag at4">8 Intent Types</span>
+        <div class="ag-check">Account-aware</div>
       </div>
-      <div class="ag">
-        <div class="ag-n">05 / 05</div>
-        <span class="ag-ico">⚡</span>
-        <div class="ag-t">Speed Optimizer</div>
-        <div class="ag-d">Picks CBDC direct vs SRVA vs multi-hop. Advises best time to send for tightest FX spread. 12 corridors.</div>
-        <span class="ag-tech at5">Smart Routing</span>
-        <div class="ag-noapi">12 corridors</div>
+      <div class="ag reveal delay5">
+        <div class="ag-n">05 / 05</div><span class="ag-ic">⚡</span>
+        <div class="ag-title">Speed Optimizer</div>
+        <div class="ag-desc">CBDC direct vs SRVA vs multi-hop. Best time to send. 12 corridors. Savings calculated.</div>
+        <span class="ag-tag at5">Smart Routing</span>
+        <div class="ag-check">12 corridors</div>
+      </div>
+    </div>
+    <div class="ai-benefits">
+      <div class="aib reveal delay1">
+        <span class="aib-icon">🚀</span>
+        <div class="aib-title">Faster transfers</div>
+        <div class="aib-desc">Speed Agent picks the optimal corridor. CBDC direct settles in 3 sec vs 3 days SWIFT.</div>
+      </div>
+      <div class="aib reveal delay2">
+        <span class="aib-icon">🔒</span>
+        <div class="aib-title">Better security</div>
+        <div class="aib-desc">Risk Agent blocks high-score transfers before funds move. Every flag is auditable by RBI.</div>
+      </div>
+      <div class="aib reveal delay3">
+        <span class="aib-icon">📋</span>
+        <div class="aib-title">Zero compliance errors</div>
+        <div class="aib-desc">FEMA Agent gets the purpose code right every time. Fewer RBI compliance reviews triggered.</div>
+      </div>
+      <div class="aib reveal delay4">
+        <span class="aib-icon">💡</span>
+        <div class="aib-title">Self-service support</div>
+        <div class="aib-desc">Customer Agent resolves 80% of queries automatically. Users get answers in seconds, not hours.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 5 — SECURITY ══════════════ -->
-<section class="slide" id="s5" style="background:var(--ink)">
-  <div style="max-width:960px;width:100%;z-index:1">
-    <div class="tag">Security Architecture</div>
-    <h2>Built for regulators.<br/><span class="green">Every layer secured.</span></h2>
-    <div class="sec-grid">
-      <div class="sec-card">
-        <span class="sc2-icon">🔐</span>
-        <div class="sc2-title">Data & Storage</div>
-        <div class="sc2-body">All transaction data stored in India (mandatory under RBI's 2018 data localisation circular). SQLite for PoC, PostgreSQL for production, both on India-region cloud instances only.</div>
-        <div class="sec-list">
-          <div class="sl-item">Passwords bcrypt-hashed — plain text never stored</div>
-          <div class="sl-item">JWT tokens with 24-hour expiry</div>
-          <div class="sl-item">PAN stored as SHA-256 hash only</div>
-          <div class="sl-item">All data tagged data_stored_india: true</div>
-        </div>
-      </div>
-      <div class="sec-card">
-        <span class="sc2-icon">🛡</span>
-        <div class="sc2-title">Transaction Security</div>
-        <div class="sc2-body">Every transfer runs through the AI Risk Agent before execution. 8 named rules score fraud risk 0–100. Transfers above 50 are blocked pending review. All flags are logged to the audit table.</div>
-        <div class="sec-list">
-          <div class="sl-item">Pre-flight AI risk check on every transfer</div>
-          <div class="sl-item">LRS annual limit hard-enforced at ₹2.07 Cr</div>
-          <div class="sl-item">PA-CB transaction limit: ₹25L per RBI 2025</div>
-          <div class="sl-item">On-chain CBDC hash for every settlement</div>
-        </div>
-      </div>
-      <div class="sec-card warn">
-        <span class="sc2-icon">🔍</span>
-        <div class="sc2-title">Audit Trail</div>
-        <div class="sc2-body">Complete audit log in the database — every login, transfer, flag, and compliance event is timestamped and stored. FIU-IND reports can be generated directly from the audit_log table.</div>
-        <div class="sec-list">
-          <div class="sl-item">Full audit_log table: every user action</div>
-          <div class="sl-item">AI risk score + FEMA code on every tx record</div>
-          <div class="sl-item">Ethereum on-chain settlement hash</div>
-          <div class="sl-item">CERT-In audit pathway documented</div>
-        </div>
-      </div>
-      <div class="sec-card warn">
-        <span class="sc2-icon">🌐</span>
-        <div class="sc2-title">API & Infrastructure</div>
-        <div class="sc2-body">GitHub Actions CI runs TruffleHog secret scanning before every push. Hardhat Slither analysis on every Solidity change. Deployment requires manual approval in GitHub Environments.</div>
-        <div class="sec-list">
-          <div class="sl-item">Secret scanning on every git push</div>
-          <div class="sl-item">Solidity Slither static analysis</div>
-          <div class="sl-item">Manual approval gate for all deployments</div>
-          <div class="sl-item">HTTPS enforced, CORS controlled</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════ SLIDE 6 — LIVE DEMO ══════════════ -->
-<section class="slide" id="s6" style="background:var(--ink2)">
-  <div style="max-width:920px;width:100%;z-index:1">
-    <div class="tag">Live Demo — Canada → India → UAE</div>
-    <div class="demo-layout">
+<!-- ════════════════════════════════════
+     SCENE 5 — LIVE DEMO
+════════════════════════════════════ -->
+<section class="scene" id="s5" style="background:var(--ink)">
+  <div style="max-width:940px;width:100%;z-index:1">
+    <div class="tag reveal">Live Demo — Canada → India → UAE</div>
+    <div class="demo-grid">
       <div>
-        <h2>₹10,000 → 440 AED.<br/><span class="green">Under 3 seconds.</span></h2>
-        <p class="sub" style="font-size:13px;margin-bottom:20px;max-width:440px">No dollar used. AI checks compliance first. Every step logged to the database.</p>
-        <div class="flow-track">
-          <div class="ft">
-            <div class="ft-left"><div class="ft-dot" id="d0">✦</div><div class="ft-line" id="l0"></div></div>
-            <div class="ft-body"><div class="ft-label">AI pre-flight <span class="ai">5 Agents</span></div><div class="ft-detail" id="f0">Click the button below...</div></div>
-          </div>
-          <div class="ft">
-            <div class="ft-left"><div class="ft-dot" id="d1">2</div><div class="ft-line" id="l1"></div></div>
-            <div class="ft-body"><div class="ft-label">e-Rupee wallet debit</div><div class="ft-detail" id="f1">Pending...</div></div>
-          </div>
-          <div class="ft">
-            <div class="ft-left"><div class="ft-dot" id="d2">3</div><div class="ft-line" id="l2"></div></div>
-            <div class="ft-body"><div class="ft-label">CBDC hash — on-chain</div><div class="ft-detail" id="f2">Pending...</div></div>
-          </div>
-          <div class="ft">
-            <div class="ft-left"><div class="ft-dot" id="d3">4</div><div class="ft-line" id="l3"></div></div>
-            <div class="ft-body"><div class="ft-label">INR → AED bridge relay</div><div class="ft-detail" id="f3">Pending...</div></div>
-          </div>
-          <div class="ft">
-            <div class="ft-left"><div class="ft-dot" id="d4">5</div></div>
-            <div class="ft-body"><div class="ft-label">Settlement confirmed</div><div class="ft-detail" id="f4">Pending...</div></div>
-          </div>
+        <h2 class="reveal delay1">₹10,000 → 440 AED.<br/><span class="gr">Under 3 seconds.</span><br/><span style="font-size:.5em;color:var(--muted);font-weight:400">No dollar. Saved to database.</span></h2>
+        <div class="flow">
+          <div class="fi"><div class="fi-left"><div class="fi-dot" id="d0">✦</div><div class="fi-line" id="l0"></div></div><div class="fi-body"><div class="fi-label">AI pre-flight <span class="fi-ai">5 Agents</span></div><div class="fi-detail" id="f0">Press the button to start...</div></div></div>
+          <div class="fi"><div class="fi-left"><div class="fi-dot" id="d1">2</div><div class="fi-line" id="l1"></div></div><div class="fi-body"><div class="fi-label">e-Rupee wallet debit</div><div class="fi-detail" id="f1">Pending...</div></div></div>
+          <div class="fi"><div class="fi-left"><div class="fi-dot" id="d2">3</div><div class="fi-line" id="l2"></div></div><div class="fi-body"><div class="fi-label">CBDC hash — on-chain</div><div class="fi-detail" id="f2">Pending...</div></div></div>
+          <div class="fi"><div class="fi-left"><div class="fi-dot" id="d3">4</div><div class="fi-line" id="l3"></div></div><div class="fi-body"><div class="fi-label">INR → AED bridge relay</div><div class="fi-detail" id="f3">Pending...</div></div></div>
+          <div class="fi"><div class="fi-left"><div class="fi-dot" id="d4">5</div></div><div class="fi-body"><div class="fi-label">Settlement confirmed</div><div class="fi-detail" id="f4">Pending...</div></div></div>
         </div>
-        <button class="demo-btn" id="demo-btn" onclick="runDemo()">Execute Transfer →</button>
+        <button class="run-btn" id="run-btn" onclick="runDemo()">Execute Transfer →</button>
       </div>
       <div id="receipt" class="receipt">
-        <div class="rh">
-          <div class="rh-t">Receipt</div>
-          <div class="rh-b">SETTLED ✓</div>
+        <div class="rhead"><div class="rh-label">Receipt</div><div class="rh-badge">SETTLED ✓</div></div>
+        <div class="rbody">
+          <div class="rr"><span class="rl">Sent</span><span class="rv gold">₹10,000</span></div>
+          <div class="rr"><span class="rl">Received</span><span class="rv green">440 AED</span></div>
+          <div class="rr"><span class="rl">Bridge fee</span><span class="rv">₹20 · 0.2%</span></div>
+          <div class="rr"><span class="rl">Saved vs SWIFT</span><span class="rv" style="color:var(--green)">₹610</span></div>
+          <div class="rr"><span class="rl">AI risk score</span><span class="rv" style="color:var(--green)">LOW · 5/100 ✓</span></div>
+          <div class="rr"><span class="rl">Dollar used</span><span class="rv" style="color:var(--green)">No ✓</span></div>
+          <div class="rr"><span class="rl">Saved to DB</span><span class="rv" style="color:var(--green)">Yes ✓</span></div>
+          <div class="rr"><span class="rl">CBDC hash</span><span class="rv" id="demo-hash" style="font-size:9px;color:var(--muted)">—</span></div>
+          <div class="rr"><span class="rl">Time</span><span class="rv green" id="demo-time">—</span></div>
         </div>
-        <div class="rr"><span class="rl">Sent</span><span class="rv g">₹10,000</span></div>
-        <div class="rr"><span class="rl">Received</span><span class="rv gr">440 AED</span></div>
-        <div class="rr"><span class="rl">Bridge fee</span><span class="rv">₹20 · 0.2%</span></div>
-        <div class="rr"><span class="rl">SWIFT saved</span><span class="rv" style="color:var(--green)">₹610</span></div>
-        <div class="rr"><span class="rl">AI risk score</span><span class="rv" style="color:var(--green)">LOW · 5/100 ✓</span></div>
-        <div class="rr"><span class="rl">Dollar used</span><span class="rv" style="color:var(--green)">No ✓</span></div>
-        <div class="rr"><span class="rl">Saved to DB</span><span class="rv" style="color:var(--green)">Yes ✓</span></div>
-        <div class="rr"><span class="rl">CBDC hash</span><span class="rv" style="font-size:9px;color:var(--muted)" id="demo-hash">—</span></div>
-        <div class="rr"><span class="rl">Time</span><span class="rv gr" id="demo-time">—</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 7 — IMPACT ══════════════ -->
-<section class="slide" id="s7" style="background:var(--ink)">
+<!-- ════════════════════════════════════
+     SCENE 6 — COMPARISON
+════════════════════════════════════ -->
+<section class="scene" id="s6" style="background:var(--ink2)">
   <div style="max-width:900px;width:100%;z-index:1">
-    <div class="tag">The Impact</div>
-    <h2>10% of BRICS trade through INR bridge =<br/><span class="gold">India earns $180M/year.</span></h2>
-    <div class="impact3">
-      <div class="ic">
-        <div class="ic-v r">6.3%</div>
-        <div class="ic-l">SWIFT fee today</div>
-        <div class="ic-sub">₹630 on ₹10,000</div>
+    <div class="tag reveal">The Numbers</div>
+    <h2 class="reveal delay1">₹610 saved on every ₹10,000.<br/><span class="gold">97% cheaper than SWIFT.</span></h2>
+    <div class="comp3">
+      <div class="cp reveal delay1">
+        <div class="cp-method">SWIFT / Bank wire</div>
+        <div class="cp-fee r">6.3%</div>
+        <div class="cp-speed">2–3 business days</div>
+        <div class="cp-cost">₹630 per ₹10,000</div>
+        <div style="font-size:11px;color:var(--muted)">Correspondent banking — est. 1973</div>
         <div class="bar-bg"><div class="bar-f bf-r" data-w="100%"></div></div>
       </div>
-      <div class="ic">
-        <div class="ic-v go">0.2%</div>
-        <div class="ic-l">e₹ Bridge fee</div>
-        <div class="ic-sub">₹20 on same transfer</div>
-        <div class="bar-bg"><div class="bar-f bf-go" data-w="3%"></div></div>
+      <div class="cp reveal delay2">
+        <div class="cp-method">Wise / Remitly</div>
+        <div class="cp-fee a">2.1%</div>
+        <div class="cp-speed">~1 day</div>
+        <div class="cp-cost">₹210 per ₹10,000</div>
+        <div style="font-size:11px;color:var(--muted)">Fintech on legacy banking rails</div>
+        <div class="bar-bg"><div class="bar-f bf-a" data-w="33%"></div></div>
       </div>
-      <div class="ic win">
-        <div class="ic-v g">$180M</div>
-        <div class="ic-l">Annual bridge revenue</div>
-        <div class="ic-sub">10% of $1T BRICS trade at 0.2%</div>
-        <div class="bar-bg"><div class="bar-f bf-g" data-w="100%"></div></div>
+      <div class="cp win reveal delay3">
+        <div class="cp-method">e₹ Bridge</div>
+        <div class="cp-fee g">0.2%</div>
+        <div class="cp-speed">under 3 seconds</div>
+        <div class="cp-cost">₹20 per ₹10,000</div>
+        <div style="font-size:11px;color:var(--green);font-weight:500">CBDC-native + 5 AI agents</div>
+        <div class="bar-bg"><div class="bar-f bf-g" data-w="3%"></div></div>
       </div>
     </div>
-    <div class="mini4">
-      <div class="mini"><div class="mini-v" style="color:var(--green)">$90B</div><div class="mini-l">New INR demand created annually</div></div>
-      <div class="mini"><div class="mini-v" style="color:var(--gold)">9M+</div><div class="mini-l">Gulf workers saving on remittances</div></div>
-      <div class="mini"><div class="mini-v" style="color:var(--gold)">40M</div><div class="mini-l">Indian MSMEs accessing export payments</div></div>
-      <div class="mini"><div class="mini-v" style="color:var(--green)">0</div><div class="mini-l">US dollars required for any of this</div></div>
+    <div class="stat4">
+      <div class="s4 reveal delay1"><div class="s4-v" style="color:var(--green)">$180M</div><div class="s4-l">Annual revenue — 10% BRICS trade at 0.2%</div></div>
+      <div class="s4 reveal delay2"><div class="s4-v" style="color:var(--gold)">$90B</div><div class="s4-l">New INR demand created globally</div></div>
+      <div class="s4 reveal delay3"><div class="s4-v" style="color:var(--gold)">9M+</div><div class="s4-l">Gulf workers saving on every transfer</div></div>
+      <div class="s4 reveal delay4"><div class="s4-v" style="color:var(--green)">0</div><div class="s4-l">US dollars needed for any of this</div></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ SLIDE 8 — CTA ══════════════ -->
-<section class="slide" id="s8" style="background:var(--ink2)">
-  <div style="text-align:center;max-width:700px;z-index:1">
+<!-- ════════════════════════════════════
+     SCENE 7 — CTA
+════════════════════════════════════ -->
+<section class="scene" id="s7" style="background:var(--ink)">
+  <div style="text-align:center;max-width:720px;z-index:1">
     <div class="cta-logo">e₹</div>
-    <div class="tag" style="justify-content:center">One ask</div>
-    <h1 style="font-size:clamp(36px,5.5vw,68px)">A Sandbox slot.<br/>One bank pilot.</h1>
-    <p class="sub" style="max-width:520px;margin:0 auto 4px;text-align:center">The code is open source. 5 AI agents run locally — no external dependency. The compliance framework is documented. Russia and China corridors are ready. Any bank in this room can clone it today.</p>
-    <div class="cta3">
-      <div class="cta-c"><div class="cta-l">Live demo</div><div class="cta-v">abhishekveda.github.io/E-Rupee</div></div>
-      <div class="cta-c"><div class="cta-l">Source code</div><div class="cta-v">github.com/Abhishekveda/E-Rupee</div></div>
-      <div class="cta-c"><div class="cta-l">Builder</div><div class="cta-v">Abhishek Veda · Toronto 🇨🇦</div></div>
+    <div class="tag reveal" style="justify-content:center">One ask</div>
+    <h1 class="reveal delay1" style="font-size:clamp(42px,6vw,76px)">
+      A Sandbox slot.<br/>One bank pilot.
+    </h1>
+    <p class="lead reveal delay2" style="margin:0 auto;text-align:center;max-width:520px">
+      The code is open source. 5 AI agents run locally — no external dependency. Russia and China corridors are built. Any bank in this room can clone it today.
+    </p>
+    <div class="cta3 reveal delay3">
+      <div class="cl"><div class="cl-l">Live demo</div><div class="cl-v">abhishekveda.github.io/E-Rupee</div></div>
+      <div class="cl"><div class="cl-l">Source code</div><div class="cl-v">github.com/Abhishekveda/E-Rupee</div></div>
+      <div class="cl"><div class="cl-l">Builder</div><div class="cl-v">Abhishek Veda · Toronto 🇨🇦</div></div>
     </div>
-    <div class="deadline">Deadline: <span>June 5, 2026</span> · rbih.org.in · RBIH Bank-Fintech Showcase · India BRICS Chair 2026</div>
+    <div class="dl reveal delay4">Deadline: <span>June 5, 2026</span> · rbih.org.in · RBIH Bank-Fintech Showcase · India BRICS Chair 2026</div>
   </div>
 </section>
-
-</div><!-- /slides -->
 
 <script>
-// ── SLIDE TRACKING via IntersectionObserver ────────────────────────────────
-const slides = document.querySelectorAll('.slide');
-const N = slides.length;
-let current = 0;
-let demoRan = false;
+// ── PROGRESS + SCROLL REVEAL ──────────────────────────────────────────────────
+const bar = document.getElementById('bar');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (window.scrollY / (h.scrollHeight - h.clientHeight)) * 100;
+  bar.style.width = pct + '%';
+}, { passive: true });
 
-// Build nav dots
-const nav = document.getElementById('nav');
-slides.forEach((_, i) => {
-  const d = document.createElement('button');
-  d.className = 'dot' + (i === 0 ? ' on' : '');
-  d.setAttribute('aria-label', 'Go to slide ' + (i+1));
-  d.onclick = () => scrollTo(i);
-  nav.appendChild(d);
-});
-
-function scrollTo(i) {
-  slides[i].scrollIntoView({ behavior: 'smooth' });
-}
-
-// Track which slide is visible
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-      const i = Array.from(slides).indexOf(entry.target);
-      if (i !== current) {
-        current = i;
-        updateUI(i);
-        // Trigger slide-specific animations
-        if (i === 6) animateBars();
-        if (i === 5 && !demoRan) { demoRan = true; setTimeout(runDemo, 800); }
-      }
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      // Trigger bar animations when comp scene comes in
+      e.target.querySelectorAll('.bar-f[data-w]').forEach(b => {
+        setTimeout(() => b.style.width = b.dataset.w, 200);
+      });
     }
   });
-}, { threshold: 0.5 });
+}, { threshold: 0.15 });
 
-slides.forEach(s => observer.observe(s));
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-function updateUI(i) {
-  document.getElementById('progress').style.width = ((i+1)/N*100) + '%';
-  document.getElementById('counter').textContent = (i+1) + ' / ' + N;
-  document.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('on', j===i));
-}
-
-// Keyboard navigation
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') scrollTo(Math.min(current+1, N-1));
-  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') scrollTo(Math.max(current-1, 0));
-});
-
-// Touch
-let ty = 0;
-document.getElementById('slides').addEventListener('touchstart', e => ty = e.touches[0].clientY, {passive:true});
-document.getElementById('slides').addEventListener('touchend', e => {
-  const d = ty - e.changedTouches[0].clientY;
-  if (Math.abs(d) > 40) scrollTo(d > 0 ? Math.min(current+1,N-1) : Math.max(current-1,0));
-}, {passive:true});
-
-// ── BARS animation ──────────────────────────────────────────────────────────
-function animateBars() {
-  document.querySelectorAll('.bar-f[data-w]').forEach(b => {
-    b.style.width = '0';
-    setTimeout(() => b.style.width = b.dataset.w, 100);
-  });
-}
-
-// ── DEMO ────────────────────────────────────────────────────────────────────
+// ── DEMO ──────────────────────────────────────────────────────────────────────
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function rndHash(p) {
   let h = '';
   const c = '0123456789abcdef';
-  for (let i=0; i<56; i++) h += c[Math.floor(Math.random()*16)];
+  for (let i = 0; i < 56; i++) h += c[Math.floor(Math.random() * 16)];
   return '0x' + p + h;
 }
 
 function setStep(i, state, detail) {
-  const dot = document.getElementById('d'+i);
-  const line = document.getElementById('l'+i);
-  const det = document.getElementById('f'+i);
-  if (state==='active') { dot.className='ft-dot active'; if(i===0)dot.textContent='✦'; else dot.textContent=i; }
-  else if (state==='done') { dot.className='ft-dot done'; dot.textContent='✓'; if(line)line.classList.add('done'); }
-  if(det && detail) det.textContent = detail;
+  const dot = document.getElementById('d' + i);
+  const line = document.getElementById('l' + i);
+  const det = document.getElementById('f' + i);
+  if (state === 'active') {
+    dot.className = 'fi-dot active';
+    dot.textContent = i === 0 ? '✦' : i;
+  } else if (state === 'done') {
+    dot.className = 'fi-dot done';
+    dot.textContent = '✓';
+    if (line) line.classList.add('done');
+  }
+  if (det && detail) det.textContent = detail;
 }
 
 async function runDemo() {
-  const btn = document.getElementById('demo-btn');
+  const btn = document.getElementById('run-btn');
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
-  // Reset
-  for(let i=0;i<5;i++){
-    const d=document.getElementById('d'+i);
-    const l=document.getElementById('l'+i);
-    if(d){d.className='ft-dot';d.textContent=i===0?'✦':i;}
-    if(l)l.classList.remove('done');
+  // Reset flow
+  for (let i = 0; i < 5; i++) {
+    const d = document.getElementById('d' + i);
+    const l = document.getElementById('l' + i);
+    if (d) { d.className = 'fi-dot'; d.textContent = i === 0 ? '✦' : i; }
+    if (l) l.classList.remove('done');
   }
   document.getElementById('receipt').classList.remove('show');
+  ['Press the button to start...','Pending...','Pending...','Pending...','Pending...']
+    .forEach((t,i) => { const el = document.getElementById('f'+i); if(el) el.textContent = t; });
 
   const t0 = Date.now();
-  const hash = rndHash('cbdc');
+  const cbdcHash = rndHash('cbdc');
+  const bridgeHash = rndHash('bridge');
 
-  setStep(0,'active'); await sleep(10);
-  setStep(0,'done','Risk: LOW (5/100) · FEMA: P0102 HIGH · Route: CBDC Direct ✓');
+  setStep(0, 'active');
+  await sleep(50);
+  setStep(0, 'done', 'FEMA: P0102 HIGH · Risk: LOW (5/100) · Route: CBDC Direct ✓');
 
-  setStep(1,'active'); await sleep(420);
-  setStep(1,'done','Debited ₹10,000 from INDIA_USER_001 · Saved to DB ✓');
+  setStep(1, 'active');
+  await sleep(430);
+  setStep(1, 'done', 'Debited ₹10,000 from INDIA_USER_001 · Saved to DB ✓');
 
-  setStep(2,'active'); await sleep(460);
-  setStep(2,'done', hash.slice(0,30)+'...');
+  setStep(2, 'active');
+  await sleep(470);
+  setStep(2, 'done', cbdcHash.slice(0, 32) + '...');
 
-  setStep(3,'active'); await sleep(400);
-  setStep(3,'done','INR → AED · ' + rndHash('bridge').slice(0,26)+'...');
+  setStep(3, 'active');
+  await sleep(410);
+  setStep(3, 'done', 'INR → AED · ' + bridgeHash.slice(0, 28) + '...');
 
-  setStep(4,'active'); await sleep(540);
-  const elapsed = ((Date.now()-t0)/1000).toFixed(2);
-  setStep(4,'done','Block #' + (19450000+Math.floor(Math.random()*5000)) + ' · ' + elapsed + 's · Dollar: NO ✓');
+  setStep(4, 'active');
+  await sleep(520);
+  const elapsed = ((Date.now() - t0) / 1000).toFixed(2);
+  const block = 19450000 + Math.floor(Math.random() * 5000);
+  setStep(4, 'done', 'Block #' + block + ' · ' + elapsed + 's · Dollar used: NO ✓');
 
-  document.getElementById('demo-hash').textContent = hash.slice(0,34)+'...';
-  document.getElementById('demo-time').textContent = elapsed + 's · SWIFT = 3 days';
+  document.getElementById('demo-hash').textContent = cbdcHash.slice(0, 36) + '...';
+  document.getElementById('demo-time').textContent = elapsed + 's — SWIFT = 3 business days';
   document.getElementById('receipt').classList.add('show');
 
   btn.disabled = false;
-  btn.textContent = '✓ Settled in ' + elapsed + 's — Try again';
-  btn.onclick = () => { demoRan = false; runDemo(); };
+  btn.textContent = '✓ Settled in ' + elapsed + 's — Run again';
 }
-
-// Init
-updateUI(0);
 </script>
 </body>
 </html>
