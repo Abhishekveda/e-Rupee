@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>e₹ Bridge — Product Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#060C18;--ink2:#0B1627;--ink3:#112035;
+  --gold:#F5A623;--g2:#FFD166;--g3:#FFF3D0;
+  --green:#06C270;--gr2:#D0F5E8;
+  --blue:#2563EB;--b2:#DBEAFE;
+  --red:#EF4444;--r2:#FEE2E2;
+  --purple:#8B5CF6;--p2:#EDE9FE;
+  --white:#fff;--fog:#F1F5FB;--border:#E2EAF4;
+  --muted:#6B7A94;
+  --syne:'Syne',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --body:'Instrument Sans',sans-serif;
+}
+html{background:var(--ink)}
+body{font-family:var(--body);color:var(--white);overflow-x:hidden;scroll-behavior:smooth}
+
+/* ── PROGRESS ── */
+#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--green));z-index:1000;transition:width .05s;width:0%}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);background:rgba(6,12,24,.7);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-mark{width:34px;height:34px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--ink)}
+.nav-title{font-family:var(--syne);font-size:15px;font-weight:700}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;padding:6px 12px;border-radius:6px;transition:all .15s}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.08)}
+.nav-badge{font-family:var(--mono);font-size:10px;padding:5px 12px;border-radius:20px;background:rgba(245,166,35,.12);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 40px 60px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(245,166,35,.06) 0%,transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(245,166,35,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,.03) 1px,transparent 1px);background-size:48px 48px}
+.hero-content{max-width:900px;text-align:center;position:relative;z-index:1}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;padding:6px 16px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:20px;animation:fadeIn .5s ease both}
+.hero-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 2s infinite}
+.hero h1{font-family:var(--syne);font-size:clamp(44px,7vw,88px);font-weight:800;line-height:1.0;letter-spacing:-.03em;margin-bottom:20px;animation:fadeUp .7s .2s both}
+.hero h1 .strike{color:rgba(255,255,255,.18);text-decoration:line-through;font-weight:400}
+.hero h1 .gold{color:var(--gold)}
+.hero-sub{font-size:18px;color:rgba(255,255,255,.55);max-width:580px;margin:0 auto 36px;font-weight:300;line-height:1.7;animation:fadeUp .6s .4s both}
+.hero-cta{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:56px;animation:fadeUp .6s .6s both}
+.btn-primary{background:var(--gold);color:var(--ink);padding:13px 26px;border-radius:9px;font-weight:700;font-size:14px;border:none;cursor:pointer;font-family:var(--syne);transition:all .15s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary:hover{background:var(--g2);transform:translateY(-1px);box-shadow:0 8px 28px rgba(245,166,35,.3)}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.65);padding:12px 22px;border-radius:9px;font-size:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:var(--body);transition:all .15s}
+.btn-ghost:hover{border-color:rgba(255,255,255,.4);color:var(--white)}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:0;animation:fadeUp .6s .8s both;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}
+.hs{padding:18px 32px;text-align:center;border-right:1px solid rgba(255,255,255,.07)}
+.hs:last-child{border:none}
+.hs-v{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.hs-l{font-size:11px;color:var(--muted);letter-spacing:.05em}
+
+/* ── SECTIONS ── */
+section{padding:100px 40px;position:relative}
+.inner{max-width:1100px;margin:0 auto}
+.section-tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-tag::before{content:'';width:24px;height:1px;background:var(--gold)}
+.section-h{font-family:var(--syne);font-size:clamp(32px,4.5vw,52px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:16px}
+.section-sub{font-size:16px;color:rgba(255,255,255,.5);max-width:580px;line-height:1.75;margin-bottom:52px}
+
+/* ── PROBLEM ── */
+.problem-section{background:var(--ink)}
+.problem-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.07);border-radius:14px;overflow:hidden;margin-bottom:32px}
+.pn{background:var(--ink2);padding:28px;position:relative;overflow:hidden}
+.pn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--red)}
+.pn-val{font-family:var(--mono);font-size:42px;font-weight:800;color:var(--red);line-height:1;margin-bottom:6px}
+.pn-lbl{font-size:13px;color:rgba(255,255,255,.45);line-height:1.5}
+.quote-box{background:var(--ink2);border:1px solid rgba(245,166,35,.2);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;padding:24px 28px}
+.qb-text{font-size:16px;font-style:italic;color:rgba(255,255,255,.8);line-height:1.65;margin-bottom:10px}
+.qb-attr{font-family:var(--mono);font-size:11px;color:var(--gold)}
+
+/* ── AGENT ARCHITECTURE ── */
+.arch-section{background:var(--ink2)}
+.arch-diagram{margin:0 0 40px}
+.arch-layer{display:flex;align-items:center;margin-bottom:8px}
+.arch-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;width:80px;flex-shrink:0;text-align:right;padding-right:16px}
+.arch-box{flex:1;border-radius:10px;padding:16px 20px;border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.arch-box::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.ab-1::before{background:var(--gold)}
+.ab-2::before{background:var(--purple)}
+.ab-3::before{background:var(--blue)}
+.ab-4::before{background:var(--green)}
+.ab-title{font-family:var(--syne);font-size:13px;font-weight:700;margin-bottom:4px}
+.ab-sub{font-size:12px;color:rgba(255,255,255,.4);font-family:var(--mono)}
+.arch-arrow{display:flex;justify-content:center;align-items:center;height:20px;color:rgba(255,255,255,.2);font-size:14px;margin-bottom:0}
+.agent-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.ac{background:var(--ink3);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px;position:relative;overflow:hidden}
+.ac-accent{position:absolute;top:0;left:0;right:0;height:2px}
+.ac-fema .ac-accent{background:var(--gold)}
+.ac-risk .ac-accent{background:var(--red)}
+.ac-qa .ac-accent{background:var(--purple)}
+.ac-num{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;margin-bottom:12px}
+.ac-icon{font-size:24px;margin-bottom:12px}
+.ac-title{font-family:var(--syne);font-size:16px;font-weight:700;margin-bottom:8px}
+.ac-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:14px}
+.ac-code{background:rgba(0,0,0,.3);border-radius:6px;padding:10px 12px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.6);line-height:1.7}
+.ac-code .kw{color:var(--gold)}
+.no-ext{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;color:var(--green);background:rgba(6,194,112,.08);border:1px solid rgba(6,194,112,.2);padding:3px 9px;border-radius:20px;margin-top:10px}
+
+/* ── SECURITY ── */
+.security-section{background:var(--ink3)}
+.sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sec-card{background:var(--ink2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px}
+.sc-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sci-red{background:rgba(239,68,68,.12)}
+.sci-green{background:rgba(6,194,112,.12)}
+.sci-blue{background:rgba(37,99,235,.12)}
+.sci-purple{background:rgba(139,92,246,.12)}
+.sc-title{font-family:var(--syne);font-size:14px;font-weight:700}
+.sc-list{display:flex;flex-direction:column;gap:7px}
+.sc-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,.55);line-height:1.5}
+.sc-item::before{content:'→';color:var(--muted);flex-shrink:0;font-family:var(--mono)}
+
+/* ── GPU GUIDE ── */
+.gpu-section{background:var(--ink)}
+.gpu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gpu-card{background:var(--ink2);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;position:relative}
+.gpu-card.recommended{border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.04)}
+.gpu-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;padding:3px 10px;border-radius:20px;background:var(--gold);color:var(--ink);font-weight:700;white-space:nowrap}
+.gpu-level{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;margin-bottom:8px}
+.gpu-name{font-family:var(--syne);font-size:15px;font-weight:700;margin-bottom:6px}
+.gpu-vram{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.gpu-price{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px;font-family:var(--mono)}
+.gpu-models{font-size:11px;color:rgba(255,255,255,.5);line-height:1.7}
+.gpu-models span{display:block}
+
+/* ── LIVE DEMO ── */
+.demo-section{background:var(--ink2)}
+.demo-container{background:var(--ink3);border:1px solid rgba(255,255,255,.09);border-radius:20px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5)}
+.demo-bar{background:var(--ink);padding:12px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.demo-dots{display:flex;gap:5px}
+.demo-dots span{width:10px;height:10px;border-radius:50%}
+.dd-r{background:#EF4444}.dd-y{background:#F59E0B}.dd-g{background:#10B981}
+.demo-url{flex:1;background:rgba(255,255,255,.05);border-radius:5px;padding:4px 10px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);text-align:center}
+.demo-body{display:grid;grid-template-columns:1fr 380px;min-height:500px}
+.demo-left{padding:24px;border-right:1px solid rgba(255,255,255,.06)}
+.demo-left h3{font-family:var(--syne);font-size:15px;font-weight:700;margin-bottom:18px}
+.d-field{margin-bottom:14px}
+.d-field label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.d-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:10px 12px;font-size:13px;color:rgba(255,255,255,.8);font-family:var(--body);width:100%}
+.d-input.active{border-color:var(--gold);background:rgba(245,166,35,.04)}
+.d-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ai-box{background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:12px;margin-bottom:14px;display:none}
+.ai-box.show{display:block;animation:fadeIn .25s ease}
+.ai-box-tag{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.1em;margin-bottom:5px}
+.ai-box-code{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--g2)}
+.ai-box-conf{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px}
+.risk-box{border-radius:7px;padding:10px 12px;margin-bottom:14px;display:none;font-size:12px;font-weight:500;display:none;align-items:center;gap:8px}
+.risk-box.show{display:flex;animation:fadeIn .25s ease}
+.risk-LOW{background:rgba(6,194,112,.1);border:1px solid rgba(6,194,112,.25);color:var(--green)}
+.risk-MEDIUM{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B}
+.risk-HIGH{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red)}
+.exec-btn{width:100%;background:var(--ink);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:13px;font-family:var(--syne);font-size:14px;font-weight:700;color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.exec-btn.ready{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.exec-btn.running{background:rgba(245,166,35,.15);color:var(--gold);border-color:rgba(245,166,35,.3)}
+.exec-btn.done{background:rgba(6,194,112,.15);color:var(--green);border-color:rgba(6,194,112,.3)}
+.demo-right{padding:20px;display:flex;flex-direction:column;gap:14px}
+.flow-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px;flex:1}
+.fp-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.f-step{display:flex;gap:9px;padding:5px 0}
+.fs-col{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.fs-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--muted);background:transparent;transition:all .25s;flex-shrink:0}
+.fs-dot.ai{border-color:rgba(245,166,35,.4);color:var(--gold)}
+.fs-dot.active{border-color:var(--gold);color:var(--gold);background:rgba(245,166,35,.1);animation:dotPulse .8s infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.4)}50%{box-shadow:0 0 0 4px rgba(245,166,35,.1)}}
+.fs-dot.done{border-color:var(--green);background:var(--green);color:var(--white)}
+.fs-connector{width:1px;height:22px;background:rgba(255,255,255,.07);transition:background .25s}
+.fs-connector.done{background:var(--green)}
+.f-text{padding-top:2px;flex:1;min-width:0}
+.f-label{font-size:12px;font-weight:500;color:rgba(255,255,255,.75)}
+.f-label .agent-chip{font-family:var(--mono);font-size:8px;background:rgba(245,166,35,.12);color:var(--gold);padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.f-detail{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:1px;word-break:break-all;line-height:1.5}
+.receipt-card{background:rgba(6,194,112,.05);border:1px solid rgba(6,194,112,.2);border-radius:10px;padding:14px;display:none}
+.receipt-card.show{display:block;animation:fadeIn .3s ease}
+.rc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rc-title{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.rc-status{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:3px;background:rgba(6,194,112,.15);color:var(--green);font-weight:700}
+.rc-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.rc-row:last-child{border:none}
+.rc-l{color:var(--muted)}
+.rc-v{font-family:var(--mono);color:rgba(255,255,255,.8);text-align:right;max-width:160px;word-break:break-all}
+.rc-v.gold{color:var(--g2);font-size:13px;font-family:var(--syne);font-weight:700}
+.rc-v.green{color:var(--green);font-size:13px;font-family:var(--syne);font-weight:700}
+
+/* ── CTA ── */
+.cta-section{background:var(--ink);text-align:center;padding:120px 40px}
+.cta-logo{width:80px;height:80px;background:var(--gold);border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:30px;color:var(--ink);margin:0 auto 28px}
+.cta-h{font-family:var(--syne);font-size:clamp(40px,6vw,68px);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+.cta-sub{font-size:17px;color:rgba(255,255,255,.45);max-width:540px;margin:0 auto 40px;line-height:1.7}
+.cta-links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto 36px}
+.cl{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:14px}
+.cl-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.cl-val{font-family:var(--mono);font-size:12px;color:var(--white)}
+.cta-deadline{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.cta-deadline span{color:var(--gold)}
+
+/* ── FOOTER ── */
+footer{background:var(--ink2);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.05)}
+.ft-brand{font-family:var(--syne);font-size:13px;font-weight:700}
+.ft-disc{font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
+.reveal.d4{transition-delay:.4s}.reveal.d5{transition-delay:.5s}
+
+@media(max-width:900px){
+  nav{padding:12px 20px}
+  section{padding:70px 20px}
+  .hero{padding:80px 20px 50px}
+  .hero-stats{flex-direction:column;gap:0}
+  .hs{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
+  .hs:last-child{border:none}
+  .problem-numbers{grid-template-columns:repeat(2,1fr)}
+  .agent-cards{grid-template-columns:1fr}
+  .sec-grid{grid-template-columns:1fr}
+  .gpu-grid{grid-template-columns:repeat(2,1fr)}
+  .demo-body{grid-template-columns:1fr}
+  .demo-right{border-top:1px solid rgba(255,255,255,.06)}
+  .cta-links{grid-template-columns:1fr}
+  .arch-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-mark">e₹</div>
+    <span class="nav-title">e₹ Bridge</span>
+  </div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#agent">AI Agent</a>
+    <a href="#security">Security</a>
+    <a href="#demo">Demo</a>
+    <a href="#gpu">GPU Guide</a>
+  </div>
+  <span class="nav-badge">RBIH Showcase 2026</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>RBIH Bank-Fintech Showcase 2026 · Abhishek Veda · Toronto</div>
+    <h1>End <span class="strike">SWIFT's 6.3%</span><br/>with India's <span class="gold">e-Rupee</span> + AI</h1>
+    <p class="hero-sub">An agentic AI system and CBDC payment bridge that reduces cross-border remittance fees from 6.3% to 0.2% and settlement from 3 days to 3 seconds. Built on India's own infrastructure. Zero third-party AI dependency.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">See it live →</button>
+      <a href="https://github.com/Abhishekveda/E-Rupee" target="_blank" class="btn-ghost">View source code</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-v">0.2%</div><div class="hs-l">Bridge fee</div></div>
+      <div class="hs"><div class="hs-v">&lt; 3s</div><div class="hs-l">Settlement</div></div>
+      <div class="hs"><div class="hs-v">ReAct</div><div class="hs-l">Agent pattern</div></div>
+      <div class="hs"><div class="hs-v">0</div><div class="hs-l">External AI APIs</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem-section" id="problem">
+  <div class="inner">
+    <div class="section-tag reveal">The problem</div>
+    <h2 class="section-h reveal d1">India's $100B remittance economy<br/>loses $6.3B to fees every year.</h2>
+    <div class="problem-numbers">
+      <div class="pn reveal d1"><div class="pn-val">$6.3B</div><div class="pn-lbl">Lost to SWIFT fees annually</div></div>
+      <div class="pn reveal d2"><div class="pn-val">6.3%</div><div class="pn-lbl">Average remittance fee (World Bank 2024)</div></div>
+      <div class="pn reveal d3"><div class="pn-val">3 days</div><div class="pn-lbl">SWIFT settlement time</div></div>
+      <div class="pn reveal d4"><div class="pn-val">1.6M</div><div class="pn-lbl">Indians in Canada sending money home</div></div>
+    </div>
+    <div class="quote-box reveal d5">
+      <div class="qb-text">"The basic use case for CBDC eventually comes in the cross-border space. We have to get into a few cross-border arrangements."</div>
+      <div class="qb-attr">— T. Rabi Sankar · Deputy Governor, Reserve Bank of India · Global Fintech Fest 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT ARCHITECTURE -->
+<section class="arch-section" id="agent">
+  <div class="inner">
+    <div class="section-tag reveal">Agentic AI</div>
+    <h2 class="section-h reveal d1">A ReAct agent that reasons,<br/>plans, and acts — no black box.</h2>
+    <p class="section-sub reveal d2">Unlike a simple API wrapper, this is a genuine agentic system. It classifies intent, selects tools, calls them, observes the results, and synthesises a complete answer. Every step is logged.</p>
+
+    <div class="arch-diagram reveal d2">
+      <div class="arch-layer">
+        <div class="arch-label">INPUT</div>
+        <div class="arch-box ab-1"><div class="ab-title">Security Filter → Input Sanitiser → Rate Limiter → Injection Detector</div><div class="ab-sub">Every input is cleaned and checked before the agent sees it</div></div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">PLAN</div>
+        <div class="arch-box ab-2"><div class="ab-title">Intent Classifier → Tool Planner (ReAct loop: Thought → Action → Observe)</div><div class="ab-sub">Agent decides which tools to call and in what order</div></div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">TOOLS</div>
+        <div class="arch-box ab-3"><div class="ab-title">FEMA Agent · Risk Scoring Agent · Regulatory Q&A Agent · LRS Calculator</div><div class="ab-sub">Deterministic tools — auditable, explainable, callable by the planner</div></div>
+      </div>
+      <div class="arch-arrow">↓</div>
+      <div class="arch-layer">
+        <div class="arch-label">ANSWER</div>
+        <div class="arch-box ab-4"><div class="ab-title">Response Synthesis → Memory Update → Audit Log Entry</div><div class="ab-sub">LLM formats the answer if available; rule synthesis used as fallback</div></div>
+      </div>
+    </div>
+
+    <div class="agent-cards">
+      <div class="ac ac-fema reveal d1">
+        <div class="ac-accent"></div>
+        <div class="ac-num">01 / 03 · FEMA AGENT</div>
+        <div class="ac-icon">⚖️</div>
+        <div class="ac-title">FEMA Classification Agent</div>
+        <div class="ac-desc">Classifies plain-English descriptions into FEMA purpose codes using TF-IDF cosine similarity across 13 codes. Catches paraphrases, not just keywords.</div>
+        <div class="ac-code">
+          <span><span class="kw">input:</span>  "paying daughter's MBA fees in Dubai"</span>
+          <span><span class="kw">output:</span> P0103 · HIGH confidence · 0.82 score</span>
+          <span><span class="kw">method:</span> keyword match + TF-IDF similarity</span>
+        </div>
+        <span class="no-ext">✓ No external API</span>
+      </div>
+      <div class="ac ac-risk reveal d2">
+        <div class="ac-accent"></div>
+        <div class="ac-num">02 / 03 · RISK AGENT</div>
+        <div class="ac-icon">🛡️</div>
+        <div class="ac-title">Risk Scoring Agent</div>
+        <div class="ac-desc">Scores every transfer 0–100 before execution. Eight named, transparent rules. Every flag has a named reason an auditor can read.</div>
+        <div class="ac-code">
+          <span><span class="kw">rules:</span>  8 named (LRS_LIMIT, HIGH_VELOCITY...)</span>
+          <span><span class="kw">output:</span> score 5/100 · LOW · APPROVE</span>
+          <span><span class="kw">maps to:</span> RBI KYC Master Direction</span>
+        </div>
+        <span class="no-ext">✓ FIU-IND aligned</span>
+      </div>
+      <div class="ac ac-qa reveal d3">
+        <div class="ac-accent"></div>
+        <div class="ac-num">03 / 03 · Q&A AGENT</div>
+        <div class="ac-icon">💬</div>
+        <div class="ac-title">Regulatory Q&A Agent</div>
+        <div class="ac-desc">Answers questions about LRS limits, FEMA codes, and RBI regulations. RAG over 12 source-cited RBI circular chunks. Works offline.</div>
+        <div class="ac-code">
+          <span><span class="kw">method:</span> TF-IDF RAG retrieval</span>
+          <span><span class="kw">sources:</span> 12 RBI circular chunks</span>
+          <span><span class="kw">optional:</span> Sarvam AI / Ollama / Groq</span>
+        </div>
+        <span class="no-ext">✓ Source-cited answers</span>
+      </div>
+    </div>
+
+    <div style="background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);border-radius:12px;padding:20px 24px" class="reveal d3">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:.1em;margin-bottom:8px">LLM BACKENDS (priority order)</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;font-size:12px;color:rgba(255,255,255,.6)">
+        <div><strong style="color:#fff;display:block;margin-bottom:3px">Sarvam AI</strong>Indian LLM · sarvam.ai · Fine-tuned on RBI regs</div>
+        <div><strong style="color:#fff;display:block;margin-bottom:3px">Ollama (local)</strong>Mistral / Llama · GPU or CPU · Fully offline</div>
+        <div><strong style="color:#fff;display:block;margin-bottom:3px">Groq (free)</strong>Llama 3.1 70B · Free tier · No GPU needed</div>
+        <div><strong style="color:#fff;display:block;margin-bottom:3px">Logic-only</strong>TF-IDF + rules · Zero deps · Fully auditable</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="security-section" id="security">
+  <div class="inner">
+    <div class="section-tag reveal">AI Security</div>
+    <h2 class="section-h reveal d1">Every input is checked.<br/>Every decision is logged.</h2>
+    <p class="section-sub reveal d2">The security layer sits between the user and the agent. It blocks adversarial inputs, rate-limits abusive sessions, and maintains a tamper-evident audit chain that the RBI can inspect.</p>
+    <div class="sec-grid">
+      <div class="sec-card reveal d1">
+        <div class="sc-head"><div class="sc-icon sci-red">🔒</div><div class="sc-title">Prompt Injection Guard</div></div>
+        <div class="sc-list">
+          <div class="sc-item">30+ injection patterns detected (ignore instructions, role override, system prompt extraction)</div>
+          <div class="sc-item">Session blocked immediately after detected injection attempt</div>
+          <div class="sc-item">Input sanitised: control characters removed, truncated to 2,000 chars</div>
+          <div class="sc-item">Based on published LLM adversarial attack research</div>
+        </div>
+      </div>
+      <div class="sec-card reveal d2">
+        <div class="sc-head"><div class="sc-icon sci-green">📋</div><div class="sc-title">Immutable Audit Chain</div></div>
+        <div class="sc-list">
+          <div class="sc-item">Every agent interaction logged: input hash, output hash, tools used, timestamp</div>
+          <div class="sc-item">Entries are hash-chained — tampering breaks the chain and is detectable</div>
+          <div class="sc-item">Chain integrity verifiable via GET /v1/security/audit-log</div>
+          <div class="sc-item">In production: append-only PostgreSQL with row-level checksums</div>
+        </div>
+      </div>
+      <div class="sec-card reveal d3">
+        <div class="sc-head"><div class="sc-icon sci-blue">⚡</div><div class="sc-title">Rate Limiting</div></div>
+        <div class="sc-list">
+          <div class="sc-item">Per-session token bucket: 30 requests per 60 seconds</div>
+          <div class="sc-item">Configurable limits per deployment environment</div>
+          <div class="sc-item">Rate limit events logged to audit trail</div>
+          <div class="sc-item">Remaining request count returned in every response</div>
+        </div>
+      </div>
+      <div class="sec-card reveal d4">
+        <div class="sc-head"><div class="sc-icon sci-purple">🌐</div><div class="sc-title">Data Sovereignty</div></div>
+        <div class="sc-list">
+          <div class="sc-item">Logic-only and Ollama modes process all data locally — no external network calls</div>
+          <div class="sc-item">Sarvam AI (Indian LLM) processes data on Indian infrastructure</div>
+          <div class="sc-item">Groq mode clearly documented as US-based; not for live customer data in RBI context</div>
+          <div class="sc-item">Architecture fully compliant with India's data localisation requirements</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+<section class="demo-section" id="demo">
+  <div class="inner">
+    <div class="section-tag reveal">Live demonstration</div>
+    <h2 class="section-h reveal d1">₹10,000 → 440 AED in 3 seconds.<br/>Watch the agent reason through it.</h2>
+    <div class="demo-container reveal d2">
+      <div class="demo-bar">
+        <div class="demo-dots"><span class="dd-r"></span><span class="dd-y"></span><span class="dd-g"></span></div>
+        <div class="demo-url">abhishekveda.github.io/E-Rupee · e₹ Bridge AI Agent</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:blink 2s infinite"></span>Agent active</div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-left">
+          <h3>Cross-border Transfer — AI assisted</h3>
+          <div class="d-field">
+            <label>Describe your purpose (AI will classify)</label>
+            <div class="d-input active" id="d-purpose" style="min-height:38px;cursor:default"></div>
+          </div>
+          <div class="ai-box" id="d-aibox">
+            <div class="ai-box-tag">✦ AI Agent classified</div>
+            <div class="ai-box-code" id="d-code">—</div>
+            <div class="ai-box-conf" id="d-conf">—</div>
+          </div>
+          <div class="d-row">
+            <div class="d-field">
+              <label>Amount (INR)</label>
+              <div class="d-input" id="d-amount">—</div>
+            </div>
+            <div class="d-field">
+              <label>Destination</label>
+              <div class="d-input">UAE 🇦🇪 → AED</div>
+            </div>
+          </div>
+          <div class="d-field">
+            <label>FEMA code (agent-selected)</label>
+            <div class="d-input" id="d-fema" style="font-family:var(--mono);font-size:12px;color:var(--muted)">Waiting for description...</div>
+          </div>
+          <div class="risk-box" id="d-risk"></div>
+          <div class="d-field">
+            <label>Quote (0.2% bridge fee vs 6.3% SWIFT)</label>
+            <div class="d-input" id="d-quote" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Enter amount to see quote</div>
+          </div>
+          <button class="exec-btn" id="d-btn">Waiting for agent...</button>
+        </div>
+        <div class="demo-right">
+          <div class="flow-panel">
+            <div class="fp-title">Agent reasoning trace</div>
+            <div class="f-step"><div class="fs-col"><div class="fs-dot ai" id="s0">✦</div><div class="fs-connector" id="c0"></div></div><div class="f-text"><div class="f-label">AI compliance pre-check <span class="agent-chip">Agent</span></div><div class="f-detail" id="fd0">Waiting for transfer...</div></div></div>
+            <div class="f-step"><div class="fs-col"><div class="fs-dot" id="s1">2</div><div class="fs-connector" id="c1"></div></div><div class="f-text"><div class="f-label">e-Rupee wallet debit</div><div class="f-detail" id="fd1">Pending...</div></div></div>
+            <div class="f-step"><div class="fs-col"><div class="fs-dot" id="s2">3</div><div class="fs-connector" id="c2"></div></div><div class="f-text"><div class="f-label">CBDC transaction hash</div><div class="f-detail" id="fd2">Pending...</div></div></div>
+            <div class="f-step"><div class="fs-col"><div class="fs-dot" id="s3">4</div><div class="fs-connector" id="c3"></div></div><div class="f-text"><div class="f-label">Ethereum bridge relay</div><div class="f-detail" id="fd3">Pending...</div></div></div>
+            <div class="f-step"><div class="fs-col"><div class="fs-dot" id="s4">5</div></div><div class="f-text"><div class="f-label">Settlement confirmed</div><div class="f-detail" id="fd4">Pending...</div></div></div>
+          </div>
+          <div class="receipt-card" id="d-receipt">
+            <div class="rc-head"><div class="rc-title">Receipt</div><div class="rc-status">SETTLED ✓</div></div>
+            <div class="rc-row"><span class="rc-l">Sent</span><span class="rc-v gold">₹10,000</span></div>
+            <div class="rc-row"><span class="rc-l">Received</span><span class="rc-v green">440 AED</span></div>
+            <div class="rc-row"><span class="rc-l">Fee</span><span class="rc-v">₹20 (0.2%)</span></div>
+            <div class="rc-row"><span class="rc-l">Saved vs SWIFT</span><span class="rc-v" style="color:var(--green)">₹610</span></div>
+            <div class="rc-row"><span class="rc-l">AI risk score</span><span class="rc-v">5/100 · LOW · ✓</span></div>
+            <div class="rc-row"><span class="rc-l">FEMA code</span><span class="rc-v">P0103 (AI selected)</span></div>
+            <div class="rc-row"><span class="rc-l">Settlement</span><span class="rc-v green" id="d-time">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GPU GUIDE -->
+<section class="gpu-section" id="gpu">
+  <div class="inner">
+    <div class="section-tag reveal">Infrastructure</div>
+    <h2 class="section-h reveal d1">GPU requirements for every scale.</h2>
+    <p class="section-sub reveal d2">The agent works on a laptop today. Here is what you need to scale to a bank or national deployment. India AI Mission provides subsidised GPU access for qualifying projects.</p>
+    <div class="gpu-grid">
+      <div class="gpu-card reveal d1">
+        <div class="gpu-level">LEVEL 0</div>
+        <div class="gpu-name">No GPU</div>
+        <div class="gpu-vram">CPU</div>
+        <div class="gpu-price">₹0 extra · works now</div>
+        <div class="gpu-models"><span>Logic + TF-IDF mode</span><span>All 3 agents active</span><span>&lt; 50ms per request</span><span>Fully auditable</span></div>
+      </div>
+      <div class="gpu-card reveal d2">
+        <div class="gpu-level">LEVEL 1</div>
+        <div class="gpu-name">RTX 4090</div>
+        <div class="gpu-vram">24 GB</div>
+        <div class="gpu-price">₹1.8L – ₹2.2L</div>
+        <div class="gpu-models"><span>Mistral 7B local</span><span>Llama 3.1 8B</span><span>Offline · data sovereignty</span><span>Best for showcase / pilot</span></div>
+      </div>
+      <div class="gpu-card recommended reveal d3">
+        <div class="gpu-badge">Bank pilot</div>
+        <div class="gpu-level">LEVEL 2</div>
+        <div class="gpu-name">2× A100</div>
+        <div class="gpu-vram">160 GB</div>
+        <div class="gpu-price">₹40L – ₹55L</div>
+        <div class="gpu-models"><span>Llama 3.1 70B</span><span>Sarvam-1 self-hosted</span><span>30–50 tok/s</span><span>AWS Mumbai / E2E Networks</span></div>
+      </div>
+      <div class="gpu-card reveal d4">
+        <div class="gpu-level">LEVEL 3</div>
+        <div class="gpu-name">4× H100</div>
+        <div class="gpu-vram">320 GB</div>
+        <div class="gpu-price">₹2.5Cr+</div>
+        <div class="gpu-models"><span>Multiple 70B agents</span><span>Fine-tuning on RBI data</span><span>National-scale inference</span><span>NPCI / RBI grade</span></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:12px;padding:18px 24px" class="reveal d3">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;margin-bottom:8px">INDIA AI MISSION · SUBSIDISED GPU ACCESS</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.65">The Government of India's ₹10,000 crore India AI Mission includes a 10,000 GPU compute cluster available to Indian startups and researchers at subsidised rates. NASSCOM's AIRAWAT at C-DAC Pune also provides GPU compute for Indian AI projects. Contact: <span style="color:var(--gold);font-family:var(--mono)">airawat@cdac.in</span> · <span style="color:var(--gold);font-family:var(--mono)">indiaai.gov.in/compute</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-logo">e₹</div>
+  <h2 class="cta-h" style="animation:fadeUp .7s .2s both;opacity:0">One ask.</h2>
+  <p class="cta-sub" style="animation:fadeUp .6s .4s both;opacity:0">A Regulatory Sandbox slot and one bank pilot. The code is open source. Any bank in this room can clone it, run it locally, and read exactly how the agent makes every decision — no black box.</p>
+  <div class="cta-links" style="animation:fadeUp .6s .6s both;opacity:0">
+    <div class="cl"><div class="cl-lbl">Live demo</div><div class="cl-val">abhishekveda.github.io/E-Rupee</div></div>
+    <div class="cl"><div class="cl-lbl">Source code</div><div class="cl-val">github.com/Abhishekveda/E-Rupee</div></div>
+    <div class="cl"><div class="cl-lbl">Builder</div><div class="cl-val">Abhishek Veda · Toronto 🇨🇦</div></div>
+  </div>
+  <div class="cta-deadline" style="animation:fadeUp .5s .8s both;opacity:0">Deadline: <span>June 5, 2026</span> · rbih.org.in · RBIH Bank-Fintech Showcase</div>
+</section>
+
+<footer>
+  <div class="ft-brand">e₹ Bridge · v2.0</div>
+  <div class="ft-disc">Proof of concept · Not affiliated with RBI or RBIH · e-Rupee APIs are simulated</div>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('progress').style.width=(window.scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+// Scroll reveals
+const ro=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');}
+}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// Demo auto-runs when section is visible
+let demoRan=false;
+const demoObs=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(e.isIntersecting&&!demoRan){demoRan=true;setTimeout(runDemo,500);}
+}),{threshold:.3});
+const demoEl=document.querySelector('.demo-container');
+if(demoEl)demoObs.observe(demoEl);
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function rndHash(p){let h='';const c='0123456789abcdef';for(let i=0;i<56;i++)h+=c[Math.floor(Math.random()*16)];return'0x'+p+h;}
+
+async function typeText(el,text,speed=30){
+  el.textContent='';
+  for(const ch of text){el.textContent+=ch;await sleep(speed);}
+}
+
+function setStep(i,state,detail){
+  const d=document.getElementById('s'+i);
+  const c=document.getElementById('c'+i);
+  const fd=document.getElementById('fd'+i);
+  if(state==='active'){d.className='fs-dot active';}
+  else if(state==='done'){d.className='fs-dot done';d.textContent='✓';if(c)c.classList.add('done');}
+  if(fd&&detail)fd.textContent=detail;
+}
+
+async function runDemo(){
+  const purposeEl=document.getElementById('d-purpose');
+  const aiBox=document.getElementById('d-aibox');
+  const femaEl=document.getElementById('d-fema');
+  const amountEl=document.getElementById('d-amount');
+  const quoteEl=document.getElementById('d-quote');
+  const riskBox=document.getElementById('d-risk');
+  const btn=document.getElementById('d-btn');
+
+  // Type the purpose
+  await typeText(purposeEl,'paying my daughter\'s MBA fees at a university in Dubai',28);
+  await sleep(600);
+
+  // AI classifies
+  aiBox.classList.add('show');
+  document.getElementById('d-code').textContent='P0103 — Remittances for studies abroad';
+  document.getElementById('d-conf').textContent='HIGH confidence · 0.82 score · LRS permitted up to $250,000/yr';
+  femaEl.textContent='P0103 — Education fees abroad';
+  femaEl.style.color='var(--g2)';
+  await sleep(500);
+
+  // Fill amount
+  amountEl.textContent='₹10,000';
+  quoteEl.textContent='440 AED · fee ₹20 (0.2%) · saves ₹610 vs SWIFT 6.3%';
+  quoteEl.style.color='rgba(255,255,255,.75)';
+  await sleep(400);
+
+  // Risk check
+  riskBox.className='risk-box risk-LOW show';
+  riskBox.textContent='✓ AI Risk: LOW (score 5/100) — Transfer approved';
+  await sleep(500);
+
+  // Button ready
+  btn.className='exec-btn ready';
+  btn.textContent='Execute Transfer via e₹ Bridge →';
+  await sleep(700);
+
+  // Execute
+  btn.className='exec-btn running';
+  btn.textContent='Agent processing...';
+  const t0=Date.now();
+
+  setStep(0,'active');await sleep(550);
+  setStep(0,'done','FEMA: P0103 ✓ · Risk: LOW (5/100) · APPROVE');
+
+  setStep(1,'active');await sleep(430);
+  setStep(1,'done','Debited ₹10,000 from e-Rupee wallet');
+
+  setStep(2,'active');await sleep(470);
+  setStep(2,'done',rndHash('cbdc').slice(0,26)+'...');
+
+  setStep(3,'active');await sleep(400);
+  setStep(3,'done',rndHash('bridge').slice(0,24)+'...');
+
+  setStep(4,'active');await sleep(520);
+  const elapsed=((Date.now()-t0)/1000).toFixed(2);
+  setStep(4,'done','Block #19452341 · '+elapsed+'s');
+
+  document.getElementById('d-time').textContent=elapsed+'s';
+  document.getElementById('d-receipt').classList.add('show');
+
+  btn.className='exec-btn done';
+  btn.textContent='✓ Settled in '+elapsed+'s — 97% cheaper than SWIFT';
+}
+</script>
+</body>
+</html>
