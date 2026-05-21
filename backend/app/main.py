@@ -241,3 +241,42 @@ def pre_check(req: AgentPreCheckRequest):
         transfer_history=history,
     )
     return result
+
+
+# ── Agentic endpoint (full ReAct loop) ────────────────────────────────────────
+
+class AgentRunRequest(BaseModel):
+    query: str = Field(..., example="My daughter is doing MBA in Dubai, I want to send ₹5L per semester. What FEMA code and is it within LRS?")
+    session_id: str = Field(default="default")
+    context: Optional[dict] = None
+
+
+@app.post("/v1/agent/run")
+def run_agent(req: AgentRunRequest):
+    """
+    Full agentic reasoning endpoint.
+
+    Unlike the direct tool endpoints, this runs the complete
+    ReAct loop: the agent plans which tools to use, calls them,
+    observes the results, and synthesises a comprehensive answer.
+
+    Use this for complex, multi-faceted queries.
+    Use /v1/agent/classify-purpose or /v1/agent/score-risk
+    for single-purpose lookups.
+    """
+    result = agent.run_agent(
+        query=req.query,
+        context=req.context,
+        session_id=req.session_id,
+    )
+    return result
+
+
+@app.get("/v1/security/audit-log")
+def get_audit_log(n: int = 20):
+    """Returns the last N entries from the immutable audit log."""
+    return {
+        "entries": agent.security.get_audit_log(n),
+        "chain_intact": agent.security.audit_logger.verify_chain(),
+        "total_events": agent.security.audit_logger.total_events,
+    }

@@ -1,65 +1,43 @@
 """
 orchestrator.py
-===============
-The e₹ Bridge AI Agent Orchestrator.
+---------------
+Entry point for the e₹ Bridge AI agent system.
 
-This is the entry point for all AI operations. It:
-  1. Routes incoming requests to the correct sub-agent
-  2. Combines outputs from multiple agents when needed
-  3. Manages conversation state per session
-  4. Provides a unified interface to the FastAPI layer
+Ties together the ReAct loop, security filter, memory manager,
+and sub-agents into a single coherent interface.
 
-AGENT ROUTING LOGIC:
-====================
-  classify_purpose() → FEMAAgent
-  score_risk()        → RiskAgent
-  answer_question()   → QAAgent
-  full_pre_check()    → FEMAAgent + RiskAgent (combined)
-
-SESSION MANAGEMENT:
-===================
-  Conversation history is stored in memory (dict keyed by session_id).
-  In production, this would be persisted in Redis or PostgreSQL.
-  Max 20 messages per session (10 exchanges) to prevent memory bloat.
+All external calls (from main.py) go through this class.
 """
 
 from app.agent.fema_agent import FEMAAgent
 from app.agent.risk_agent import RiskAgent
 from app.agent.qa_agent import QAAgent
+from app.agent.core.react_loop import ReactLoop
+from app.agent.core.memory import MemoryManager
+from app.agent.security.security import SecurityFilter
 
 
 class AgentOrchestrator:
-    """
-    Central orchestrator for the e₹ Bridge AI agent system.
-
-    All three sub-agents are initialised once at startup and reused
-    across requests (thread-safe for read operations).
-    """
 
     def __init__(self):
-        self.fema_agent = FEMAAgent()
-        self.risk_agent = RiskAgent()
-        self.qa_agent = QAAgent()
-        self._sessions: dict[str, list] = {}
-        print("[e₹ Agent] Orchestrator initialised — FEMA, Risk, QA agents ready.")
+        # Sub-agents (direct tool access)
+        self.fema = FEMAAgent()
+        self.risk = RiskAgent()
+        self.qa = QAAgent()
+        # Agentic infrastructure
+        self.react = ReactLoop()
+        self.memory = MemoryManager()
+        self.security = SecurityFilter()
+        print(f"[e₹ Agent] Orchestrator ready — mode: {self.react.mode}")
 
-    # ── Public interface ──────────────────────────────────────────────────────
+    # ── Direct tool calls (fast path) ────────────────────────────────────────
 
     def classify_purpose(self, description: str, amount_inr: float) -> dict:
-        """Route to FEMA classification agent."""
-        return self.fema_agent.classify(description, amount_inr)
+        return self.fema.classify(description, amount_inr)
 
-    def score_risk(
-        self,
-        sender_wallet: str,
-        recipient_address: str,
-        amount_inr: float,
-        purpose_code: str,
-        recipient_country: str,
-        transfer_history: list = None,
-    ) -> dict:
-        """Route to risk scoring agent."""
-        return self.risk_agent.score(
+    def score_risk(self, sender_wallet, recipient_address, amount_inr,
+                   purpose_code, recipient_country, transfer_history=None) -> dict:
+        return self.risk.score(
             sender_wallet=sender_wallet,
             recipient_address=recipient_address,
             amount_inr=amount_inr,
@@ -69,46 +47,25 @@ class AgentOrchestrator:
         )
 
     def answer_question(self, question: str, session_id: str = "default") -> dict:
-        """Route to Q&A agent, maintaining conversation context."""
-        history = self._sessions.get(session_id, [])
-        result = self.qa_agent.answer(question, conversation_context=history)
-
-        # Update conversation history
-        history.append({"role": "user", "content": question})
-        history.append({"role": "assistant", "content": result["answer"]})
-        self._sessions[session_id] = history[-20:]  # keep last 10 exchanges
-
+        history = self.memory.get_history(session_id)
+        result = self.qa.answer(question, conversation_context=history)
+        self.memory.add_turn(session_id, question, result["answer"])
         return result
 
-    def pre_transfer_check(
-        self,
-        description: str,
-        sender_wallet: str,
-        recipient_address: str,
-        amount_inr: float,
-        purpose_code: str,
-        recipient_country: str,
-        transfer_history: list = None,
-    ) -> dict:
-        """
-        Combined pre-flight check: FEMA classification + risk scoring.
-        Called just before a transfer is executed.
-        Returns a unified assessment.
-        """
-        fema = self.fema_agent.classify(description or "", amount_inr)
-        risk = self.risk_agent.score(
+    def pre_transfer_check(self, description, sender_wallet, recipient_address,
+                           amount_inr, purpose_code, recipient_country,
+                           transfer_history=None) -> dict:
+        fema = self.fema.classify(description or "", amount_inr)
+        risk = self.risk.score(
             sender_wallet, recipient_address, amount_inr,
             purpose_code, recipient_country, transfer_history or []
         )
-
-        # Overall recommendation
         if risk["recommendation"] == "BLOCK":
             overall = "BLOCK"
         elif risk["recommendation"] == "REVIEW" or fema["confidence"] == "LOW":
             overall = "REVIEW"
         else:
             overall = "APPROVE"
-
         return {
             "overall_recommendation": overall,
             "fema_analysis": fema,
@@ -120,28 +77,90 @@ class AgentOrchestrator:
             ),
         }
 
+    # ── Agentic path (complex multi-step queries) ─────────────────────────────
+
+    def run_agent(self, query: str, context: dict = None,
+                  session_id: str = "default") -> dict:
+        """
+        Full ReAct agent loop for complex queries.
+        Includes security filtering, memory injection, and reasoning trace.
+        """
+        # Security check
+        sec = self.security.check(query, session_id)
+        if not sec["allowed"]:
+            return {
+                "answer": f"Request blocked: {sec['threat_detail']}",
+                "threat_detected": True,
+                "threat_type": sec["threat_type"],
+                "steps": [],
+                "audit_hash": sec["audit_hash"],
+            }
+
+        clean_query = sec["clean_text"]
+
+        # Inject memory context
+        ctx = context or {}
+        ctx["conversation_history"] = self.memory.get_history(session_id)
+
+        # Run agent
+        result = self.react.run(clean_query, ctx, session_id)
+
+        # Store to memory
+        self.memory.add_turn(session_id, clean_query, result.answer[:500])
+
+        # Log the interaction
+        self.security.audit_logger.record(
+            "AGENT_COMPLETE", session_id, clean_query[:100], result.answer[:100],
+            {"tools": result.tools_used, "confidence": result.confidence,
+             "mode": result.mode, "time_ms": round(result.execution_time_ms)}
+        )
+
+        return {
+            "answer": result.answer,
+            "confidence": result.confidence,
+            "tools_used": result.tools_used,
+            "reasoning_steps": [
+                {
+                    "step": s.step_num,
+                    "thought": s.thought,
+                    "action": s.action,
+                    "tool": s.tool_used,
+                    "observation": s.observation,
+                }
+                for s in result.steps
+            ],
+            "execution_time_ms": round(result.execution_time_ms),
+            "mode": result.mode,
+            "threat_detected": False,
+            "audit_hash": sec["audit_hash"],
+        }
+
     def get_status(self) -> dict:
-        """Health check — returns agent status."""
+        react_status = self.react.get_status()
+        sec_stats = self.security.get_stats()
         return {
             "status": "operational",
-            "agents": {
+            "agent": {
+                "mode": react_status["mode"],
+                "llm_backend": react_status["llm_backend"],
+                "version": react_status["version"],
+            },
+            "tools": {
                 "fema_agent": {
-                    "status": "ready",
-                    "codes_indexed": len(self.fema_agent.code_order),
+                    "codes_indexed": len(self.fema.code_order),
                     "method": "TF-IDF + keyword matching",
                 },
                 "risk_agent": {
-                    "status": "ready",
                     "rules": 8,
-                    "method": "Rule-based scoring",
+                    "method": "Named rule-based scoring",
                 },
                 "qa_agent": {
-                    "status": "ready",
-                    "knowledge_chunks": len(self.qa_agent.chunk_ids),
-                    "method": "RAG" + (" + Groq Llama 3.1" if self.qa_agent._groq_client else " (retrieval-only)"),
-                    "groq_enabled": self.qa_agent._groq_client is not None,
+                    "knowledge_chunks": len(self.qa.chunk_ids),
+                    "llm_enabled": self.qa._groq_client is not None,
                 },
             },
-            "sessions_active": len(self._sessions),
-            "version": "1.0.0",
+            "security": sec_stats,
+            "memory": {
+                "active_sessions": self.memory.active_sessions,
+            },
         }
