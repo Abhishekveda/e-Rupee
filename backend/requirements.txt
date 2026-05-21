@@ -4,15 +4,18 @@ uvicorn[standard]==0.29.0
 httpx==0.27.0
 python-dotenv==1.0.1
 
+# Database
+sqlalchemy==2.0.30
+# For production PostgreSQL: also add psycopg2-binary==2.9.9
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
 # Testing
 pytest==8.2.0
 pytest-asyncio==0.23.6
 
-# e₹ AI Agent (no paid API needed)
-# All agent logic uses Python stdlib + these packages only:
-# - math, re, collections (stdlib — already included)
-# The agent works with ZERO additional packages.
-
-# Optional: Groq free-tier LLM for enhanced Q&A
-# Get a free key at: https://console.groq.com/keys
-# groq==0.9.0  # uncomment to enable Groq Llama 3.1 integration
+# e₹ AI Agent — zero extra deps (uses Python stdlib: math, re, collections)
+# Optional Groq free-tier LLM for enhanced Q&A responses:
+# groq==0.9.0  → uncomment and add GROQ_API_KEY=gsk_... to .env
