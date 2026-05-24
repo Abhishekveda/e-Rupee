@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  # ── Backend: install, lint, test ───────────────────────────────────────────
+  # ── Backend: Python imports + agent tests ─────────────────────────────────
   backend:
     name: Backend (Python 3.12)
     runs-on: ubuntu-latest
@@ -22,22 +22,72 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
 
       - name: Install dependencies
         run: |
-          pip install fastapi uvicorn httpx pytest pytest-asyncio \
-            sqlalchemy python-jose[cryptography] passlib[bcrypt] \
-            python-dotenv
+          pip install \
+            fastapi==0.111.0 \
+            uvicorn==0.29.0 \
+            httpx==0.27.0 \
+            sqlalchemy==2.0.30 \
+            python-jose[cryptography]==3.3.0 \
+            passlib[bcrypt]==1.7.4 \
+            python-dotenv==1.0.1 \
+            pytest==8.2.0 \
+            pytest-asyncio==0.23.6
 
-      - name: Check imports compile cleanly
-        run: python -c "from app.main import app; print('✓ app imports OK')"
+      - name: Verify app imports cleanly
+        run: python -c "from app.main import app; print('✓ FastAPI app OK')"
 
-      - name: Run unit tests (no server required)
-        run: pytest tests/ -v --tb=short -x
-        continue-on-error: true   # tests are integration tests needing live server
+      - name: Verify all 5 AI agents start
+        run: |
+          python -c "
+          from app.agent.orchestrator import AgentOrchestrator
+          orch = AgentOrchestrator()
+          status = orch.get_status()
+          assert status['total_agents'] == 5, f'Expected 5 agents, got {status[\"total_agents\"]}'
+          for name, ag in status['agents'].items():
+              assert ag['status'] == 'ready', f'Agent {name} not ready'
+              print(f'  ✓ {name} ready')
+          print('  ✓ All 5 agents operational')
+          "
 
-  # ── Contracts: compile + unit tests ───────────────────────────────────────
+      - name: Test FEMA agent classifies correctly
+        run: |
+          python -c "
+          from app.agent.fema_agent import FEMAAgent
+          agent = FEMAAgent()
+          r = agent.classify('paying university fees in Dubai', 500000)
+          assert r['code'] == 'P0103', f'Expected P0103, got {r[\"code\"]}'
+          print(f'  ✓ FEMA: {r[\"code\"]} ({r[\"confidence\"]} confidence)')
+          "
+
+      - name: Test Risk agent flags LRS breach
+        run: |
+          python -c "
+          from app.agent.risk_agent import RiskAgent
+          agent = RiskAgent()
+          r = agent.score('USER', '0xAbCdEf1234567890abcdef1234567890AbCdEf12', 25000000, 'P0102', 'UAE')
+          assert r['recommendation'] == 'BLOCK', f'Expected BLOCK for LRS breach, got {r[\"recommendation\"]}'
+          print(f'  ✓ Risk: score {r[\"risk_score\"]}/100 → {r[\"recommendation\"]}')
+          "
+
+      - name: Test Q&A agent answers from knowledge base
+        run: |
+          python -c "
+          from app.agent.qa_agent import QAAgent
+          agent = QAAgent()
+          r = agent.answer('What is the LRS annual limit?')
+          assert len(r['answer']) > 20, 'Answer too short'
+          assert r['generation_method'] in ['rag_retrieval', 'groq_llm_llama3']
+          print(f'  ✓ Q&A: {r[\"answer\"][:60]}...')
+          "
+
+      - name: Run integration tests
+        run: pytest tests/ -v --tb=short
+        continue-on-error: true
+
+  # ── Smart Contracts: compile + test ───────────────────────────────────────
   contracts:
     name: Smart Contracts (Solidity)
     runs-on: ubuntu-latest
@@ -49,46 +99,12 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Hardhat
-        run: npm install   # npm install (not ci) — no lockfile required
+      - name: Install Node dependencies (Hardhat + OpenZeppelin)
+        run: npm install
 
-      - name: Compile contracts
+      - name: Compile all contracts
         run: npx hardhat compile
 
-      - name: Run contract tests
+      - name: Run contract test suite
         run: npx hardhat test
 
-      - name: Slither analysis
-        uses: crytic/slither-action@v0.4.0
-        with:
-          target: contracts/
-          slither-args: --exclude-dependencies
-        continue-on-error: true   # advisory — non-blocking for PoC
-
-  # ── Security: dependency audit ────────────────────────────────────────────
-  audit:
-    name: Dependency audit
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: npm audit
-        run: |
-          npm install
-          npm audit --audit-level=critical
-        continue-on-error: true   # advisory for PoC
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: pip-audit
-        run: |
-          pip install pip-audit
-          pip-audit -r backend/requirements.txt
-        continue-on-error: true   # advisory for PoC

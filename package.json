@@ -1,17 +1,20 @@
 {
   "name": "cbdc-bridge-contracts",
-  "version": "0.1.0",
-  "description": "e-Rupee CBDC cross-border bridge contracts",
+  "version": "2.0.0",
+  "description": "e₹ Bridge — Open CBDC Bridge Protocol smart contracts",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test",
-    "deploy:local": "hardhat run scripts/deploy.js --network hardhat",
+    "test":    "hardhat test",
+    "deploy:local":  "hardhat run scripts/deploy.js --network hardhat",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
     "node": "hardhat node"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "dotenv": "^16.4.5",
-    "hardhat": "^2.22.4"
+    "hardhat": "^2.22.4",
+    "dotenv": "^16.4.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.6"
   }
 }
