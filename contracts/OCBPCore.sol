@@ -196,38 +196,44 @@ contract OCBPCore is ReentrancyGuard, Pausable, AccessControl {
         uint8   femaCategory,
         bytes32 nonce
     ) internal returns (bytes32 transferId) {
-        uint256 feeINR = (amountINR * bridgeFeeBps) / 10000;
         transferId = keccak256(
             abi.encodePacked(msg.sender, recipient, amountINR, block.timestamp, nonce)
         );
 
-        transfers[transferId] = Transfer({
-            id:               transferId,
-            sender:           msg.sender,
-            recipient:        recipient,
-            amountINR:        amountINR,
-            fxRate:           fxRate,
-            destinationAmount: ((amountINR - feeINR) * fxRate) / 1e6,
-            currency:         destinationCurrency,
-            complianceHash:   complianceHash,
-            riskScore:        riskScore,
-            femaCategory:     femaCategory,
-            createdAt:        block.timestamp,
-            settledAt:        0,
-            status:           riskScore > 50 ? TransferStatus.FlaggedReview : TransferStatus.Pending,
-            requiresMultiSig: amountINR > HIGH_VALUE_THRESHOLD,
-            multiSigCount:    0
-        });
+        // Write fields via storage pointer — avoids struct-literal stack explosion
+        Transfer storage t = transfers[transferId];
+        t.id               = transferId;
+        t.sender           = msg.sender;
+        t.recipient        = recipient;
+        t.amountINR        = amountINR;
+        t.fxRate           = fxRate;
+        t.currency         = destinationCurrency;
+        t.complianceHash   = complianceHash;
+        t.riskScore        = riskScore;
+        t.femaCategory     = femaCategory;
+        t.createdAt        = block.timestamp;
+        t.status           = riskScore > 50
+                               ? TransferStatus.FlaggedReview
+                               : TransferStatus.Pending;
+        t.requiresMultiSig = amountINR > HIGH_VALUE_THRESHOLD;
+
+        // Compute destination amount separately to keep stack shallow
+        _setDestinationAmount(transferId, amountINR, fxRate);
 
         usedCommitments[nonce] = true;
         totalTransfersCount++;
-        totalVolumeINR  += amountINR;
+        totalVolumeINR   += amountINR;
         totalDollarsFree += amountINR;
 
         emit TransferInitiated(
             transferId, msg.sender, amountINR,
             destinationCurrency, complianceHash, riskScore
         );
+    }
+
+    function _setDestinationAmount(bytes32 transferId, uint256 amountINR, uint256 fxRate) internal {
+        uint256 feeINR = (amountINR * bridgeFeeBps) / 10000;
+        transfers[transferId].destinationAmount = ((amountINR - feeINR) * fxRate) / 1e6;
     }
 
     // ── Step 2: Compliance oracle attests ─────────────────────────────────────
