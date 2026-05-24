@@ -8,13 +8,10 @@ on:
 
 jobs:
 
-  # ── Backend: Python imports + agent tests ─────────────────────────────────
+  # ── Backend: Python tests ─────────────────────────────────────────────────
   backend:
-    name: Backend (Python 3.12)
+    name: Backend · Python 3.12
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -24,72 +21,25 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
+        working-directory: backend
         run: |
           pip install \
             fastapi==0.111.0 \
             uvicorn==0.29.0 \
             httpx==0.27.0 \
             sqlalchemy==2.0.30 \
-            python-jose[cryptography]==3.3.0 \
-            passlib[bcrypt]==1.7.4 \
+            "python-jose[cryptography]==3.3.0" \
+            "passlib[bcrypt]==1.7.4" \
             python-dotenv==1.0.1 \
-            pytest==8.2.0 \
-            pytest-asyncio==0.23.6
+            pytest==8.2.0
 
-      - name: Verify app imports cleanly
-        run: python -c "from app.main import app; print('✓ FastAPI app OK')"
-
-      - name: Verify all 5 AI agents start
-        run: |
-          python -c "
-          from app.agent.orchestrator import AgentOrchestrator
-          orch = AgentOrchestrator()
-          status = orch.get_status()
-          assert status['total_agents'] == 5, f'Expected 5 agents, got {status[\"total_agents\"]}'
-          for name, ag in status['agents'].items():
-              assert ag['status'] == 'ready', f'Agent {name} not ready'
-              print(f'  ✓ {name} ready')
-          print('  ✓ All 5 agents operational')
-          "
-
-      - name: Test FEMA agent classifies correctly
-        run: |
-          python -c "
-          from app.agent.fema_agent import FEMAAgent
-          agent = FEMAAgent()
-          r = agent.classify('paying university fees in Dubai', 500000)
-          assert r['code'] == 'P0103', f'Expected P0103, got {r[\"code\"]}'
-          print(f'  ✓ FEMA: {r[\"code\"]} ({r[\"confidence\"]} confidence)')
-          "
-
-      - name: Test Risk agent flags LRS breach
-        run: |
-          python -c "
-          from app.agent.risk_agent import RiskAgent
-          agent = RiskAgent()
-          r = agent.score('USER', '0xAbCdEf1234567890abcdef1234567890AbCdEf12', 25000000, 'P0102', 'UAE')
-          assert r['recommendation'] == 'BLOCK', f'Expected BLOCK for LRS breach, got {r[\"recommendation\"]}'
-          print(f'  ✓ Risk: score {r[\"risk_score\"]}/100 → {r[\"recommendation\"]}')
-          "
-
-      - name: Test Q&A agent answers from knowledge base
-        run: |
-          python -c "
-          from app.agent.qa_agent import QAAgent
-          agent = QAAgent()
-          r = agent.answer('What is the LRS annual limit?')
-          assert len(r['answer']) > 20, 'Answer too short'
-          assert r['generation_method'] in ['rag_retrieval', 'groq_llm_llama3']
-          print(f'  ✓ Q&A: {r[\"answer\"][:60]}...')
-          "
-
-      - name: Run integration tests
-        run: pytest tests/ -v --tb=short
-        continue-on-error: true
+      - name: Run test suite (21 tests across 5 agents)
+        working-directory: backend
+        run: pytest tests/test_ci.py -v --tb=short
 
   # ── Smart Contracts: compile + test ───────────────────────────────────────
   contracts:
-    name: Smart Contracts (Solidity)
+    name: Smart Contracts · Solidity
     runs-on: ubuntu-latest
 
     steps:
@@ -98,13 +48,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
 
-      - name: Install Node dependencies (Hardhat + OpenZeppelin)
-        run: npm install
+      - name: Install Hardhat + OpenZeppelin
+        run: npm ci
 
       - name: Compile all contracts
         run: npx hardhat compile
 
-      - name: Run contract test suite
+      - name: Run contract tests
         run: npx hardhat test
 
