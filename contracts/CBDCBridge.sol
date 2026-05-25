@@ -113,17 +113,17 @@ contract CBDCBridge {
         require(recipient != address(0), "Bad recipient");
         require(amountInr > 0, "Zero amount");
 
-        payments[cbdcTxHash] = PaymentRecord({
-            cbdcTxHash:       cbdcTxHash,
-            sender:           sender,
-            recipient:        recipient,
-            amountInr:        amountInr,
-            convertedAmount:  convertedAmt,
-            destinationToken: destToken,
-            timestamp:        uint64(block.timestamp),
-            status:           Status.Pending,
-            purposeCode:      purposeCode
-        });
+        PaymentRecord storage p = payments[cbdcTxHash];
+        p.cbdcTxHash       = cbdcTxHash;
+        p.sender           = sender;
+        p.recipient        = recipient;
+        p.amountInr        = amountInr;
+        p.convertedAmount  = convertedAmt;
+        p.destinationToken = destToken;
+        p.timestamp        = uint64(block.timestamp);
+        p.status           = Status.Pending;
+        p.purposeCode      = purposeCode;
+
         paymentIds.push(cbdcTxHash);
 
         emit CrossBorderInitiated(
