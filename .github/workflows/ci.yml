@@ -8,11 +8,9 @@ on:
 
 jobs:
 
-  # ── Backend: Python tests ─────────────────────────────────────────────────
   backend:
     name: Backend · Python 3.12
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -24,24 +22,17 @@ jobs:
         working-directory: backend
         run: |
           pip install \
-            fastapi==0.111.0 \
-            uvicorn==0.29.0 \
-            httpx==0.27.0 \
-            sqlalchemy==2.0.30 \
-            "python-jose[cryptography]==3.3.0" \
-            "passlib[bcrypt]==1.7.4" \
-            python-dotenv==1.0.1 \
-            pytest==8.2.0
+            fastapi==0.111.0 uvicorn==0.29.0 httpx==0.27.0 \
+            sqlalchemy==2.0.30 "python-jose[cryptography]==3.3.0" \
+            "passlib[bcrypt]==1.7.4" python-dotenv==1.0.1 pytest==8.2.0
 
-      - name: Run test suite (21 tests across 5 agents)
+      - name: Run 21 agent tests
         working-directory: backend
         run: pytest tests/test_ci.py -v --tb=short
 
-  # ── Smart Contracts: compile + test ───────────────────────────────────────
   contracts:
     name: Smart Contracts · Solidity
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -50,12 +41,21 @@ jobs:
           node-version: "20"
           cache: npm
 
-      - name: Install Hardhat + OpenZeppelin
+      - name: Install dependencies
         run: npm ci
 
-      - name: Compile all contracts
+      - name: Verify only 2 contracts exist
+        run: |
+          COUNT=$(find contracts -name "*.sol" | wc -l)
+          echo "Contracts found: $COUNT"
+          find contracts -name "*.sol"
+          test "$COUNT" -eq 2 || (echo "ERROR: unexpected .sol files" && exit 1)
+
+      - name: Clean Hardhat cache
+        run: npx hardhat clean
+
+      - name: Compile
         run: npx hardhat compile
 
-      - name: Run contract tests
+      - name: Test
         run: npx hardhat test
-
