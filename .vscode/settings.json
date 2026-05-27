@@ -1,0 +1,21 @@
+{
+  "python.defaultInterpreterPath": "python3",
+  "python.terminal.activateEnvironment": true,
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/node_modules": true,
+    "**/artifacts": true,
+    "**/cache": true,
+    "**/.pytest_cache": true
+  },
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "editor.rulers": [100],
+  "[python]": {
+    "editor.tabSize": 4
+  },
+  "[solidity]": {
+    "editor.tabSize": 4
+  }
+}

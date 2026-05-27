@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "▶ Run e₹ Bridge Demo",
+      "type": "shell",
+      "command": "cd backend && uvicorn app.main:app --reload --port 8000",
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "new", "focus": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "▶ Run POC Demo (terminal)",
+      "type": "shell",
+      "command": "cd backend && python poc_demo.py",
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    },
+    {
+      "label": "▶ Run Tests",
+      "type": "shell",
+      "command": "cd backend && pytest tests/test_ci.py -v",
+      "presentation": { "reveal": "always", "panel": "new" },
+      "problemMatcher": []
+    }
+  ]
+}
