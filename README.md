@@ -2,7 +2,7 @@
 
 **RBIH Bank-Fintech Showcase 2026** · Abhishek Veda · Toronto, Canada
 
-🌐 **Live demo:** https://abhishekveda.github.io/E-Rupee  
+🌐 **Live demo:** https://abhishekveda.github.io/e-Rupee  
 📋 **RBI Application:** [RBI_SANDBOX_APPLICATION.md](RBI_SANDBOX_APPLICATION.md)  
 🏗️ **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)  
 🔐 **Protocol spec:** [OCBP_PROTOCOL.md](OCBP_PROTOCOL.md)
