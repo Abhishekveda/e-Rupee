@@ -109,9 +109,4 @@ E-Rupee/
 ---
 
 
-
-See [HOW_TO_APPLY.md](HOW_TO_APPLY.md) — every submission pathway with exact URLs, email addresses, and what to write.
-
----
-
 *Proof of concept. Not affiliated with RBI or RBIH. e-Rupee APIs simulated pending sandbox access.*
