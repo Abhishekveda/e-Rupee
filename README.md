@@ -108,7 +108,7 @@ E-Rupee/
 
 ---
 
-## Apply to RBI
+
 
 See [HOW_TO_APPLY.md](HOW_TO_APPLY.md) — every submission pathway with exact URLs, email addresses, and what to write.
 
