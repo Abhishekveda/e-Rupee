@@ -19,3 +19,4 @@ pytest-asyncio==0.23.6
 # e₹ AI Agent — zero extra deps (uses Python stdlib: math, re, collections)
 # Optional Groq free-tier LLM for enhanced Q&A responses:
 # groq==0.9.0  → uncomment and add GROQ_API_KEY=gsk_... to .env
+aiofiles==23.2.1

@@ -14,6 +14,8 @@ AI AGENT ENDPOINTS:
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
@@ -21,6 +23,7 @@ from uuid import uuid4
 import asyncio
 import hashlib
 import time
+import os
 
 from app.agent.orchestrator import AgentOrchestrator
 
@@ -28,8 +31,23 @@ app = FastAPI(
     title="e₹ Bridge API",
     description="e-Rupee CBDC cross-border payment bridge with custom AI agent",
     version="2.0.0",
+    docs_url="/api-docs",      # move swagger to /api-docs
+    redoc_url="/api-redoc",
 )
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+# ── Serve the frontend at localhost:8000 ─────────────────────────────────────
+_static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
+if os.path.isdir(_static_dir):
+    app.mount("/static", StaticFiles(directory=_static_dir), name="static")
+
+@app.get("/", include_in_schema=False)
+async def serve_frontend():
+    """Serve the live demo frontend at localhost:8000"""
+    index = os.path.join(os.path.dirname(__file__), "..", "static", "index.html")
+    if os.path.exists(index):
+        return FileResponse(index)
+    return {"message": "e₹ Bridge API running. Place index.html in backend/static/"}
 
 # Initialise AI agent once at startup
 agent = AgentOrchestrator()
