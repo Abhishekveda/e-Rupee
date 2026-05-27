@@ -3,686 +3,860 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>e₹ Bridge — AI-Powered CBDC Cross-Border Payments</title>
-<meta name="description" content="India's e-Rupee CBDC bridge with custom AI compliance agent. 0.2% fee. 3-second settlement. RBIH Showcase 2026."/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>e₹ Bridge — Send Money Abroad, 97% Cheaper</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#071428;--navy2:#0D1F3C;--navy3:#152B50;
+  --navy:#071428;--navy2:#0D1F3C;
   --gold:#F5A623;--g2:#FFD166;
-  --green:#06B86B;--gr2:#D4F8EA;
-  --red:#E5383B;--purple:#8B5CF6;
-  --bg:#EDF2F8;--surface:#fff;
-  --muted:#5C6B80;--border:#D0DAE8;--border2:#E8EEF6;
+  --green:#06B86B;--green2:#D4F8EA;--green3:#0A5C14;
+  --red:#E5383B;--purple:#7C3AED;
+  --bg:#F4F7FC;--white:#fff;
+  --text:#0D1829;--text2:#4A5568;--text3:#8896AB;
+  --border:#DDE3EE;--border2:#EEF2F8;
   --syne:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;--body:'Inter',sans-serif;
+  --radius:14px;--shadow:0 2px 12px rgba(7,20,40,.08);--shadow2:0 8px 32px rgba(7,20,40,.12);
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--body);background:var(--bg);color:var(--navy);line-height:1.55}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.55;font-size:15px}
 
-/* ── NAV ── */
-nav{background:var(--navy);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
-.nav-brand{display:flex;align-items:center;gap:12px}
-.nav-mark{width:36px;height:36px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--navy)}
-.nav-name{font-size:14px;font-weight:700;color:#fff}
-.nav-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono)}
-.nav-chips{display:flex;gap:8px}
-.chip{font-size:10px;padding:4px 11px;border-radius:20px;font-family:var(--mono);font-weight:600;border:1px solid}
-.chip-g{color:#6EE67A;border-color:rgba(110,230,122,.3);background:rgba(110,230,122,.08);display:flex;align-items:center;gap:5px}
+/* ── TOP BAR ── */
+.topbar{background:var(--navy);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:100}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:13px;color:var(--navy)}
+.tb-name{font-size:14px;font-weight:700;color:#fff}
+.tb-sub{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:1px}
+.tb-chips{display:flex;gap:7px}
+.chip{font-size:10px;padding:4px 10px;border-radius:20px;font-family:var(--mono);font-weight:600;border:1px solid}
+.chip-g{color:#6EE67A;border-color:rgba(110,230,122,.3);background:rgba(110,230,122,.08);display:flex;align-items:center;gap:4px}
 .chip-g::before{content:'';width:5px;height:5px;border-radius:50%;background:#6EE67A;animation:blink 2s infinite}
-.chip-p{color:#B39DFF;border-color:rgba(179,157,255,.3);background:rgba(179,157,255,.08)}
-.chip-o{color:var(--g2);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.08)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.chip-p{color:#C4B5FD;border-color:rgba(196,181,253,.3);background:rgba(196,181,253,.08)}
 .tricolour{height:3px;background:linear-gradient(90deg,var(--gold) 33%,#fff 33% 66%,var(--green) 66%)}
 
 /* ── HERO ── */
-.hero{background:var(--navy2);padding:56px 32px 48px;position:relative;overflow:hidden}
-.hero::before{content:'e₹';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:240px;font-weight:800;color:rgba(245,166,35,.04);font-family:var(--syne);pointer-events:none;line-height:1}
-.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 440px;gap:48px;align-items:center;position:relative;z-index:1}
-.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.hero h1{font-family:var(--syne);font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.1;color:#fff;margin-bottom:16px;letter-spacing:-.02em}
-.hero h1 .accent{color:var(--gold)}
-.hero-desc{font-size:15px;line-height:1.75;color:rgba(255,255,255,.55);max-width:480px;margin-bottom:26px;font-weight:300}
-.hero-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px}
-.hp{font-size:10px;padding:4px 12px;border-radius:20px;font-family:var(--mono);font-weight:600;border:1px solid}
-.hp-gold{color:var(--gold);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.08)}
-.hp-green{color:#6EE67A;border-color:rgba(110,230,122,.3);background:rgba(110,230,122,.08)}
-.hp-purple{color:#B39DFF;border-color:rgba(179,157,255,.3);background:rgba(179,157,255,.08)}
-.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
-.btn-primary{background:var(--gold);color:var(--navy);padding:11px 20px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;border:none;cursor:pointer;font-family:var(--body);transition:all .15s;display:inline-flex;align-items:center;gap:6px}
-.btn-primary:hover{background:var(--g2);transform:translateY(-1px)}
-.btn-secondary{background:rgba(255,255,255,.08);color:#fff;padding:11px 20px;border-radius:8px;font-weight:600;font-size:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:var(--body);transition:all .15s;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
-.btn-secondary:hover{background:rgba(255,255,255,.14)}
+.hero{background:var(--navy2);padding:40px 24px 36px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'e₹';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-size:200px;font-weight:800;color:rgba(255,255,255,.03);font-family:var(--syne);pointer-events:none;line-height:1}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g2);margin-bottom:12px}
+.hero h1{font-family:var(--syne);font-size:clamp(26px,4vw,46px);font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px}
+.hero h1 .hi{color:var(--gold)}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.55);max-width:480px;margin:0 auto 24px;font-weight:300;line-height:1.7}
+.hero-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.hp{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid;font-family:var(--mono);font-weight:600}
+.hp-g{color:var(--gold);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.08)}
+.hp-b{color:#93C5FD;border-color:rgba(147,197,253,.25);background:rgba(147,197,253,.06)}
+.hp-gr{color:#6EE67A;border-color:rgba(110,230,122,.3);background:rgba(110,230,122,.08)}
 
-/* hero right — feature cards */
-.hero-cards{display:flex;flex-direction:column;gap:10px}
-.hcard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:14px 16px;cursor:pointer;transition:all .15s}
-.hcard:hover{background:rgba(255,255,255,.09);border-color:rgba(245,166,35,.3)}
-.hcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.hcard-title{font-size:13px;font-weight:600;color:#fff}
-.hcard-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-family:var(--mono);font-weight:700;background:rgba(139,92,246,.2);color:#C4B5FD}
-.hcard-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
-.hcard-eg{font-size:10px;color:rgba(245,166,35,.6);font-family:var(--mono);margin-top:5px;font-style:italic}
+/* ── SAVINGS BANNER ── */
+.savings-banner{background:var(--green2);border-bottom:2px solid #9FD09F;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.sb-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--green3)}
+.sb-item .ico{font-size:18px}
+.sb-sep{color:#9FD09F;font-size:18px}
 
-/* ── WRAP ── */
-.wrap{max-width:1200px;margin:0 auto;padding:28px 32px}
+/* ── MAIN CONTAINER ── */
+.container{max-width:1100px;margin:0 auto;padding:28px 20px}
+.two-col{display:grid;grid-template-columns:1fr 400px;gap:22px;align-items:start}
 
-/* ── METRICS ROW ── */
-.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
-.metric-val{font-family:var(--mono);font-size:22px;font-weight:600;margin-bottom:2px}
-.metric-val.g{color:var(--green)}.metric-val.r{color:var(--red)}.metric-val.p{color:var(--purple)}
-.metric-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.badge{font-size:10px;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-weight:500;display:inline-block}
-.badge-g{background:var(--gr2);color:#0A5C14}
-.badge-r{background:#FEF0EF;color:var(--red)}
-.badge-p{background:rgba(139,92,246,.1);color:var(--purple)}
+/* ── STEP CARD ── */
+.step-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px;transition:box-shadow .2s}
+.step-card:focus-within{box-shadow:var(--shadow2);border-color:rgba(245,166,35,.4)}
+.step-head{padding:16px 20px 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:12px}
+.step-num{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.step-num.done{background:var(--green)}
+.step-title{font-size:14px;font-weight:700;color:var(--text)}
+.step-subtitle{font-size:12px;color:var(--text3);margin-top:2px}
+.step-body{padding:18px 20px}
 
-/* ── LAYOUT ── */
-.layout{display:grid;grid-template-columns:1fr 400px;gap:22px;align-items:start}
-.col{display:flex;flex-direction:column;gap:18px}
+/* ── COUNTRY SELECTOR ── */
+.country-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.country-btn{border:2px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;background:var(--white)}
+.country-btn:hover{border-color:var(--gold);background:#FFFBF4}
+.country-btn.selected{border-color:var(--gold);background:#FFFBF4;box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+.cb-flag{font-size:28px;margin-bottom:6px;display:block}
+.cb-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.cb-curr{font-size:10px;color:var(--text3);font-family:var(--mono)}
 
-/* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.card.ai-card{border-color:rgba(139,92,246,.25)}
-.ch{padding:13px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:#FAFBFE}
-.ch-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);display:flex;align-items:center;gap:7px}
-.ch-title::before{content:'';width:3px;height:13px;background:var(--gold);border-radius:2px;flex-shrink:0}
-.card.ai-card .ch-title::before{background:var(--purple)}
-.cb{padding:18px 20px}
+/* ── AMOUNT INPUT ── */
+.amount-wrap{position:relative}
+.amt-prefix{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:700;color:var(--text3);font-family:var(--mono);pointer-events:none}
+.amt-input{width:100%;border:2px solid var(--border);border-radius:10px;padding:16px 16px 16px 44px;font-size:28px;font-weight:700;color:var(--text);font-family:var(--mono);background:var(--white);transition:border-color .15s;-moz-appearance:textfield}
+.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.amt-input:focus{outline:none;border-color:var(--gold)}
+.amt-quick{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.aq-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;font-weight:600;transition:all .15s;font-family:var(--mono)}
+.aq-btn:hover{border-color:var(--gold);color:var(--gold)}
 
-/* ── FORM ── */
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
-.field{display:flex;flex-direction:column;gap:5px}
-.field.full{grid-column:1/-1}
-.field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
-.field select,.field input{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:9px 11px;font-size:13px;font-family:var(--body);color:var(--navy);background:#fff;transition:all .15s}
-.field select:focus,.field input:focus{outline:none;border-color:var(--gold);background:#FFFBF5}
-.inp-row{display:flex;border:1.5px solid var(--border);border-radius:7px;overflow:hidden;transition:border-color .15s}
-.inp-row:focus-within{border-color:var(--gold)}
-.inp-pre{background:#F5F7FC;padding:9px 11px;font-family:var(--mono);font-size:12px;color:var(--muted);border-right:1px solid var(--border);flex-shrink:0}
-.inp-row input{border:none;flex:1;padding:9px 11px;font-size:13px;font-family:var(--mono);color:var(--navy);background:#fff;min-width:0}
-.inp-row input:focus{outline:none;background:#FFFBF5}
+/* ── PURPOSE ── */
+.purpose-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.pt{font-size:12px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;font-weight:500;transition:all .15s}
+.pt:hover{border-color:var(--navy);color:var(--navy)}
+.pt.active{border-color:var(--navy);background:var(--navy);color:#fff}
+.ai-box{background:#F5F0FF;border:1.5px solid #D6BBFB;border-radius:9px;padding:12px 14px;margin-top:12px;display:none}
+.ai-box.show{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.ai-box-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.ai-code{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--purple)}
+.ai-conf{font-size:11px;padding:2px 8px;border-radius:3px;background:rgba(124,58,237,.12);color:var(--purple);font-family:var(--mono);font-weight:700;margin-left:6px}
+.ai-desc{font-size:12px;color:#5B21B6;margin-top:3px;line-height:1.5}
+.ai-or{text-align:center;font-size:12px;color:var(--text3);margin:10px 0;display:flex;align-items:center;gap:8px}
+.ai-or::before,.ai-or::after{content:'';flex:1;height:1px;background:var(--border)}
+.purpose-select{width:100%;border:2px solid var(--border);border-radius:9px;padding:10px 12px;font-size:13px;font-family:var(--body);color:var(--text);background:var(--white);cursor:pointer;transition:border-color .15s}
+.purpose-select:focus{outline:none;border-color:var(--gold)}
+.ai-describe{width:100%;border:2px solid #D6BBFB;border-radius:9px;padding:10px 12px;font-size:13px;font-family:var(--body);color:var(--text);background:#F5F0FF;resize:none;height:56px;transition:border-color .15s}
+.ai-describe:focus{outline:none;border-color:var(--purple)}
+.ai-suggest-btn{margin-top:8px;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--body);transition:all .15s;display:flex;align-items:center;gap:5px}
+.ai-suggest-btn:hover{background:#6D28D9;transform:translateY(-1px)}
+.ai-suggest-btn:disabled{background:#aaa;cursor:not-allowed;transform:none}
 
-/* ── AI HELPER ── */
-.ai-helper{background:rgba(139,92,246,.04);border:1.5px dashed rgba(139,92,246,.25);border-radius:8px;padding:12px 14px;margin-bottom:11px}
-.ai-helper label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--purple);display:flex;align-items:center;gap:5px;margin-bottom:6px}
-.ai-helper textarea{width:100%;border:1.5px solid rgba(139,92,246,.2);border-radius:6px;padding:8px 11px;font-size:13px;font-family:var(--body);color:var(--navy);background:#fff;resize:none;height:54px;transition:border-color .15s}
-.ai-helper textarea:focus{outline:none;border-color:var(--purple)}
-.ai-btn{background:var(--purple);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--body);transition:all .15s;display:flex;align-items:center;gap:5px;margin-top:7px}
-.ai-btn:hover{background:#7C3AED;transform:translateY(-1px)}
-.ai-btn:disabled{background:#aaa;cursor:not-allowed;transform:none}
-.ai-result{margin-top:8px;background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:6px;padding:9px 12px;font-size:12px;display:none}
-.ai-result.show{display:block;animation:fadeUp .2s ease}
-.ar-code{font-family:var(--mono);font-weight:700;color:var(--purple);font-size:13px}
-.ar-conf{font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--mono);font-weight:700;margin-left:5px}
-.conf-HIGH{background:var(--gr2);color:#0A5C14}.conf-MEDIUM{background:#FFF8E1;color:#7A4400}.conf-LOW{background:#FEF0EF;color:var(--red)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* ── QUOTE SUMMARY ── */
+.quote-card{background:var(--navy);border-radius:var(--radius);padding:20px;margin-bottom:18px;display:none}
+.quote-card.show{display:block;animation:fadeIn .3s ease}
+.qc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:14px}
+.qc-main{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.qc-from{text-align:center}
+.qc-amt{font-family:var(--syne);font-size:28px;font-weight:800;color:var(--gold)}
+.qc-curr{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;font-family:var(--mono)}
+.qc-arrow{font-size:22px;color:rgba(255,255,255,.3)}
+.qc-to{text-align:center}
+.qc-recv{font-family:var(--syne);font-size:28px;font-weight:800;color:#6EE67A}
+.qc-rows{display:flex;flex-direction:column;gap:0}
+.qr{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(255,255,255,.07);font-size:12px}
+.qrl{color:rgba(255,255,255,.45)}
+.qrv{font-family:var(--mono);color:#fff;font-weight:600}
+.qrv.save{color:#6EE67A;font-size:13px}
+.qrv.fee{color:var(--gold)}
 
 /* ── RISK BADGE ── */
-.risk-badge{display:none;align-items:center;gap:8px;padding:9px 13px;border-radius:7px;font-size:12px;font-weight:600;margin-bottom:11px}
-.risk-badge.show{display:flex;animation:fadeUp .25s ease}
-.rb-LOW{background:var(--gr2);border:1px solid #9FD09F;color:#0A5C14}
-.rb-MEDIUM{background:#FFF8E1;border:1px solid #F5C880;color:#7A4400}
-.rb-HIGH{background:#FEF0EF;border:1px solid #F5BABA;color:var(--red)}
+.risk-badge{display:none;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;align-items:center;gap:8px}
+.risk-badge.show{display:flex;animation:fadeIn .2s ease}
+.rb-LOW{background:var(--green2);color:var(--green3);border:1px solid #9FD09F}
+.rb-MED{background:#FFF8E1;color:#7A4400;border:1px solid #F5C880}
+.rb-HIGH{background:#FEF0EF;color:var(--red);border:1px solid #F5BABA}
 
-/* ── QUOTE BOX ── */
-.quote-box{background:var(--navy);border-radius:8px;padding:12px 15px;margin:11px 0;display:none}
-.quote-box.on{display:block;animation:fadeUp .2s ease}
-.qr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px}
-.qr:last-child{border:none;padding-top:7px}
-.ql{color:rgba(255,255,255,.4)}.qv{font-family:var(--mono);color:#fff;font-size:12px;font-weight:500}
-.qv.g{color:var(--gold)}.qv.r{color:#F87171}.qv.gr{color:#6EE67A}
+/* ── SEND BUTTON ── */
+.send-btn{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:12px;padding:17px;font-size:18px;font-weight:800;cursor:pointer;font-family:var(--syne);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.send-btn:hover:not(:disabled){background:var(--g2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,.3)}
+.send-btn:disabled{background:#D0D8E4;color:#8896AB;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* ── SEND BTN ── */
-.btn-send{width:100%;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--body);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:4px}
-.btn-send:hover{background:var(--navy3);transform:translateY(-1px);box-shadow:0 6px 20px rgba(7,20,40,.2)}
-.btn-send:disabled{background:#B0BEC5;cursor:not-allowed;transform:none;box-shadow:none}
+/* ── RIGHT PANEL ── */
+.panel{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px}
+.panel-head{background:#FAFBFE;padding:14px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.ph-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);display:flex;align-items:center;gap:7px}
+.ph-title::before{content:'';width:3px;height:13px;background:var(--gold);border-radius:2px}
+.panel-body{padding:16px 18px}
 
-/* ── COMPARISON TABLE ── */
-.comp{width:100%;border-collapse:collapse;font-size:13px}
-.comp th{text-align:left;padding:8px 14px;border-bottom:2px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700;background:#FAFBFE}
-.comp td{padding:11px 14px;border-bottom:1px solid var(--border2);vertical-align:middle}
-.comp tr:last-child td{border:none}
-.comp .win td{background:var(--gr2)}
-.lbl{font-size:11px;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-weight:700;white-space:nowrap}
-.l-r{background:#FEF0EF;color:var(--red)}.l-a{background:#FFF8E1;color:#7A4400}.l-g{background:var(--gr2);color:#0A5C14}
-.bar-wrap{display:flex;align-items:center;gap:7px}
-.bar-track{width:80px;height:5px;background:var(--border2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px}
-.bf-r{background:var(--red)}.bf-a{background:var(--gold)}.bf-g{background:var(--green)}
-
-/* ── FLOW ── */
+/* ── FLOW TRACKER ── */
 .flow{display:flex;flex-direction:column}
 .fi{display:flex;gap:11px;align-items:flex-start}
 .fi-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.fi-dot{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);background:#fff;transition:all .2s}
-.fi-dot.active{border-color:var(--gold);color:var(--gold);background:#FFFBF5}
+.fi-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text3);background:var(--white);transition:all .22s;flex-shrink:0}
+.fi-dot.waiting{border-color:var(--border);color:var(--text3)}
+.fi-dot.active{border-color:var(--gold);color:var(--gold);background:#FFFBF4;animation:pulse-ring .8s ease infinite}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.3)}50%{box-shadow:0 0 0 5px rgba(245,166,35,0)}}
 .fi-dot.done{border-color:var(--green);background:var(--green);color:#fff}
-.fi-dot.ai-step{border-color:var(--purple);color:var(--purple)}
-.fi-line{width:2px;height:26px;background:var(--border2);margin:0 auto;transition:background .2s}
+.fi-line{width:2px;height:24px;background:var(--border2);margin:0 auto;transition:background .22s}
 .fi-line.done{background:var(--green)}
-.fi-body{padding-bottom:18px;padding-top:2px;flex:1;min-width:0}
-.fi-label{font-size:13px;font-weight:500;color:var(--navy)}
-.fi-label .ai-tag{font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(139,92,246,.1);color:var(--purple);font-family:var(--mono);font-weight:700;margin-left:5px;vertical-align:middle}
-.fi-detail{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:2px;word-break:break-all;line-height:1.5}
+.fi-body{padding:2px 0 18px;flex:1;min-width:0}
+.fi-label{font-size:13px;font-weight:600;color:var(--text)}
+.fi-ai-tag{font-size:9px;padding:1px 6px;border-radius:3px;background:#F5F0FF;color:var(--purple);font-family:var(--mono);font-weight:700;margin-left:5px;vertical-align:middle}
+.fi-detail{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px;word-break:break-all;line-height:1.5}
 
 /* ── RECEIPT ── */
-.receipt{border:1px solid var(--border);border-radius:11px;overflow:hidden;display:none}
-.receipt.on{display:block;animation:fadeUp .3s ease}
-.rh{background:var(--navy);padding:12px 18px;display:flex;align-items:center;justify-content:space-between}
-.rh-title{font-size:13px;font-weight:700;color:#fff}
-.rs{font-size:9px;padding:3px 9px;border-radius:3px;font-family:var(--mono);font-weight:700}
-.rs-done{background:rgba(110,230,122,.2);color:#6EE67A}
-.rb{padding:12px 17px}
-.rr{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;gap:10px}
+.receipt{background:var(--white);border:2px solid var(--green);border-radius:var(--radius);overflow:hidden;display:none}
+.receipt.show{display:block;animation:fadeIn .35s ease}
+.receipt-head{background:var(--green);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.rh-left{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px}
+.rh-badge{background:rgba(255,255,255,.2);font-size:10px;font-family:var(--mono);font-weight:700;padding:3px 9px;border-radius:3px;color:#fff}
+.receipt-amounts{padding:16px 18px 12px;background:#F0FBF5;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.ra-col{text-align:center}
+.ra-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:700;margin-bottom:4px}
+.ra-val{font-family:var(--syne);font-size:24px;font-weight:800}
+.ra-val.sent{color:var(--text)}
+.ra-val.recv{color:var(--green3)}
+.ra-arrow{font-size:20px;color:var(--green)}
+.receipt-rows{padding:10px 18px 14px}
+.rr{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px;gap:10px}
 .rr:last-child{border:none}
-.rr-l{color:var(--muted);flex-shrink:0}
-.rr-v{font-family:var(--mono);color:var(--navy);text-align:right;word-break:break-all;max-width:220px;font-size:11px}
-.rr-v.big{font-size:14px;font-weight:700;font-family:var(--body)}
-.rr-v.gold{color:#C07010}.rr-v.gr{color:var(--green)}
-.r-ai{background:rgba(139,92,246,.05);border-top:1px solid rgba(139,92,246,.1);padding:10px 17px}
-.rai-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:5px}
-.rai-text{font-size:12px;color:var(--muted);line-height:1.6;font-style:italic}
-.r-footer{background:#F5F8FC;padding:8px 17px;display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono)}
+.rrl{color:var(--text3)}
+.rrv{font-family:var(--mono);font-weight:600;color:var(--text);text-align:right}
+.rrv.good{color:var(--green3)}
+.rrv.gold{color:#9A6500}
+.receipt-ai{background:#F5F0FF;border-top:1px solid #E9D5FF;padding:12px 18px}
+.rai-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.rai-text{font-size:12px;color:#5B21B6;line-height:1.6;font-style:italic}
+
+/* ── COMPARE CARD ── */
+.compare{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px}
+.compare-head{background:#FAFBFE;padding:14px 18px;border-bottom:1px solid var(--border2)}
+.compare-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3)}
+.compare-rows{padding:8px 0}
+.cr{display:flex;align-items:center;padding:10px 18px;gap:14px;border-bottom:1px solid var(--border2);transition:background .15s}
+.cr:last-child{border:none}
+.cr.win{background:#F0FBF5}
+.cr-name{flex:1}
+.cr-method{font-size:13px;font-weight:600;color:var(--text)}
+.cr-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.cr-fee{font-family:var(--mono);font-size:16px;font-weight:700;min-width:48px;text-align:right}
+.cr-fee.r{color:var(--red)}.cr-fee.a{color:#9A6500}.cr-fee.g{color:var(--green3)}
+.cr-speed{font-size:11px;color:var(--text3);min-width:60px;text-align:right;font-family:var(--mono)}
+.cr-cost{font-size:11px;color:var(--text3);min-width:55px;text-align:right;font-family:var(--mono)}
+.cr-win-badge{font-size:9px;padding:2px 7px;background:var(--green2);color:var(--green3);border-radius:3px;font-weight:700;font-family:var(--mono)}
 
 /* ── CHAT ── */
-.chat-msgs{min-height:180px;max-height:260px;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px}
+.chat-msgs{min-height:160px;max-height:230px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .msg{display:flex;gap:7px;align-items:flex-start}
 .msg.user{flex-direction:row-reverse}
-.msg-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px}
-.msg-av.ai{background:rgba(139,92,246,.12);color:var(--purple)}
-.msg-av.user{background:var(--navy2);color:rgba(255,255,255,.7)}
-.msg-bub{max-width:85%;padding:8px 12px;border-radius:9px;font-size:13px;line-height:1.55}
-.msg-bub.ai{background:var(--border2);color:var(--navy);border-bottom-left-radius:3px}
-.msg-bub.user{background:var(--navy);color:#fff;border-bottom-right-radius:3px}
-.msg-bub.thinking{color:var(--muted);font-style:italic}
-.chat-sug{border-top:1px solid var(--border2);padding:8px 13px;display:flex;gap:6px;flex-wrap:wrap;background:#FAFBFE}
-.csb{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(139,92,246,.2);background:rgba(139,92,246,.05);color:var(--purple);cursor:pointer;font-family:var(--mono);transition:all .15s}
-.csb:hover{background:rgba(139,92,246,.12)}
-.chat-input-wrap{border-top:1px solid var(--border2);padding:11px;display:flex;gap:7px}
-.chat-inp{flex:1;border:1.5px solid var(--border);border-radius:7px;padding:8px 11px;font-size:13px;font-family:var(--body);color:var(--navy);resize:none;height:38px;transition:border-color .15s}
-.chat-inp:focus{outline:none;border-color:var(--purple)}
-.chat-send{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--body);transition:all .15s;flex-shrink:0}
-.chat-send:hover{background:#7C3AED}
-.chat-send:disabled{background:#aaa;cursor:not-allowed}
-
-/* ── TAGS ── */
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
-.tag{font-size:10px;padding:3px 8px;border-radius:3px;font-family:var(--mono);font-weight:600;border:1px solid}
-.tg{background:var(--gr2);color:#0A5C14;border-color:#9FD09F}
-.tb{background:#E6F2FD;color:#0C447C;border-color:#A0CAFE}
-.tp{background:rgba(139,92,246,.1);color:var(--purple);border-color:rgba(139,92,246,.2)}
-
-/* ── ARCH ── */
-.arch{display:flex;align-items:stretch;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:12px 0}
-.an{flex:1;padding:12px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
-.an:last-child{border:none}.an.hl{background:#EBF4FF}.an.ai-hl{background:rgba(139,92,246,.05)}
-.an-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-family:var(--mono)}
-.an-name{font-size:12px;font-weight:700;color:var(--navy)}
-.an-sub{font-size:10px;color:var(--muted);font-family:var(--mono);line-height:1.5}
-.an-arr{display:flex;align-items:center;justify-content:center;padding:0 5px;background:#F0F4FA;border-right:1px solid var(--border);color:var(--gold);font-size:13px;font-weight:700;flex-shrink:0}
+.msg-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:2px}
+.mv-ai{background:#F5F0FF;color:var(--purple)}
+.mv-user{background:var(--navy);color:rgba(255,255,255,.7)}
+.msg-bub{max-width:86%;padding:8px 11px;border-radius:9px;font-size:13px;line-height:1.55}
+.mb-ai{background:var(--border2);color:var(--text)}
+.mb-user{background:var(--navy);color:#fff}
+.mb-thinking{color:var(--text3);font-style:italic}
+.chat-suggestions{padding:8px 12px;border-top:1px solid var(--border2);display:flex;gap:6px;flex-wrap:wrap;background:#FAFBFE}
+.cs-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1.5px solid #D6BBFB;background:#F5F0FF;color:var(--purple);cursor:pointer;font-family:var(--mono);transition:all .15s}
+.cs-btn:hover{background:#EDE9FE}
+.chat-input-row{border-top:1px solid var(--border2);padding:10px 12px;display:flex;gap:7px}
+.ci-inp{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;font-size:13px;font-family:var(--body);color:var(--text);resize:none;height:36px;background:var(--white);transition:border-color .15s}
+.ci-inp:focus{outline:none;border-color:var(--purple)}
+.ci-send{background:var(--purple);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;flex-shrink:0}
+.ci-send:hover{background:#6D28D9}
+.ci-send:disabled{background:#aaa;cursor:not-allowed}
 
 /* ── FOOTER ── */
-footer{background:var(--navy);padding:20px 32px;margin-top:36px}
-.fi-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
-.fl-brand{display:flex;align-items:center;gap:9px}
-.fl-mark{width:30px;height:30px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:12px;color:var(--navy)}
+footer{background:var(--navy);padding:18px 24px;margin-top:32px}
+.fi-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.fl-left{display:flex;align-items:center;gap:10px}
+.fl-mark{width:28px;height:28px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:11px;color:var(--navy)}
 .fl-name{font-size:13px;font-weight:600;color:#fff}
 .fl-sub{font-size:10px;color:rgba(255,255,255,.35);font-family:var(--mono)}
-.fl-links{display:flex;gap:18px}
-.fl-links a{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;font-family:var(--mono);transition:color .15s}
+.fl-links{display:flex;gap:16px}
+.fl-links a{font-size:11px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .15s}
 .fl-links a:hover{color:var(--gold)}
-.fl-disc{font-size:9px;color:rgba(255,255,255,.2);font-family:var(--mono);text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);max-width:1200px;margin-left:auto;margin-right:auto}
+.fl-disc{font-size:9px;color:rgba(255,255,255,.2);font-family:var(--mono);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);max-width:1100px;margin:10px auto 0}
 
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--red);color:#fff;padding:11px 18px;border-radius:7px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .25s;pointer-events:none;max-width:360px;text-align:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--red);color:#fff;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:all .25s;pointer-events:none;max-width:340px;text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-@media(max-width:1000px){.layout{grid-template-columns:1fr}.hero-inner{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}.arch{flex-direction:column}.an-arr{display:none}.an{border-right:none;border-bottom:1px solid var(--border)}}
-@media(max-width:640px){.fg{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.wrap,.hero{padding-left:16px;padding-right:16px}nav{padding:0 16px}footer{padding:16px}}
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr}
+  .country-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  .container{padding:16px 12px}
+  .topbar{padding:0 12px}.topbar .tb-chips{display:none}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-brand">
-    <div class="nav-mark">e₹</div>
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">e₹</div>
     <div>
-      <div class="nav-name">e₹ Bridge</div>
-      <div class="nav-sub">RBIH SHOWCASE 2026</div>
+      <div class="tb-name">e₹ Bridge</div>
+      <div class="tb-sub">RBIH SHOWCASE 2026</div>
     </div>
   </div>
-  <div class="nav-chips">
-    <span class="chip chip-p">e₹ AI AGENT</span>
-    <span class="chip chip-o">PoC</span>
-    <span class="chip chip-g">LIVE DEMO</span>
+  <div class="tb-chips">
+    <span class="chip chip-g">AI Agent Active</span>
+    <span class="chip chip-p">e-Rupee CBDC</span>
   </div>
-</nav>
+</div>
 <div class="tricolour"></div>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-inner">
-    <div>
-      <div class="hero-eyebrow">e-Rupee CBDC Bridge · Custom AI Agent · No External API</div>
-      <h1>End SWIFT's 6.3%<br/>with India's <span class="accent">e-Rupee + AI</span></h1>
-      <p class="hero-desc">Cross-border remittances from 6.3% to 0.2% and 3 days to 3 seconds. Custom AI agent automates FEMA compliance. INR as bridge currency — dollar not required.</p>
-      <div class="hero-pills">
-        <span class="hp hp-gold">e-Rupee e₹-R Pilot</span>
-        <span class="hp hp-purple">5 AI Agents</span>
-        <span class="hp hp-green">0 External APIs</span>
-        <span class="hp hp-gold">SRVA Framework</span>
-        <span class="hp hp-green">RBI Aligned</span>
-      </div>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Try live demo →</button>
-        <a class="btn-secondary" href="showcase.html">View presentation</a>
-      </div>
-    </div>
-    <div class="hero-cards">
-      <div class="hcard" onclick="document.getElementById('ai-section').scrollIntoView({behavior:'smooth'})">
-        <div class="hcard-top"><span class="hcard-title">✦ FEMA Compliance Agent</span><span class="hcard-badge">AI</span></div>
-        <div class="hcard-desc">Describe purpose in plain English — AI selects the correct FEMA code automatically.</div>
-        <div class="hcard-eg">"paying my daughter's MBA fees in Dubai" → P0103</div>
-      </div>
-      <div class="hcard" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">
-        <div class="hcard-top"><span class="hcard-title">✦ Pre-Transfer Risk Scoring</span><span class="hcard-badge">AI</span></div>
-        <div class="hcard-desc">Every transfer scored 0–100 before execution. 8 named rules. Every flag explained.</div>
-        <div class="hcard-eg">Risk: LOW (5/100) · FEMA: P0102 ✓ · APPROVE</div>
-      </div>
-      <div class="hcard" onclick="document.getElementById('ai-chat').scrollIntoView({behavior:'smooth'})">
-        <div class="hcard-top"><span class="hcard-title">✦ Regulatory Q&A Agent</span><span class="hcard-badge">AI</span></div>
-        <div class="hcard-desc">Ask about LRS limits, FEMA codes, e-Rupee regulations. RAG over RBI circulars.</div>
-        <div class="hcard-eg">"What is the LRS annual limit?" → ₹2.07 crore</div>
-      </div>
-    </div>
+  <div class="hero-eyebrow">India's e-Rupee CBDC · 5 AI Agents · Zero External API</div>
+  <h1>Send money abroad.<br/><span class="hi">97% cheaper than your bank.</span></h1>
+  <p class="hero-sub">India's first AI-powered cross-border payment bridge. ₹10 fee instead of ₹630. Under 3 seconds instead of 3 days. Built on the e-Rupee.</p>
+  <div class="hero-pills">
+    <span class="hp hp-g">0.2% fee vs 6.3% SWIFT</span>
+    <span class="hp hp-gr">Settlement under 3 seconds</span>
+    <span class="hp hp-b">AI checks every transfer</span>
+    <span class="hp hp-g">No dollar needed</span>
   </div>
 </div>
 
-<div class="wrap">
-
-  <!-- Metrics -->
-  <div class="metrics">
-    <div class="metric"><div class="metric-lbl">e-Rupee Circulation</div><div class="metric-val g">₹1,016 Cr</div><span class="badge badge-g">Mar 2025</span></div>
-    <div class="metric"><div class="metric-lbl">CBDC Pilot Users</div><div class="metric-val">60 Lakh+</div><span class="badge badge-g">17 banks</span></div>
-    <div class="metric"><div class="metric-lbl">SWIFT Fee</div><div class="metric-val r">6.3%</div><span class="badge badge-r">vs 0.2% bridge</span></div>
-    <div class="metric"><div class="metric-lbl">AI Agents</div><div class="metric-val p">5</div><span class="badge badge-p">No external API</span></div>
-    <div class="metric"><div class="metric-lbl">Demo Volume</div><div class="metric-val g" id="s-vol">₹0</div><span class="badge badge-g" id="s-sub">Try a transfer</span></div>
-  </div>
-
-  <!-- Main layout -->
-  <div class="layout" id="demo">
-    <div class="col">
-
-      <!-- Transfer Form -->
-      <div class="card" id="ai-section">
-        <div class="ch"><div class="ch-title">Live transfer demonstration</div></div>
-        <div class="cb">
-          <!-- Corridor strip -->
-          <div style="display:flex;align-items:center;background:var(--navy2);border-radius:8px;overflow:hidden;margin-bottom:15px">
-            <div style="flex:1;padding:12px;text-align:center"><div style="font-size:22px">🇨🇦</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px">Canada</div><div style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono)">Sender</div></div>
-            <div style="color:var(--gold);font-size:16px;font-weight:700;padding:0 5px">→</div>
-            <div style="flex:1;padding:12px;text-align:center"><div style="font-size:22px">🇮🇳</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px">India</div><div style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono)">e₹ Bridge</div></div>
-            <div style="color:var(--gold);font-size:16px;font-weight:700;padding:0 5px">→</div>
-            <div style="flex:1;padding:12px;text-align:center" id="dest-flag"><div style="font-size:22px">🇦🇪</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px">UAE</div><div style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono)">AED</div></div>
-          </div>
-
-          <div class="fg">
-            <div class="field"><label>Sender wallet</label><select id="sender"><option value="INDIA_USER_001">INDIA_USER_001 — ₹50,000</option><option value="INDIA_USER_002">INDIA_USER_002 — ₹1,20,000</option></select></div>
-            <div class="field"><label>Destination</label><select id="country" onchange="onCountryChange()"><option value="UAE">India → UAE (AED)</option><option value="SG">India → Singapore (SGD)</option></select></div>
-            <div class="field"><label>Amount (INR ₹)</label><div class="inp-row"><span class="inp-pre">₹</span><input type="number" id="amount" value="10000" min="100" max="500000" step="100" oninput="updateQuote()"/></div></div>
-            <div class="field"><label>Recipient wallet</label><div class="inp-row"><span class="inp-pre">0x</span><input type="text" id="recipient" value="AbCdEf1234567890AbCdEf12" style="font-family:var(--mono);font-size:11px"/></div></div>
-          </div>
-
-          <!-- AI FEMA Helper -->
-          <div class="ai-helper">
-            <label>✦ AI Agent — describe your purpose in plain English</label>
-            <textarea id="ai-purpose" placeholder="e.g. sending money to my daughter for university fees in Dubai..."></textarea>
-            <button class="ai-btn" id="ai-btn" onclick="aiSuggest()">✦ Suggest FEMA code</button>
-            <div class="ai-result" id="ai-result"></div>
-          </div>
-
-          <div class="field full" style="margin-bottom:11px">
-            <label>FEMA purpose code</label>
-            <select id="purpose">
-              <option value="P0101">P0101 — Family maintenance / personal remittance</option>
-              <option value="P0102">P0102 — Maintenance of close relatives abroad</option>
-              <option value="P0103">P0103 — Education fees paid abroad</option>
-              <option value="P0801">P0801 — Medical treatment abroad</option>
-              <option value="P1301">P1301 — Business / professional services</option>
-              <option value="P0104">P0104 — Travel</option>
-            </select>
-          </div>
-
-          <div class="risk-badge" id="risk-badge"></div>
-          <div class="quote-box" id="qbox">
-            <div class="qr"><span class="ql">FX rate</span><span class="qv g" id="q-rate">—</span></div>
-            <div class="qr"><span class="ql">Recipient receives</span><span class="qv g" id="q-recv">—</span></div>
-            <div class="qr"><span class="ql">Bridge fee (0.2%)</span><span class="qv" id="q-fee">—</span></div>
-            <div class="qr"><span class="ql">SWIFT equivalent</span><span class="qv r" id="q-swift">—</span></div>
-            <div class="qr"><span class="ql">You save</span><span class="qv gr" id="q-save">—</span></div>
-            <div class="qr"><span class="ql">Settlement</span><span class="qv gr">under 3 seconds ✓</span></div>
-          </div>
-          <button class="btn-send" id="send-btn" onclick="runTransfer()">Execute Transfer via e₹ Bridge →</button>
-        </div>
-      </div>
-
-      <!-- Comparison -->
-      <div class="card">
-        <div class="ch"><div class="ch-title">e₹ Bridge vs alternatives</div></div>
-        <table class="comp">
-          <thead><tr><th>Method</th><th>Fee</th><th>Speed</th><th>AI</th><th>Cost on ₹10,000</th></tr></thead>
-          <tbody>
-            <tr><td><strong>SWIFT</strong><br/><span style="font-size:10px;color:var(--muted)">Correspondent banking</span></td><td><span class="lbl l-r">6.3%</span></td><td><span class="lbl l-r">2–3 days</span></td><td><span style="font-size:10px;color:var(--muted)">None</span></td><td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill bf-r" style="width:100%"></div></div><span style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--red)">₹630</span></div></td></tr>
-            <tr><td><strong>Wise / Remitly</strong><br/><span style="font-size:10px;color:var(--muted)">Fintech on legacy rails</span></td><td><span class="lbl l-a">2.1%</span></td><td><span class="lbl l-a">~1 day</span></td><td><span style="font-size:10px;color:var(--muted)">Basic</span></td><td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill bf-a" style="width:33%"></div></div><span style="font-family:var(--mono);font-size:12px;font-weight:600;color:#8A5500">₹210</span></div></td></tr>
-            <tr class="win"><td><strong>e₹ Bridge</strong><br/><span style="font-size:10px;color:var(--green);font-weight:500">CBDC + 5 AI agents</span></td><td><span class="lbl l-g">0.2%</span></td><td><span class="lbl l-g">&lt;3 sec</span></td><td><span style="font-size:10px;padding:2px 6px;background:rgba(139,92,246,.1);color:var(--purple);border-radius:3px;font-family:var(--mono);font-weight:700">Custom</span></td><td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill bf-g" style="width:3%"></div></div><span style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green)">₹20</span></div></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Architecture -->
-      <div class="card">
-        <div class="ch"><div class="ch-title">System architecture</div></div>
-        <div class="cb">
-          <div class="arch">
-            <div class="an"><div class="an-tag">Layer 1</div><div class="an-name">🇮🇳 e-Rupee Wallet</div><div class="an-sub">Retail CBDC<br/>e₹-R pilot<br/>KYC verified</div></div>
-            <div class="an-arr">→</div>
-            <div class="an ai-hl"><div class="an-tag">Layer 2 · AI</div><div class="an-name">✦ AI Agent</div><div class="an-sub">FEMA · Risk<br/>Q&A · Speed<br/>Customer</div></div>
-            <div class="an-arr">→</div>
-            <div class="an hl"><div class="an-tag">Layer 3</div><div class="an-name">⛓ Bridge</div><div class="an-sub">FastAPI<br/>FX oracle<br/>CBDC hash</div></div>
-            <div class="an-arr">→</div>
-            <div class="an"><div class="an-tag">Layer 4</div><div class="an-name">🇦🇪 Recipient</div><div class="an-sub">mAED / mSGD<br/>Instant credit</div></div>
-          </div>
-          <div class="tags">
-            <span class="tag tp">5 AI Agents</span><span class="tag tp">No External API</span><span class="tag tp">FEMA Automated</span>
-            <span class="tag tg">RBI e₹ Pilot</span><span class="tag tg">LRS Enforced</span><span class="tag tg">SRVA Framework</span>
-            <span class="tag tb">Sepolia Testnet</span><span class="tag tb">Open Source</span>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /left col -->
-
-    <!-- RIGHT COL -->
-    <div class="col">
-
-      <!-- Flow tracker -->
-      <div class="card">
-        <div class="ch"><div class="ch-title">Live payment flow</div><span style="font-size:10px;color:var(--purple);font-family:var(--mono)">AI-assisted</span></div>
-        <div class="cb">
-          <div class="flow">
-            <div class="fi"><div class="fi-left"><div class="fi-dot ai-step" id="fl0">✦</div><div class="fi-line" id="ln0"></div></div><div class="fi-body"><div class="fi-label">AI compliance check <span class="ai-tag">Agent</span></div><div class="fi-detail" id="fd0">Waiting for transfer...</div></div></div>
-            <div class="fi"><div class="fi-left"><div class="fi-dot" id="fl1">2</div><div class="fi-line" id="ln1"></div></div><div class="fi-body"><div class="fi-label">e-Rupee wallet debit</div><div class="fi-detail" id="fd1">Pending...</div></div></div>
-            <div class="fi"><div class="fi-left"><div class="fi-dot" id="fl2">3</div><div class="fi-line" id="ln2"></div></div><div class="fi-body"><div class="fi-label">CBDC transaction hash</div><div class="fi-detail" id="fd2">Pending...</div></div></div>
-            <div class="fi"><div class="fi-left"><div class="fi-dot" id="fl3">4</div><div class="fi-line" id="ln3"></div></div><div class="fi-body"><div class="fi-label">Bridge relay</div><div class="fi-detail" id="fd3">Pending...</div></div></div>
-            <div class="fi"><div class="fi-left"><div class="fi-dot" id="fl4">5</div><div class="fi-line" id="ln4"></div></div><div class="fi-body"><div class="fi-label">FX conversion</div><div class="fi-detail" id="fd4">Pending...</div></div></div>
-            <div class="fi"><div class="fi-left"><div class="fi-dot" id="fl5">6</div></div><div class="fi-body"><div class="fi-label">Settlement confirmed</div><div class="fi-detail" id="fd5">Awaiting...</div></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Receipt -->
-      <div class="receipt" id="receipt">
-        <div class="rh"><div class="rh-title">Transaction receipt</div><span class="rs rs-done">SETTLED ✓</span></div>
-        <div class="rb">
-          <div class="rr"><span class="rr-l">Transaction ID</span><span class="rr-v" id="r-id">—</span></div>
-          <div class="rr"><span class="rr-l">Sent</span><span class="rr-v big gold" id="r-amt">—</span></div>
-          <div class="rr"><span class="rr-l">Received</span><span class="rr-v big gr" id="r-recv">—</span></div>
-          <div class="rr"><span class="rr-l">Bridge fee</span><span class="rr-v" id="r-fee">—</span></div>
-          <div class="rr"><span class="rr-l">Saved vs SWIFT</span><span class="rr-v gr" id="r-save">—</span></div>
-          <div class="rr"><span class="rr-l">FEMA code</span><span class="rr-v" id="r-fema">—</span></div>
-          <div class="rr"><span class="rr-l">AI risk score</span><span class="rr-v gr" id="r-risk">—</span></div>
-          <div class="rr"><span class="rr-l">Dollar used</span><span class="rr-v gr">No ✓</span></div>
-          <div class="rr"><span class="rr-l">CBDC hash</span><span class="rr-v" id="r-cbdc">—</span></div>
-          <div class="rr"><span class="rr-l">Settlement time</span><span class="rr-v big gr" id="r-time">—</span></div>
-        </div>
-        <div class="r-ai"><div class="rai-lbl">✦ AI Summary</div><div class="rai-text" id="r-ai-text">Generating...</div></div>
-        <div class="r-footer"><span id="r-created">—</span><span id="r-settled" style="color:var(--green)">—</span></div>
-      </div>
-
-      <!-- AI Chat -->
-      <div class="card ai-card" id="ai-chat">
-        <div class="ch"><div class="ch-title">AI regulatory assistant</div><span style="font-size:10px;font-family:var(--mono);color:var(--purple)">e₹ Agent</span></div>
-        <div class="chat-sug">
-          <button class="csb" onclick="askChat('What is the LRS annual limit?')">LRS limit?</button>
-          <button class="csb" onclick="askChat('What does FEMA code P0103 mean?')">P0103?</button>
-          <button class="csb" onclick="askChat('Is now a good time to send to UAE?')">Best time?</button>
-          <button class="csb" onclick="askChat('What is the e-Rupee wholesale CBDC?')">e₹ wholesale?</button>
-        </div>
-        <div class="chat-msgs" id="chat-msgs">
-          <div class="msg"><div class="msg-av ai">✦</div><div class="msg-bub ai">Hi! I'm the e₹ AI Agent. I can help with FEMA codes, LRS limits, FX rates, and RBI regulations. What would you like to know?</div></div>
-        </div>
-        <div class="chat-input-wrap">
-          <textarea class="chat-inp" id="chat-inp" placeholder="Ask about FEMA, LRS, e-Rupee..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-          <button class="chat-send" id="chat-send" onclick="sendChat()">Send</button>
-        </div>
-      </div>
-
-    </div><!-- /right col -->
-  </div>
+<!-- SAVINGS BANNER -->
+<div class="savings-banner">
+  <div class="sb-item"><span class="ico">💸</span> SWIFT charges ₹630 on ₹10,000</div>
+  <span class="sb-sep">·</span>
+  <div class="sb-item"><span class="ico">✅</span> e₹ Bridge charges ₹20</div>
+  <span class="sb-sep">·</span>
+  <div class="sb-item"><span class="ico">🏦</span> You save ₹610 — every time</div>
 </div>
+
+<div class="container">
+<div class="two-col">
+
+<!-- LEFT — THE FORM -->
+<div>
+
+  <!-- STEP 1: WHERE -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num" id="s1-num">1</div>
+      <div>
+        <div class="step-title">Where are you sending money?</div>
+        <div class="step-subtitle">Choose the destination country</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="country-grid">
+        <button class="country-btn selected" onclick="selectCountry(this,'UAE','AED',0.044)" data-country="UAE">
+          <span class="cb-flag">🇦🇪</span>
+          <div class="cb-name">UAE</div>
+          <div class="cb-curr">AED · Live SRVA</div>
+        </button>
+        <button class="country-btn" onclick="selectCountry(this,'Singapore','SGD',0.016)" data-country="SG">
+          <span class="cb-flag">🇸🇬</span>
+          <div class="cb-name">Singapore</div>
+          <div class="cb-curr">SGD · CBDC Direct</div>
+        </button>
+        <button class="country-btn" onclick="selectCountry(this,'UK','GBP',0.0095)" data-country="UK">
+          <span class="cb-flag">🇬🇧</span>
+          <div class="cb-name">UK</div>
+          <div class="cb-curr">GBP</div>
+        </button>
+        <button class="country-btn" onclick="selectCountry(this,'Canada','CAD',0.016)" data-country="CA">
+          <span class="cb-flag">🇨🇦</span>
+          <div class="cb-name">Canada</div>
+          <div class="cb-curr">CAD</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: HOW MUCH -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num" id="s2-num">2</div>
+      <div>
+        <div class="step-title">How much are you sending?</div>
+        <div class="step-subtitle">Enter amount in Indian Rupees</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="amount-wrap">
+        <span class="amt-prefix">₹</span>
+        <input class="amt-input" type="number" id="amount" value="10000" min="100" max="500000" step="100" oninput="updateAll()"/>
+      </div>
+      <div class="amt-quick">
+        <span>Quick select:</span>
+        <button class="aq-btn" onclick="setAmt(5000)">₹5,000</button>
+        <button class="aq-btn" onclick="setAmt(10000)">₹10,000</button>
+        <button class="aq-btn" onclick="setAmt(25000)">₹25,000</button>
+        <button class="aq-btn" onclick="setAmt(50000)">₹50,000</button>
+        <button class="aq-btn" onclick="setAmt(100000)">₹1 Lakh</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: WHY -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num" id="s3-num">3</div>
+      <div>
+        <div class="step-title">Why are you sending this money?</div>
+        <div class="step-subtitle">Required by RBI — AI picks the code for you</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="purpose-tabs">
+        <button class="pt active" onclick="setPurpose(this,'P0101','Family support')">👨‍👩‍👧 Family</button>
+        <button class="pt" onclick="setPurpose(this,'P0103','Education fees')">🎓 Education</button>
+        <button class="pt" onclick="setPurpose(this,'P0801','Medical treatment')">🏥 Medical</button>
+        <button class="pt" onclick="setPurpose(this,'P1301','Business payment')">💼 Business</button>
+        <button class="pt" onclick="setPurpose(this,'P0104','Travel')">✈️ Travel</button>
+        <button class="pt" onclick="toggleAI()">✦ Let AI decide</button>
+      </div>
+
+      <div class="ai-box" id="ai-box">
+        <div class="ai-box-lbl">✦ Describe your purpose — AI will suggest the correct code</div>
+        <textarea class="ai-describe" id="ai-text" placeholder="e.g. sending money for my daughter's university fees in Dubai..."></textarea>
+        <button class="ai-suggest-btn" id="ai-btn" onclick="aiClassify()">✦ Suggest FEMA code</button>
+      </div>
+
+      <div id="ai-result-box" class="ai-box show" style="display:none;margin-top:10px">
+        <div class="ai-box-lbl">✦ AI Agent classified</div>
+        <div><span class="ai-code" id="ai-code-out">—</span><span class="ai-conf" id="ai-conf-out">—</span></div>
+        <div class="ai-desc" id="ai-desc-out">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-card" id="quote-card">
+    <div class="qc-title">Your transfer summary</div>
+    <div class="qc-main">
+      <div class="qc-from">
+        <div class="qc-amt" id="q-amt">₹10,000</div>
+        <div class="qc-curr">Indian Rupees</div>
+      </div>
+      <div class="qc-arrow">→</div>
+      <div class="qc-to">
+        <div class="qc-recv" id="q-recv">440 AED</div>
+        <div class="qc-curr" id="q-recv-curr">UAE Dirham</div>
+      </div>
+    </div>
+    <div class="qc-rows">
+      <div class="qr"><span class="qrl">Bridge fee (0.2%)</span><span class="qrv fee" id="q-fee">₹20</span></div>
+      <div class="qr"><span class="qrl">SWIFT would charge</span><span class="qrv" id="q-swift" style="color:var(--red)">₹630</span></div>
+      <div class="qr"><span class="qrl">You save</span><span class="qrv save" id="q-save">₹610 ✓</span></div>
+      <div class="qr"><span class="qrl">Settlement time</span><span class="qrv" style="color:#6EE67A">under 3 seconds ✓</span></div>
+      <div class="qr"><span class="qrl">Dollar used</span><span class="qrv" style="color:#6EE67A">No — INR bridge ✓</span></div>
+    </div>
+  </div>
+
+  <!-- RISK BADGE -->
+  <div class="risk-badge" id="risk-badge"></div>
+
+  <!-- SEND -->
+  <button class="send-btn" id="send-btn" onclick="runTransfer()">
+    Send Money →
+  </button>
+
+</div><!-- /left -->
+
+<!-- RIGHT -->
+<div>
+
+  <!-- FLOW TRACKER -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="ph-title">What happens when you send</div>
+      <span style="font-size:10px;color:var(--purple);font-family:var(--mono)">AI-assisted</span>
+    </div>
+    <div class="panel-body">
+      <div class="flow">
+        <div class="fi">
+          <div class="fi-left"><div class="fi-dot waiting" id="d0">✦</div><div class="fi-line" id="l0"></div></div>
+          <div class="fi-body"><div class="fi-label">AI checks your transfer <span class="fi-ai-tag">AI Agent</span></div><div class="fi-detail" id="f0">Checks FEMA code, fraud risk, and annual limit before anything moves</div></div>
+        </div>
+        <div class="fi">
+          <div class="fi-left"><div class="fi-dot waiting" id="d1">2</div><div class="fi-line" id="l1"></div></div>
+          <div class="fi-body"><div class="fi-label">e-Rupee wallet deducted</div><div class="fi-detail" id="f1">Your e-Rupee balance is debited instantly</div></div>
+        </div>
+        <div class="fi">
+          <div class="fi-left"><div class="fi-dot waiting" id="d2">3</div><div class="fi-line" id="l2"></div></div>
+          <div class="fi-body"><div class="fi-label">Transaction recorded on blockchain</div><div class="fi-detail" id="f2">Permanent, tamper-proof record created</div></div>
+        </div>
+        <div class="fi">
+          <div class="fi-left"><div class="fi-dot waiting" id="d3">4</div><div class="fi-line" id="l3"></div></div>
+          <div class="fi-body"><div class="fi-label">Currency converted</div><div class="fi-detail" id="f3">INR → destination currency at live rate</div></div>
+        </div>
+        <div class="fi">
+          <div class="fi-left"><div class="fi-dot waiting" id="d4">5</div></div>
+          <div class="fi-body"><div class="fi-label">Money arrives at recipient</div><div class="fi-detail" id="f4">Recipient receives funds in their local currency</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECEIPT -->
+  <div class="receipt" id="receipt">
+    <div class="receipt-head">
+      <div class="rh-left">✅ Transfer Complete</div>
+      <div class="rh-badge">SETTLED</div>
+    </div>
+    <div class="receipt-amounts">
+      <div class="ra-col">
+        <div class="ra-label">You sent</div>
+        <div class="ra-val sent" id="r-sent">₹10,000</div>
+      </div>
+      <div class="ra-arrow">→</div>
+      <div class="ra-col">
+        <div class="ra-label">They received</div>
+        <div class="ra-val recv" id="r-recv">440 AED</div>
+      </div>
+    </div>
+    <div class="receipt-rows">
+      <div class="rr"><span class="rrl">Transfer ID</span><span class="rrv" id="r-id" style="font-size:10px">—</span></div>
+      <div class="rr"><span class="rrl">Fee paid</span><span class="rrv gold" id="r-fee">—</span></div>
+      <div class="rr"><span class="rrl">Saved vs SWIFT</span><span class="rrv good" id="r-save">—</span></div>
+      <div class="rr"><span class="rrl">AI risk score</span><span class="rrv good" id="r-risk">—</span></div>
+      <div class="rr"><span class="rrl">FEMA code</span><span class="rrv" id="r-fema">—</span></div>
+      <div class="rr"><span class="rrl">Settled in</span><span class="rrv good" id="r-time">—</span></div>
+      <div class="rr"><span class="rrl">Blockchain hash</span><span class="rrv" id="r-hash" style="font-size:10px">—</span></div>
+      <div class="rr"><span class="rrl">Dollar used?</span><span class="rrv good">No ✓ — INR bridge</span></div>
+    </div>
+    <div class="receipt-ai">
+      <div class="rai-label">✦ AI Summary</div>
+      <div class="rai-text" id="r-ai-text">Generating...</div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="compare">
+    <div class="compare-head"><div class="compare-title">How we compare — on <span id="cmp-amt">₹10,000</span></div></div>
+    <div class="compare-rows">
+      <div class="cr">
+        <div class="cr-name">
+          <div class="cr-method">🏦 Your bank / SWIFT</div>
+          <div class="cr-sub">Standard wire transfer</div>
+        </div>
+        <div class="cr-fee r">6.3%</div>
+        <div class="cr-speed">3 days</div>
+        <div class="cr-cost r" id="cmp-swift" style="color:var(--red);font-family:var(--mono);font-weight:700;font-size:13px">₹630</div>
+      </div>
+      <div class="cr">
+        <div class="cr-name">
+          <div class="cr-method">💳 Wise / Remitly</div>
+          <div class="cr-sub">Digital money transfer</div>
+        </div>
+        <div class="cr-fee a">2.1%</div>
+        <div class="cr-speed">1 day</div>
+        <div class="cr-cost a" id="cmp-wise" style="color:#9A6500;font-family:var(--mono);font-weight:700;font-size:13px">₹210</div>
+      </div>
+      <div class="cr win">
+        <div class="cr-name">
+          <div class="cr-method">e₹ Bridge — India's CBDC</div>
+          <div class="cr-sub">AI-powered · e-Rupee</div>
+        </div>
+        <div class="cr-fee g">0.2%</div>
+        <div class="cr-speed" style="color:var(--green3)">&lt;3s</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div class="cr-cost g" id="cmp-bridge" style="color:var(--green3);font-family:var(--mono);font-weight:700;font-size:13px">₹20</div><div class="cr-win-badge">CHEAPEST</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI CHAT -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="ph-title">Ask the AI Agent</div>
+      <span style="font-size:10px;color:var(--purple);font-family:var(--mono)">Powered by e₹ AI</span>
+    </div>
+    <div class="chat-suggestions">
+      <button class="cs-btn" onclick="askChat('What is the LRS limit?')">LRS limit?</button>
+      <button class="cs-btn" onclick="askChat('Why do I need a FEMA code?')">FEMA code?</button>
+      <button class="cs-btn" onclick="askChat('Is my money safe?')">Is it safe?</button>
+      <button class="cs-btn" onclick="askChat('How is this different from SWIFT?')">vs SWIFT?</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg"><div class="msg-av mv-ai">✦</div><div class="msg-bub mb-ai">Hi! I'm the e₹ AI Agent. I can explain how this works, answer questions about FEMA codes, LRS limits, or help with anything about your transfer. What would you like to know?</div></div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="ci-inp" id="ci-inp" placeholder="Type a question..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+      <button class="ci-send" onclick="sendChat()">Send</button>
+    </div>
+  </div>
+
+</div><!-- /right -->
+</div><!-- /two-col -->
+</div><!-- /container -->
 
 <footer>
   <div class="fi-inner">
-    <div class="fl-brand"><div class="fl-mark">e₹</div><div><div class="fl-name">e₹ Bridge</div><div class="fl-sub">CBDC + AI · RBIH Showcase 2026 · Abhishek Veda · Toronto 🇨🇦</div></div></div>
-    <div class="fl-links"><a href="https://github.com/Abhishekveda/e-Rupee" target="_blank">GitHub</a><a href="showcase.html">Presentation</a><a href="https://rbihub.in" target="_blank">RBIH</a></div>
+    <div class="fl-left"><div class="fl-mark">e₹</div><div><div class="fl-name">e₹ Bridge</div><div class="fl-sub">CBDC + AI · RBIH Showcase 2026 · Abhishek Veda · Toronto 🇨🇦</div></div></div>
+    <div class="fl-links"><a href="https://github.com/Abhishekveda/e-Rupee" target="_blank">GitHub</a><a href="showcase.html">Presentation</a></div>
   </div>
-  <div class="fl-disc">Proof of concept · Not affiliated with RBI or RBIH · e-Rupee APIs simulated · All transfers fictitious</div>
+  <div class="fl-disc">Proof of concept · Not affiliated with RBI or RBIH · e-Rupee APIs simulated pending sandbox access</div>
 </footer>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const FX={AED:0.044,SGD:0.016};
-const WALLETS={INDIA_USER_001:{balance:50000},INDIA_USER_002:{balance:120000}};
-let sVol=0;
+// ── API ───────────────────────────────────────────────────────────────────
+const API = window.location.hostname === 'localhost' ? '' : '';  // same origin
+let AI_LIVE = false;
 
-const AI_FEMA={
-  university:{code:'P0103',label:'Education fees paid abroad',confidence:'HIGH',explanation:'University, college or school fees paid to a foreign institution.',lrs:'Education permitted under LRS up to $250,000/yr.'},
-  medical:{code:'P0801',label:'Medical treatment abroad',confidence:'HIGH',explanation:'Hospital, doctor or surgery fees outside India.',lrs:'Medical treatment permitted under LRS.'},
-  business:{code:'P1301',label:'Business / professional services',confidence:'MEDIUM',explanation:'Payment for services rendered by a foreign professional or company.',lrs:'Requires invoice documentation.'},
-  default:{code:'P0101',label:'Family maintenance / personal remittance',confidence:'HIGH',explanation:'Regular support or maintenance for family living abroad.',lrs:'Permitted under LRS up to $250,000/yr.'},
+async function apiCall(endpoint, body) {
+  try {
+    const res = await fetch(API + endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(5000)
+    });
+    if (res.ok) { AI_LIVE = true; updateAgentBadge(); return await res.json(); }
+  } catch(e) {}
+  return null;
+}
+
+function updateAgentBadge() {
+  const chips = document.querySelectorAll('.chip-g');
+  chips.forEach(c => { if(c.textContent.includes('AI')) c.textContent = '✦ AI Agent: LIVE'; });
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let state = {
+  country: 'UAE', currency: 'AED', rate: 0.044,
+  amount: 10000, purpose: 'P0101', purposeLabel: 'Family support',
+  showAI: false
 };
 
-const AI_CHAT={
-  lrs:'Under the Liberalised Remittance Scheme (LRS), Indian residents can remit up to $250,000 (approximately ₹2.07 crore) per financial year for permitted purposes including education, medical treatment, family maintenance, and travel. The limit resets every April 1.',
-  p0103:'P0103 is the FEMA purpose code for remittances for studies abroad — tuition fees, hostel fees, and examination fees paid to a foreign institution. Supporting documents such as an admission letter may be required by the Authorised Dealer bank.',
-  time:'FX rates for INR/AED fluctuate modestly intraday. The biggest saving comes from the bridge fee: 0.2% vs SWIFT\'s 6.3%. For most remittances, the timing difference is less than ₹50 on a ₹10,000 transfer.',
-  wholesale:'The e₹-W (wholesale) CBDC is designed for interbank settlements between financial institutions using the NDS-OM mechanism. This bridge uses the retail (e₹-R) layer, which is designed for individual users.',
-  default:'I can help with FEMA codes, LRS limits, RBI regulations, and cross-border remittance questions. The e₹ AI Agent runs locally — no external API, all data stays on your device.',
+const CHAT_KB = {
+  lrs: 'Under RBI\'s Liberalised Remittance Scheme (LRS), Indian residents can send up to $250,000 (about ₹2.07 crore) abroad every financial year. This covers education, medical treatment, family support, and travel. Your LRS balance resets every April 1.',
+  fema: 'FEMA stands for Foreign Exchange Management Act. Every time money leaves India, RBI requires a purpose code — like P0103 for education or P0102 for family support. The e₹ AI Agent automatically picks the right code so you don\'t have to worry about it.',
+  safe: 'Yes. Every transfer is checked by the AI Risk Agent before it moves. Your data stays in India (RBI data localisation). Passwords are encrypted, and a permanent audit trail is created for every transaction — RBI can inspect it anytime.',
+  swift: 'SWIFT is the global bank network built in 1973. It charges 6.3% on average and takes 2–3 business days. e₹ Bridge uses India\'s own e-Rupee CBDC — no correspondent banks, no dollar intermediary. Result: 0.2% fee, under 3 seconds.',
+  default: 'Great question! e₹ Bridge is India\'s first AI-powered CBDC payment bridge. The AI checks every transfer for compliance, fraud risk, and regulatory limits automatically. No paperwork, no delays, no expensive bank fees.'
 };
 
-function getChatReply(q){
-  const m=q.toLowerCase();
-  if(/lrs|limit|how much|annual|$250/.test(m)) return AI_CHAT.lrs;
-  if(/p0103|education|university|college|tuition/.test(m)) return AI_CHAT.p0103;
-  if(/time|when|good time|best/.test(m)) return AI_CHAT.time;
-  if(/wholesale|e₹-w|interbank/.test(m)) return AI_CHAT.wholesale;
-  if(/medical|hospital|p0801/.test(m)) return 'P0801 covers medical treatment abroad — hospital fees, doctor consultations, and surgical expenses. Permitted under LRS. An appointment letter or medical certificate may be required.';
-  if(/family|maintenance|p0101|p0102/.test(m)) return 'P0101 and P0102 cover family maintenance and remittances to close relatives abroad. These are the most common purpose codes for NRI transfers. Permitted under LRS up to $250,000 per financial year.';
-  return AI_CHAT.default;
+function getChatReply(q) {
+  const m = q.toLowerCase();
+  if (/lrs|limit|how much|annual|250/.test(m)) return CHAT_KB.lrs;
+  if (/fema|purpose|code|why/.test(m)) return CHAT_KB.fema;
+  if (/safe|secure|trust|danger/.test(m)) return CHAT_KB.safe;
+  if (/swift|bank|different|compare|vs/.test(m)) return CHAT_KB.swift;
+  if (/fee|cost|price|charge/.test(m)) return `e₹ Bridge charges just 0.2% — that's ₹${Math.round(state.amount*0.002)} on your ₹${state.amount.toLocaleString('en-IN')} transfer. SWIFT would charge ₹${Math.round(state.amount*0.063)}. You save ₹${Math.round(state.amount*0.061)}.`;
+  if (/time|fast|quick|long|seconds/.test(m)) return 'Settlement completes in under 3 seconds. SWIFT takes 2–3 business days. The e-Rupee CBDC settles directly on India\'s payment infrastructure — no correspondent banks to route through.';
+  return CHAT_KB.default;
 }
 
-function uid(){return([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
-function rndHash(p){let h='';const c='0123456789abcdef';for(let i=0;i<56;i++)h+=c[Math.floor(Math.random()*16)];return'0x'+p+h;}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3500);}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+const AI_FEMA = {
+  university: {code:'P0103',label:'Education fees paid abroad',confidence:'HIGH',desc:'University tuition, hostel fees, and examination charges paid to a foreign institution.'},
+  medical: {code:'P0801',label:'Medical treatment abroad',confidence:'HIGH',desc:'Hospital fees, doctor consultations, and surgery costs outside India.'},
+  business: {code:'P1301',label:'Business / professional services',confidence:'MEDIUM',desc:'Payment for services rendered by a foreign business or professional.'},
+  travel: {code:'P0104',label:'Travel abroad',confidence:'HIGH',desc:'Expenses for personal international travel including accommodation and activities.'},
+  default: {code:'P0101',label:'Family maintenance',confidence:'HIGH',desc:'Regular financial support or maintenance for close family members living abroad.'},
+};
 
-function onCountryChange(){
-  const v=document.getElementById('country').value;
-  document.getElementById('dest-flag').innerHTML=v==='UAE'
-    ?'<div style="font-size:22px">🇦🇪</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px">UAE</div><div style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono)">AED</div>'
-    :'<div style="font-size:22px">🇸🇬</div><div style="font-size:11px;font-weight:600;color:#fff;margin-top:3px">Singapore</div><div style="font-size:9px;color:rgba(255,255,255,.35);font-family:var(--mono)">SGD</div>';
-  updateQuote();
+// ── COUNTRY ────────────────────────────────────────────────────────────────
+function selectCountry(btn, name, curr, rate) {
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.country = name; state.currency = curr; state.rate = rate;
+  updateAll();
 }
 
-function updateQuote(){
-  const a=+document.getElementById('amount').value;
-  const curr=document.getElementById('country').value==='UAE'?'AED':'SGD';
-  const qbox=document.getElementById('qbox');
-  if(!a||a<100){qbox.classList.remove('on');return;}
-  const rate=FX[curr];
-  document.getElementById('q-rate').textContent=`1 INR = ${rate} ${curr}`;
-  document.getElementById('q-recv').textContent=`${(a*rate).toFixed(2)} ${curr}`;
-  document.getElementById('q-fee').textContent=`₹${(a*0.002).toFixed(2)}`;
-  document.getElementById('q-swift').textContent=`₹${(a*0.063).toFixed(2)} (${Math.round(0.063/0.002)}× more)`;
-  document.getElementById('q-save').textContent=`₹${(a*0.061).toFixed(2)} saved`;
-  qbox.classList.add('on');
+// ── AMOUNT ─────────────────────────────────────────────────────────────────
+function setAmt(v) { document.getElementById('amount').value = v; state.amount = v; updateAll(); }
+
+function updateAll() {
+  const a = +document.getElementById('amount').value || 0;
+  state.amount = a;
+  const fee = Math.round(a * 0.002);
+  const swift = Math.round(a * 0.063);
+  const wise = Math.round(a * 0.021);
+  const save = swift - fee;
+  const recv = (a * state.rate).toFixed(2);
+
+  document.getElementById('q-amt').textContent = '₹' + a.toLocaleString('en-IN');
+  document.getElementById('q-recv').textContent = recv + ' ' + state.currency;
+  document.getElementById('q-recv-curr').textContent = {AED:'UAE Dirham',SGD:'Singapore Dollar',GBP:'British Pound',CAD:'Canadian Dollar'}[state.currency]||state.currency;
+  document.getElementById('q-fee').textContent = '₹' + fee.toLocaleString('en-IN');
+  document.getElementById('q-swift').textContent = '₹' + swift.toLocaleString('en-IN');
+  document.getElementById('q-save').textContent = '₹' + save.toLocaleString('en-IN') + ' ✓';
+  document.getElementById('quote-card').classList.add('show');
+
+  // Comparison table
+  document.getElementById('cmp-amt').textContent = '₹' + a.toLocaleString('en-IN');
+  document.getElementById('cmp-swift').textContent = '₹' + swift.toLocaleString('en-IN');
+  document.getElementById('cmp-wise').textContent = '₹' + wise.toLocaleString('en-IN');
+  document.getElementById('cmp-bridge').textContent = '₹' + fee.toLocaleString('en-IN');
 }
 
-async function aiSuggest(){
-  const text=document.getElementById('ai-purpose').value.trim();
-  if(!text){toast('Please describe your purpose first');return;}
-  const btn=document.getElementById('ai-btn');
-  btn.disabled=true;btn.textContent='✦ Analysing...';
-  await sleep(1000);
-
-  const t=text.toLowerCase();
-  let r=AI_FEMA.default;
-  if(/universit|college|school|study|education|fee|tuition|mba|degree/.test(t)) r=AI_FEMA.university;
-  else if(/medical|hospital|doctor|surgery|treatment|health/.test(t)) r=AI_FEMA.medical;
-  else if(/business|invoice|vendor|supplier|trade|professional/.test(t)) r=AI_FEMA.business;
-
-  const el=document.getElementById('ai-result');
-  el.innerHTML=`<div style="margin-bottom:5px"><span class="ar-code">${r.code}</span><span class="ar-conf conf-${r.confidence}">${r.confidence}</span></div><div style="font-weight:600;margin-bottom:3px">${r.label}</div><div style="color:var(--muted);margin-bottom:3px;font-size:11px">${r.explanation}</div><div style="font-size:10px;color:var(--purple)">${r.lrs}</div>`;
-  el.classList.add('show');
-
-  const sel=document.getElementById('purpose');
-  for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===r.code){sel.selectedIndex=i;break;}}
-  btn.disabled=false;btn.textContent='✦ Suggest FEMA code';
+// ── PURPOSE ────────────────────────────────────────────────────────────────
+function setPurpose(btn, code, label) {
+  document.querySelectorAll('.pt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.purpose = code; state.purposeLabel = label;
+  document.getElementById('ai-box').style.display = 'none';
+  document.getElementById('ai-result-box').style.display = 'none';
+  state.showAI = false;
 }
 
-function setStep(i,state,detail){
-  const dot=document.getElementById('fl'+i);
-  const line=document.getElementById('ln'+i);
-  const det=document.getElementById('fd'+i);
-  if(state==='active'){dot.className='fi-dot active';if(i===0)dot.textContent='✦';else dot.textContent=i;}
-  else if(state==='done'){dot.className='fi-dot done';dot.textContent='✓';if(line)line.classList.add('done');}
-  if(det&&detail)det.textContent=detail;
+function toggleAI() {
+  state.showAI = !state.showAI;
+  document.querySelectorAll('.pt').forEach(b => b.classList.remove('active'));
+  document.getElementById('ai-box').style.display = state.showAI ? 'block' : 'none';
 }
 
-function resetFlow(){
-  const defs=['Waiting for transfer...','Pending...','Pending...','Pending...','Pending...','Awaiting...'];
-  for(let i=0;i<6;i++){
-    const d=document.getElementById('fl'+i);const l=document.getElementById('ln'+i);
-    if(d){d.className='fi-dot'+(i===0?' ai-step':'');d.textContent=i===0?'✦':i;}
-    if(l)l.classList.remove('done');
-    const det=document.getElementById('fd'+i);if(det)det.textContent=defs[i];
+async function aiClassify() {
+  const text = document.getElementById('ai-text').value.trim();
+  if (!text) { showToast('Please describe your purpose first'); return; }
+  const btn = document.getElementById('ai-btn');
+  btn.disabled = true; btn.textContent = '✦ AI is thinking...';
+
+  // Try real API first
+  const apiResult = await apiCall('/v1/agent/classify-purpose', {
+    description: text, amount_inr: state.amount
+  });
+
+  let r;
+  if (apiResult) {
+    r = {
+      code: apiResult.code,
+      label: apiResult.label,
+      confidence: apiResult.confidence,
+      desc: apiResult.description || apiResult.label
+    };
+  } else {
+    await sleep(700);
+    const t = text.toLowerCase();
+    r = AI_FEMA.default;
+    if (/universit|college|school|study|education|fee|tuition|mba|degree/.test(t)) r = AI_FEMA.university;
+    else if (/medical|hospital|doctor|surgery|treatment|health|clinic/.test(t)) r = AI_FEMA.medical;
+    else if (/business|invoice|vendor|supplier|trade|professional|service/.test(t)) r = AI_FEMA.business;
+    else if (/travel|trip|holiday|vacation|tour|flight/.test(t)) r = AI_FEMA.travel;
   }
-  document.getElementById('receipt').classList.remove('on');
-  document.getElementById('risk-badge').classList.remove('show');
+
+  const t2 = text.toLowerCase();
+  if (!r) { r = AI_FEMA.default;
+  if (/universit|college|school|study|education|fee|tuition|mba|degree/.test(t)) r = AI_FEMA.university;
+  else if (/medical|hospital|doctor|surgery|treatment|health|clinic/.test(t)) r = AI_FEMA.medical;
+  else if (/business|invoice|vendor|supplier|trade|professional|service/.test(t)) r = AI_FEMA.business;
+  else if (/travel|trip|holiday|vacation|tour|flight/.test(t)) r = AI_FEMA.travel;
+
+  document.getElementById('ai-code-out').textContent = r.code;
+  document.getElementById('ai-conf-out').textContent = r.confidence + ' confidence';
+  document.getElementById('ai-desc-out').textContent = r.label + ' — ' + r.desc;
+  document.getElementById('ai-result-box').style.display = 'block';
+
+  state.purpose = r.code; state.purposeLabel = r.label;
+  btn.disabled = false; btn.textContent = '✦ Suggest FEMA code';
 }
 
-async function runTransfer(){
-  const sender=document.getElementById('sender').value;
-  const country=document.getElementById('country').value;
-  const amount=+document.getElementById('amount').value;
-  const purpose=document.getElementById('purpose').value;
-  const curr=country==='UAE'?'AED':'SGD';
-  if(!amount||amount<100){toast('Please enter an amount of at least ₹100');return;}
-  if(amount>500000){toast('Amount exceeds demo limit of ₹5,00,000');return;}
-  const wallet=WALLETS[sender];
-  if(wallet.balance<amount*1.002){toast(`Insufficient balance. Wallet has ₹${wallet.balance.toLocaleString('en-IN')}`);return;}
+// ── TRANSFER ───────────────────────────────────────────────────────────────
+function resetFlow() {
+  const defaults = [
+    'Checks FEMA code, fraud risk, and annual limit before anything moves',
+    'Your e-Rupee balance is debited instantly',
+    'Permanent, tamper-proof record created',
+    'INR → destination currency at live rate',
+    'Recipient receives funds in their local currency'
+  ];
+  for (let i = 0; i < 5; i++) {
+    const d = document.getElementById('d'+i), l = document.getElementById('l'+i), f = document.getElementById('f'+i);
+    if (d) { d.className = 'fi-dot waiting'; d.textContent = i===0?'✦':i; }
+    if (l) l.classList.remove('done');
+    if (f) f.textContent = defaults[i];
+  }
+  document.getElementById('receipt').classList.remove('show');
+  document.getElementById('risk-badge').classList.remove('show');
+  document.getElementById('risk-badge').style.display = 'none';
+}
 
-  const btn=document.getElementById('send-btn');
-  btn.disabled=true;btn.textContent='Processing...';
+function setStep(i, state2, detail) {
+  const dot = document.getElementById('d'+i), line = document.getElementById('l'+i), det = document.getElementById('f'+i);
+  if (state2==='active') { dot.className='fi-dot active'; dot.textContent=i===0?'✦':i; }
+  else if (state2==='done') { dot.className='fi-dot done'; dot.textContent='✓'; if(line)line.classList.add('done'); }
+  if (det && detail) det.textContent = detail;
+}
+
+async function runTransfer() {
+  const a = state.amount;
+  if (!a || a < 100) { showToast('Please enter an amount of at least ₹100'); return; }
+  if (a > 500000) { showToast('Demo limit is ₹5,00,000'); return; }
+
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true; btn.textContent = 'Processing...';
   resetFlow();
 
-  const txId=uid();
-  const cbdcH=rndHash('cbdc');
-  const bridgeH=rndHash('bridge');
-  const rate=FX[curr];
-  const converted=+(amount*rate).toFixed(2);
-  const fee=+(amount*0.002).toFixed(2);
-  const t0=new Date();
+  const riskScore = Math.floor(Math.random()*8)+3;
+  const recv = (a * state.rate).toFixed(2);
+  const fee = Math.round(a * 0.002);
+  const save = Math.round(a * 0.061);
+  const cbdcHash = '0xcbdc' + randomHex(60);
+  const bridgeHash = '0xbridge' + randomHex(56);
+  const t0 = Date.now();
 
-  setStep(0,'active');await sleep(400);
-  const riskScore=Math.floor(Math.random()*10)+3;
-  setStep(0,'done',`Risk: LOW (${riskScore}/100) · FEMA: ${purpose} ✓ · APPROVE`);
-  showRisk(riskScore);
+  // Step 1 — AI check
+  setStep(0,'active');
+  await sleep(500);
+  // Try real risk API
+  const riskResult = await apiCall('/v1/agent/score-risk', {
+    sender_wallet: 'INDIA_USER_001',
+    recipient_address: '0xAbCdEf1234567890abcdef1234567890AbCdEf12',
+    amount_inr: a,
+    purpose_code: state.purpose,
+    recipient_country: state.country === 'UAE' ? 'AE' : state.country === 'Singapore' ? 'SG' : state.country === 'UK' ? 'GB' : 'CA'
+  });
+  const riskScore2 = riskResult ? riskResult.risk_score : riskScore;
+  const riskLevel = riskResult ? riskResult.risk_level : 'LOW';
+  setStep(0,'done',`✓ Risk: ${riskLevel} (${riskScore2}/100) · FEMA: ${state.purpose} · ${riskResult ? riskResult.recommendation : 'APPROVE'}`);
+  showRisk(riskScore2, riskLevel);
 
-  setStep(1,'active');await sleep(380);
-  wallet.balance=+(wallet.balance-amount*1.002).toFixed(2);
-  setStep(1,'done',`Debited ₹${amount.toLocaleString('en-IN')} from ${sender}`);
+  // Step 2 — Debit
+  setStep(1,'active'); await sleep(380);
+  setStep(1,'done','✓ ₹' + a.toLocaleString('en-IN') + ' debited from e-Rupee wallet');
 
-  setStep(2,'active');await sleep(420);
-  setStep(2,'done',cbdcH.slice(0,30)+'...');
+  // Step 3 — Blockchain
+  setStep(2,'active'); await sleep(420);
+  setStep(2,'done','✓ ' + cbdcHash.slice(0,28) + '...');
 
-  setStep(3,'active');await sleep(360);
-  setStep(3,'done',bridgeH.slice(0,28)+'...');
+  // Step 4 — FX
+  setStep(3,'active'); await sleep(360);
+  setStep(3,'done','✓ ' + recv + ' ' + state.currency + ' ready');
 
-  setStep(4,'active');await sleep(340);
-  setStep(4,'done',`${converted} ${curr} @ ${rate}`);
+  // Step 5 — Settle
+  setStep(4,'active'); await sleep(480);
+  const elapsed = ((Date.now() - t0)/1000).toFixed(2);
+  setStep(4,'done','✓ Recipient received ' + recv + ' ' + state.currency + ' in ' + elapsed + 's');
 
-  setStep(5,'active');await sleep(480);
-  const t1=new Date();
-  const elapsed=((t1-t0)/1000).toFixed(2);
-  const block=19450000+Math.floor(Math.random()*5000);
-  setStep(5,'done',`Block #${block} · settled in ${elapsed}s`);
+  // Receipt
+  const txId = randomHex(16);
+  document.getElementById('r-sent').textContent = '₹' + a.toLocaleString('en-IN');
+  document.getElementById('r-recv').textContent = recv + ' ' + state.currency;
+  document.getElementById('r-id').textContent = txId;
+  document.getElementById('r-fee').textContent = '₹' + fee.toLocaleString('en-IN') + ' (0.2%)';
+  document.getElementById('r-save').textContent = '₹' + save.toLocaleString('en-IN') + ' saved vs SWIFT ✓';
+  document.getElementById('r-risk').textContent = riskScore + '/100 — LOW ✓';
+  document.getElementById('r-fema').textContent = state.purpose + ' (' + state.purposeLabel + ')';
+  document.getElementById('r-time').textContent = elapsed + ' seconds ✓';
+  document.getElementById('r-hash').textContent = cbdcHash.slice(0,30) + '...';
+  document.getElementById('receipt').classList.add('show');
 
-  // Show receipt
-  document.getElementById('r-id').textContent=txId.slice(0,20)+'...';
-  document.getElementById('r-amt').textContent='₹'+amount.toLocaleString('en-IN');
-  document.getElementById('r-recv').textContent=`${converted} ${curr}`;
-  document.getElementById('r-fee').textContent=`₹${fee} · 0.2%`;
-  document.getElementById('r-save').textContent=`₹${(amount*0.061).toFixed(0)} vs SWIFT ✓`;
-  document.getElementById('r-fema').textContent=purpose;
-  document.getElementById('r-risk').textContent=`${riskScore}/100 · LOW · Approved ✓`;
-  document.getElementById('r-cbdc').textContent=cbdcH.slice(0,32)+'...';
-  document.getElementById('r-time').textContent=`${elapsed}s — SWIFT = 2–3 days`;
-  document.getElementById('r-created').textContent='Initiated: '+t0.toLocaleTimeString();
-  document.getElementById('r-settled').textContent='Settled: '+t1.toLocaleTimeString()+' ✓';
-  document.getElementById('receipt').classList.add('on');
+  setTimeout(() => {
+    document.getElementById('r-ai-text').textContent =
+      `Transfer of ₹${a.toLocaleString('en-IN')} completed in ${elapsed}s. Recipient received ${recv} ${state.currency}. ` +
+      `AI risk assessment: LOW (${riskScore}/100). Purpose code ${state.purpose} verified. ` +
+      `You saved ₹${save.toLocaleString('en-IN')} compared to SWIFT. No US Dollar was used — settled entirely through India's e-Rupee. ✓`;
+  }, 600);
 
-  setTimeout(()=>{
-    document.getElementById('r-ai-text').textContent=
-      `Transfer of ₹${amount.toLocaleString('en-IN')} settled in ${elapsed}s via e₹ Bridge. `+
-      `Recipient received ${converted} ${curr}. `+
-      `AI risk assessment: LOW (${riskScore}/100). FEMA code ${purpose} verified. `+
-      `Saved ₹${(amount*0.061).toFixed(0)} vs SWIFT. Dollar not used. ✓`;
-  },700);
-
-  sVol+=amount;
-  document.getElementById('s-vol').textContent='₹'+sVol.toLocaleString('en-IN');
-  document.getElementById('s-sub').textContent='transferred';
   document.getElementById('receipt').scrollIntoView({behavior:'smooth',block:'nearest'});
-
-  btn.disabled=false;btn.textContent='Execute Transfer via e₹ Bridge →';
+  btn.disabled = false;
+  btn.textContent = 'Send Another Transfer →';
 }
 
-function showRisk(score){
-  const el=document.getElementById('risk-badge');
-  el.className='risk-badge show rb-LOW';
-  el.innerHTML=`<span>✓</span><span>AI Risk: <strong>LOW</strong> (${score}/100) — Transfer approved by AI agent</span>`;
+function showRisk(score, level) {
+  level = level || 'LOW';
+  const el = document.getElementById('risk-badge');
+  const cls = level === 'HIGH' ? 'rb-HIGH' : level === 'MEDIUM' ? 'rb-MED' : 'rb-LOW';
+  const ico = level === 'HIGH' ? '⚠️' : '✅';
+  el.className = 'risk-badge show ' + cls;
+  el.style.display = 'flex';
+  el.innerHTML = `<span>${ico}</span><span>AI Security Check: Risk <strong>${level}</strong> (${score}/100)${level === 'LOW' ? '. Transfer approved.' : ' — Review required.'}</span>`;
 }
 
-async function sendChat(){
-  const inp=document.getElementById('chat-inp');
-  const msg=inp.value.trim();if(!msg)return;
-  const btn=document.getElementById('chat-send');
-  inp.value='';btn.disabled=true;
-  addMsg(msg,'user');
-  const thinking=addMsg('Thinking...','ai thinking');
-  await sleep(700+Math.random()*500);
-  thinking.querySelector('.msg-bub').textContent=getChatReply(msg);
-  thinking.querySelector('.msg-bub').classList.remove('thinking');
-  btn.disabled=false;
-  document.getElementById('chat-msgs').scrollTop=9999;
+// ── CHAT ──────────────────────────────────────────────────────────────────
+async function sendChat() {
+  const inp = document.getElementById('ci-inp');
+  const msg = inp.value.trim(); if (!msg) return;
+  const btn = document.querySelector('.ci-send');
+  inp.value = ''; btn.disabled = true;
+  addMsg(msg, 'user');
+  const thinking = addMsg('Thinking...', 'ai thinking');
+  await sleep(600 + Math.random()*400);
+  thinking.querySelector('.msg-bub').textContent = getChatReply(msg);
+  thinking.querySelector('.msg-bub').classList.remove('mb-thinking');
+  btn.disabled = false;
+  document.getElementById('chat-msgs').scrollTop = 9999;
 }
-
-function askChat(q){document.getElementById('chat-inp').value=q;sendChat();}
-
-function addMsg(text,type){
-  const msgs=document.getElementById('chat-msgs');
-  const isUser=type==='user';
-  const div=document.createElement('div');
-  div.className=`msg ${isUser?'user':''}`;
-  div.innerHTML=`<div class="msg-av ${isUser?'user':'ai'}">${isUser?'You':'✦'}</div><div class="msg-bub ${type}">${text}</div>`;
-  msgs.appendChild(div);msgs.scrollTop=9999;
+function askChat(q) { document.getElementById('ci-inp').value = q; sendChat(); }
+function addMsg(text, type) {
+  const msgs = document.getElementById('chat-msgs');
+  const isUser = type === 'user';
+  const div = document.createElement('div');
+  div.className = `msg ${isUser ? 'user' : ''}`;
+  div.innerHTML = `<div class="msg-av ${isUser?'mv-user':'mv-ai'}">${isUser?'You':'✦'}</div><div class="msg-bub ${isUser?'mb-user':'mb-ai mb-'+type}">${text}</div>`;
+  msgs.appendChild(div); msgs.scrollTop = 9999;
   return div;
 }
 
-updateQuote();
+// ── UTILS ─────────────────────────────────────────────────────────────────
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const randomHex = n => [...Array(n)].map(() => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+function showToast(m) {
+  const t = document.getElementById('toast'); t.textContent = m;
+  t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 3200);
+}
+
+// Init
+updateAll();
 </script>
 </body>
 </html>
